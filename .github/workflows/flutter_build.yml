@@ -24,12 +24,29 @@ jobs:
         run: flutter pub get
 
       - name: Analyze code
+        id: analyze
         # fail-on-warnings will fail the job if there are any linting issues.
         # Remove --fatal-warnings if you only want it to fail on actual errors.
-        run: flutter analyze --fatal-infos --fatal-warnings
+        # We write the output to a file so the commenter action can read it.
+        run: flutter analyze --write=flutter_analyze.log --fatal-infos --fatal-warnings
+        continue-on-error: true # Let the next step run even if analysis fails so it can post comments
 
-      - name: Run tests
-        run: flutter test
+      - name: Annotate PR with analysis results
+        if: always() # Run this even if the previous step failed
+        uses: yorifuji/flutter-analyze-commenter@v1
+        with:
+          analyze-log: flutter_analyze.log
+          verbose: false
+
+      - name: Fail if analysis failed
+        # This step ensures the job still fails if the analyze step failed,
+        # despite us using continue-on-error above.
+        if: steps.analyze.outcome == 'failure'
+        run: exit 1
+
+      # Optional: Run tests if the test directory exists
+      # - name: Run tests
+      #   run: flutter test
 
   build_android:
     name: Build Android
