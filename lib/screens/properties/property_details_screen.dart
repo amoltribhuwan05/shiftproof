@@ -60,6 +60,15 @@ class PropertyDetailsScreen extends StatelessWidget {
                       Image.network(
                         'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop',
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade300,
+                          child: const Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -336,13 +345,15 @@ class PropertyDetailsScreen extends StatelessWidget {
                               height: 32,
                               child: Stack(
                                 children: [
-                                  const Positioned(
+                                  Positioned(
                                     left: 0,
                                     child: CircleAvatar(
                                       radius: 16,
-                                      backgroundImage: NetworkImage(
+                                      backgroundImage: const NetworkImage(
                                         'https://i.pravatar.cc/100?img=1',
                                       ),
+                                      onBackgroundImageError:
+                                          (exception, stackTrace) {},
                                     ),
                                   ),
                                   Positioned(
@@ -355,6 +366,8 @@ class PropertyDetailsScreen extends StatelessWidget {
                                         backgroundImage: const NetworkImage(
                                           'https://i.pravatar.cc/100?img=2',
                                         ),
+                                        onBackgroundImageError:
+                                            (exception, stackTrace) {},
                                       ),
                                     ),
                                   ),
@@ -368,6 +381,8 @@ class PropertyDetailsScreen extends StatelessWidget {
                                         backgroundImage: const NetworkImage(
                                           'https://i.pravatar.cc/100?img=3',
                                         ),
+                                        onBackgroundImageError:
+                                            (exception, stackTrace) {},
                                       ),
                                     ),
                                   ),
@@ -430,42 +445,60 @@ class PropertyDetailsScreen extends StatelessWidget {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                              'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
                         ),
-                        child: Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.network(
+                                'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      color: Colors.grey.shade300,
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.map,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primary.withValues(alpha: 0.9),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.near_me,
-                                  color: Colors.white,
-                                  size: 16,
+                            Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
                                 ),
-                                SizedBox(width: 8),
-                                Text(
-                                  'View on Map',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.9,
                                   ),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              ],
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.near_me,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'View on Map',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],

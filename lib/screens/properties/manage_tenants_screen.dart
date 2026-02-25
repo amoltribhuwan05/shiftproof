@@ -235,6 +235,8 @@ class ManageTenantsScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 24,
                     backgroundImage: NetworkImage(imageUrl),
+                    onBackgroundImageError: (exception, stackTrace) {},
+                    child: const Icon(Icons.person, color: Colors.grey),
                   ),
                   const SizedBox(width: 12),
                   Column(

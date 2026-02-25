@@ -5,8 +5,8 @@ import '../properties/owner_main_screen.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/buttons/social_button.dart';
 
-class GetStartedScreen extends StatelessWidget {
-  const GetStartedScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

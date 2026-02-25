@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/cards/profile_menu_card.dart';
-import '../auth/get_started_screen.dart';
+import '../tenant/tenant_main_screen.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -63,9 +64,23 @@ class ProfileScreen extends StatelessWidget {
                         color: colorScheme.primary.withValues(alpha: 0.2),
                         width: 4,
                       ),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://i.pravatar.cc/150?img=11'),
+                    ),
+                    child: ClipOval(
+                      child: Image.network(
+                        'https://i.pravatar.cc/150?img=11',
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: isDark
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade200,
+                            child: const Icon(
+                              Icons.person,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -182,7 +197,14 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.settings_outlined,
                     title: 'Settings',
                     subtitle: 'Privacy, notifications, and app preferences',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ),
+                      );
+                    },
                   ),
                   ProfileMenuItem(
                     icon: Icons.logout,
@@ -192,7 +214,7 @@ class ProfileScreen extends StatelessWidget {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const GetStartedScreen(),
+                          builder: (_) => const TenantMainScreen(),
                         ),
                         (route) => false,
                       );
