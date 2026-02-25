@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Room &amp; Bed Setup - ShiftProof</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Room &amp; Bed Setup</h1>
+</div>
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<main class="flex-1 max-w-2xl mx-auto w-full p-4 pb-32">
+<div class="mb-6">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">Property Structure</h2>
+<!-- Room List Container -->
+<div class="space-y-3">
+<!-- Room Item 1 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined">door_front</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Room 101</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Main Wing · Standard</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Total Beds Control -->
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Beds</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold">2</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+<!-- Occupied Control -->
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Occupied</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold text-primary">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Room Item 2 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined">door_front</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Room 102</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Main Wing · Dormitory</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Beds</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold">4</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Occupied</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold text-primary">2</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Room Item 3 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined">door_front</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Room 103</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">East Wing · Single</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Beds</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="font-bold">1</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400">Occupied</span>
+<div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm" disabled="">remove</span>
+</button>
+<span class="font-bold text-primary">0</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-white dark:bg-slate-700 shadow-sm hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Add Room Action -->
+<button class="w-full py-6 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex flex-col items-center justify-center gap-2 text-slate-500 dark:text-slate-400 hover:bg-primary/5 hover:border-primary transition-all group">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">add_circle</span>
+<span class="font-semibold">Add New Room</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation / Primary CTA -->
+<footer class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-2xl mx-auto flex flex-col gap-4">
+<div class="flex justify-between items-center text-sm px-1">
+<span class="text-slate-500 dark:text-slate-400">Total Capacity</span>
+<span class="font-bold text-slate-900 dark:text-slate-100">7 Beds · 3 Occupied</span>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+<span class="material-symbols-outlined">save</span>
+                Save Structure
+            </button>
+</div>
+</footer>
+</body></html>

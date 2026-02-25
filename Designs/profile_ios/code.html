@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShiftProof - Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700,FILL@0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .ios-list-group { @apply bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800; }
+        .ios-list-item { @apply flex items-center gap-4 px-4 py-3 active:bg-slate-100 dark:active:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-0; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="max-w-md mx-auto min-h-screen flex flex-col relative pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-8 pb-4">
+<div class="flex items-center justify-between">
+<h1 class="text-3xl font-bold tracking-tight">Profile</h1>
+<button class="text-primary p-2">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</div>
+</header>
+<main class="px-4 space-y-6">
+<!-- Section 1: Account Info -->
+<section class="flex flex-col items-center py-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="relative group">
+<div class="size-24 rounded-full bg-cover bg-center border-4 border-primary/10" data-alt="Professional headshot of a smiling man in a suit" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAikB0C9iFwdefudNAKAFZUZRpIryFxyTGH-qDn4Bkh9OpTT4KTYtQIDeIvaUjVUyMNKA4RK-MBjZVnAVFhbvrgRtYql-4wELLjG6rMrIYjp_eChqXwpm8gdK--EswMFFpKrDnoVbiHoGE4aC_0lZh9ivL2mWgl-8Dz9uqvojhNX5SCV3AMSWy0QWrPW-U75Mls1Yghn7T4Q_XYcTbhi3wiHA3Tfg3sIIjJ2IMuUpd5_J-X41o0dB4BHIebhqxOEqljw9NfL6ECCQ')">
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-white dark:border-slate-900">
+<span class="material-symbols-outlined text-xs">edit</span>
+</button>
+</div>
+<div class="mt-4 text-center">
+<h2 class="text-xl font-bold">Alexander Wright</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm">alexander.wright@shiftproof.com</p>
+</div>
+<div class="mt-4 flex gap-2">
+<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">Owner</span>
+<span class="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 text-xs font-semibold rounded-full">Tenant</span>
+</div>
+</section>
+<!-- Section 2: My Stay (Tenants) -->
+<section class="space-y-2">
+<h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">Active Tenancy</h3>
+<div class="ios-list-group">
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">home_pin</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">My Stay</p>
+<p class="text-xs text-slate-500">The Heights, Unit 402</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Lease Documents</p>
+<p class="text-xs text-slate-500">Renewal due in 45 days</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Section 3: Manage Properties (Owners) -->
+<section class="space-y-2">
+<h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">Portfolio Management</h3>
+<div class="ios-list-group">
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">real_estate_agent</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Properties Portfolio</p>
+<p class="text-xs text-slate-500">12 Active Listings</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Tenants Request</p>
+<span class="inline-flex items-center justify-center px-2 py-0.5 ml-1 text-xs font-bold leading-none text-white bg-primary rounded-full">3</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Section 4: Billing -->
+<section class="space-y-2">
+<h3 class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">Account &amp; Billing</h3>
+<div class="ios-list-group">
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Subscription &amp; Billing</p>
+<p class="text-xs text-slate-500 italic">Premium Plan Active</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="ios-list-item" href="#">
+<div class="size-10 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Security &amp; Privacy</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Logout -->
+<button class="w-full py-4 text-primary font-semibold ios-list-group bg-white flex justify-center active:bg-slate-50 border-none shadow-none">
+                Sign Out
+            </button>
+<!-- Footer -->
+<footer class="pt-4 pb-8 text-center">
+<p class="text-slate-400 text-sm font-medium">One account. Multiple roles.</p>
+<p class="text-slate-300 dark:text-slate-600 text-xs mt-1">ShiftProof v2.4.1</p>
+</footer>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-6 py-2 pb-6 flex justify-between items-center z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium">Explore</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Saved</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">apartment</span>
+<span class="text-[10px] font-medium">Listings</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

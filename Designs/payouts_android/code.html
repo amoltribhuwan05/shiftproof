@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payouts - Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="sticky top-0 z-10 bg-background-light dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-200 dark:border-primary/20 px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Payouts</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200 dark:hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</header>
+<!-- Content Area -->
+<main class="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
+<!-- Summary Card -->
+<div class="bg-primary/10 border border-primary/20 rounded-xl p-6 flex flex-col gap-2">
+<p class="text-sm font-medium text-primary uppercase tracking-wider">Total Settled (30 days)</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">₹1,42,500</span>
+<span class="text-green-500 text-sm font-medium flex items-center">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                    12%
+                </span>
+</div>
+</div>
+<!-- Section Title -->
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold">Recent Payouts</h2>
+<p class="text-xs text-slate-500 dark:text-slate-400">Showing last 10 transactions</p>
+</div>
+<!-- Payout List -->
+<div class="space-y-3">
+<!-- Payout Item 1 -->
+<div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="space-y-1">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">Ref: 329104829103</p>
+<p class="text-xl font-bold text-slate-900 dark:text-slate-100">₹25,000</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Oct 24, 2023
+                    </p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-xs font-semibold uppercase">Success</span>
+<button class="text-primary p-2 rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Payout Item 2 -->
+<div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="space-y-1">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">Ref: 329104829104</p>
+<p class="text-xl font-bold text-slate-900 dark:text-slate-100">₹18,500</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Oct 15, 2023
+                    </p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-xs font-semibold uppercase">Success</span>
+<button class="text-primary p-2 rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Payout Item 3 -->
+<div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="space-y-1">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">Ref: 329104828821</p>
+<p class="text-xl font-bold text-slate-900 dark:text-slate-100">₹42,000</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Oct 08, 2023
+                    </p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-xs font-semibold uppercase">Success</span>
+<button class="text-primary p-2 rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Payout Item 4 -->
+<div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary/10 rounded-xl p-4 flex items-center justify-between group hover:border-primary/40 transition-colors opacity-80">
+<div class="space-y-1">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">Ref: 329104827750</p>
+<p class="text-xl font-bold text-slate-900 dark:text-slate-100">₹12,000</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Sep 30, 2023
+                    </p>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">Archived</span>
+<button class="text-primary p-2 rounded-full hover:bg-primary/10">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action CTA -->
+<div class="p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 sticky bottom-[72px]">
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">download</span>
+            Download Report
+        </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="flex gap-2 border-t border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark/95 px-4 pb-4 pt-2 sticky bottom-0 z-20">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Payouts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">bar_chart</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Analytics</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShiftProof - Find a PG or Rental</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        display: ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        "2xl": "1rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col">
+<!-- Header Section -->
+<div class="sticky top-0 z-20 bg-white/95 dark:bg-[#101922]/95 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800">
+<div class="px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">real_estate_agent</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">ShiftProof</h1>
+<p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Find your next home</p>
+</div>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="px-4 pb-3">
+<label class="relative flex items-center w-full h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden group focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="absolute left-4 text-slate-500 dark:text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full h-full bg-transparent border-none pl-12 pr-4 text-sm font-medium text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-0" placeholder="Search area, PG name, or landmark" type="text"/>
+<div class="absolute right-3 flex items-center">
+<button class="p-1.5 rounded-full bg-white dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-200 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</label>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 px-4 pb-3 overflow-x-auto no-scrollbar">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold whitespace-nowrap shadow-sm shadow-primary/30">
+<span class="material-symbols-outlined text-[18px]">home</span>
+                PG
+            </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]">apartment</span>
+                Flat
+            </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]">group</span>
+                Shared Room
+            </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium whitespace-nowrap hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]">single_bed</span>
+                Private Room
+            </button>
+</div>
+</div>
+<!-- Main Content Feed -->
+<div class="flex-1 px-4 py-4 space-y-4 pb-24 overflow-y-auto">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Popular Rentals</h2>
+<!-- Card 1 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Modern apartment interior living room" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvH5Tn2oV1q8aBHGMSVMPLWnnYZzSYBR0_jmiUeIZLE9rMLjSvbrfNxKyrFvy-vps-Ekt6YDKwbHI5JYy8hXlaqnKHdjKFHpwGJw3ZdF3Q4Wg9njFDd5hXIoLmqHXYWuLEV_bQ8QVWX9blxEQHe43K48oVA3gbxcHzsD6Dc1IUlsIL8uVZWjltxPI17uOY66zz7oRHsSkxu9Kyzte8LxI8OQKC52A-LE87QxFBJx_qrtDGSetf_nnY7wSIksOeJKMn0vEGSw2aJg');"></div>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">star</span>
+                    4.8
+                </div>
+<button class="absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-400 hover:text-red-500 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">PG</span>
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">Shared Room</span>
+</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Sunny Side PG</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Koramangala, Bangalore
+                        </p>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹8,000<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Deposit: 2 months</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-3 border-t border-slate-100 dark:border-slate-700/50 mt-2 mb-3">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">group</span>
+                        12 Tenants
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">restaurant</span>
+                        Meals Incl.
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">wifi</span>
+                        Free Wifi
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                        I manage this
+                    </button>
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 hover:bg-blue-600 transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Minimalist bedroom with white walls" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlE94Hx8reWCl2b9DSs5sTmZPjNDPGQrw4QPpKUg62VJPdoOsA8N3KnD4vuNdLSfreqFAPwDGgO0bHIVZ4uwjAgmpIFQU0vTSSftG_8-3KJ8QUpx48KXPgZ933Vc1IFpDmy7CA6w5BTdjiVAiYFKDcCICer1MuZuoJnY4Xfvaw-v8eSeFAVouo57VkmxknCrh_mtCk0ic3mLAQsy63xpabszjMAjrMsemnebt85N7uYZzO1cQZt7hQ-_tnwYLKctdssZTQE7OOSA');"></div>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">star</span>
+                    4.5
+                </div>
+<button class="absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-400 hover:text-red-500 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">Flat</span>
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">2 BHK</span>
+</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Greenwood Residency</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Indiranagar, Bangalore
+                        </p>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹24,000<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Deposit: 5 months</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-3 border-t border-slate-100 dark:border-slate-700/50 mt-2 mb-3">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">bed</span>
+                        2 Bedrooms
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">bathroom</span>
+                        2 Baths
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">square_foot</span>
+                        1100 sqft
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                        I manage this
+                    </button>
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 hover:bg-blue-600 transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Cozy single bedroom with desk" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuQsQorCiuuMlpOad2a3qI0HSroWZw7TorjIGDrY7CI09Gecq5_Sfshl-MLwxpzhPisEtMdWbj6ozSN-hhWRJ7ul6mNv0ZvuS5UttQnvAkarLRLiSTqEab7pWLwF8ZhWv2b3ol7blGQUVFXkYtsDVtJ88t4IjxmRoI4o10w8M0ilzYACAX45ABe9g2qKwuGRgYZxkFRoA9IjU3r4Lb4WpAJ_LrR0293zoeyOmUZ2uH-uPhG-9HTjUX86pZ6fok2cuNatrF4M2zVQ');"></div>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-primary">star</span>
+                    4.2
+                </div>
+<button class="absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-400 hover:text-red-500 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">PG</span>
+<span class="px-2.5 py-1 rounded-md bg-slate-900/70 backdrop-blur-md text-white text-xs font-medium border border-white/10">Private Room</span>
+</div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Elite Stays</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            HSR Layout, Bangalore
+                        </p>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹15,000<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Deposit: 3 months</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-3 border-t border-slate-100 dark:border-slate-700/50 mt-2 mb-3">
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">person</span>
+                        Single Occ.
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">ac_unit</span>
+                        AC
+                    </div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined text-[16px] text-primary">local_laundry_service</span>
+                        Laundry
+                    </div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                        I manage this
+                    </button>
+<button class="col-span-1 py-2.5 px-4 rounded-xl bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 hover:bg-blue-600 transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 w-full bg-white dark:bg-[#101922] border-t border-slate-200 dark:border-slate-800 pb-safe pt-2 px-6 z-30">
+<div class="flex items-center justify-between h-[60px] max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative p-1 rounded-full group-hover:bg-primary/5 dark:group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-primary text-[26px]">home</span>
+</div>
+<span class="text-[10px] font-bold text-primary">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative p-1 rounded-full group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors text-[26px]">search</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">Search</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative p-1 rounded-full group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors text-[26px]">favorite</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">Shortlist</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative p-1 rounded-full group-hover:bg-slate-100 dark:group-hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors text-[26px]">person</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 group-hover:text-primary transition-colors">Profile</span>
+</a>
+</div>
+<!-- Safe area spacing for iOS -->
+<div class="h-[20px] w-full"></div>
+</div>
+</body></html>

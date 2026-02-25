@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Header Section -->
+<header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 ios-blur px-4 pt-6 pb-2">
+<div class="flex items-center justify-between mb-2">
+<button class="text-primary flex items-center">
+<span class="material-symbols-outlined text-[28px]">chevron_left</span>
+</button>
+<button class="text-primary">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</button>
+</div>
+<h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Collections</h1>
+</header>
+<main class="pb-32">
+<!-- Filters -->
+<div class="flex gap-3 px-4 py-4 overflow-x-auto no-scrollbar">
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
+<span class="text-sm font-semibold">Month: October</span>
+<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
+<span class="text-sm font-semibold">All Properties</span>
+<span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- Summary Card -->
+<div class="px-4 mb-8">
+<div class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mb-1">Total Collected</p>
+<div class="flex items-baseline gap-2">
+<p class="text-4xl font-extrabold text-slate-900 dark:text-slate-100">₹4,85,000</p>
+<p class="text-emerald-500 text-sm font-bold flex items-center">
+<span class="material-symbols-outlined text-sm">arrow_upward</span>
+                        12%
+                    </p>
+</div>
+<div class="mt-4 h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+<p class="mt-2 text-xs text-slate-400">85% of expected revenue collected</p>
+</div>
+</div>
+<!-- Payment Methods -->
+<section class="mb-8">
+<h3 class="px-4 text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Payment Methods</h3>
+<div class="flex justify-between px-4 gap-4">
+<div class="flex-1 flex flex-col items-center p-4 bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined">qr_code_2</span>
+</div>
+<span class="text-xs font-semibold">UPI</span>
+</div>
+<div class="flex-1 flex flex-col items-center p-4 bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<span class="text-xs font-semibold">Bank</span>
+</div>
+<div class="flex-1 flex flex-col items-center p-4 bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-xs font-semibold">Cash</span>
+</div>
+</div>
+</section>
+<!-- Tenant Breakdown -->
+<section>
+<div class="flex items-center justify-between px-4 mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Tenant Breakdown</h3>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="bg-white dark:bg-background-dark border-y border-slate-200 dark:border-slate-800">
+<!-- Tenant Row 1 -->
+<div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800/50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img alt="Tenant Avatar" class="w-full h-full object-cover" data-alt="User avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAW7Now7ldiSmN9yoJiQ_-6074Bi3CT4iCQapjmmsVIRDA9lmCTscVNOOlWeXpJCIqYCZESrISgvPsVrDVxslzgA_-POjleVbP-Gft9VlQmrIAI3zITD0qrSwI5DieJZJyDqCY4ks32RIjReP1Ve_CnFVKX_oB614yMzVv0hxeobr9A5uwlZl0HFTjx4D3lA4R__13QUZJtHIXogT9eEsor_1G9pK0K1BIZJhrvMWai7f565A2knz8qA1IUJjqXz0b9Z5Tl86g-w"/>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-slate-100">Arjun Sharma</p>
+<p class="text-xs text-slate-500">Flat 402 • Skyline Apts</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-slate-900 dark:text-slate-100">₹24,500</p>
+<span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-tighter">Paid</span>
+</div>
+</div>
+<!-- Tenant Row 2 -->
+<div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800/50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img alt="Tenant Avatar" class="w-full h-full object-cover" data-alt="User avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdTs0MwM3kiGMJElYWStJ61mzN0T2cXcrKGiY76pzHS-7HGtJ3nYm4IiDkGXWsC4aZnXI1SVGe8UUylGPrtjD3JB0z4pvjePZz4GN9BXCgMpKwtELOMv6W5kDNZeKpgla-9CZBijElJV_oltj0qaLp0pkvKKWefVXaW1_Zz-MDs-4WiH1dNmrHOzM4iWwIYCbIrt_wrrLT1PMP-5c1jkl4ozLI69gs38WL8ndbw5bKjW8zfmtuDsab3fzt1MPG4vwLXHI72BRFYw"/>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-slate-100">Priya Patel</p>
+<p class="text-xs text-slate-500">Flat 101 • Heritage Villa</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-slate-900 dark:text-slate-100">₹18,000</p>
+<span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-tighter">Paid</span>
+</div>
+</div>
+<!-- Tenant Row 3 -->
+<div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800/50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img alt="Tenant Avatar" class="w-full h-full object-cover" data-alt="User avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEZ28iQ2eBpoShDPjWjYGtPB6L_tOlKbIYt1crJi9jZh6W6Hvkphal4cBy8GWuVxw4I4NTc5URGRe36Y_7bHpcoZNG38TnEf36lUjFVqD5ZWzdRH0HoA6deeXd1Lv8cVPDts8VTwRBf6EJweuGoOWGO7qxmtd66I09QIFXTdAAnGDf6c_bXWrg113UjkjhKQ14jkpRUgRmA-nHnXhIlJ1lQctXCMDozHSnuxFAJsgccQg6oO64kk1EVuOz4nop4ikPxB8xVT6lew"/>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-slate-100">Rohan Das</p>
+<p class="text-xs text-slate-500">Flat 205 • Skyline Apts</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-slate-900 dark:text-slate-100">₹22,000</p>
+<span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-tighter">Paid</span>
+</div>
+</div>
+<!-- Tenant Row 4 -->
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img alt="Tenant Avatar" class="w-full h-full object-cover" data-alt="User avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnNeXNny_JKc5td4Hm8FdenbyMQkb-u5evt6_QIcn8k571_aiet9Jpl6ZQxRsJl6N-A2Xlmu-qZgnE4HxBAM8HCnYfE0jN6DpC2AFh1YIIIMlIU139ozWoUkueULIm1sm8g-VlF2jYLNX7FJCUdZLXhluKuE3fXpAC3fhp7FvVDoWGyG1ARNwPXJZqICs0dpGfnja8vMGFdbndHbCjDdC1Dmns0T-zuCMpXNFeM7Y9Sioc7eAyNX55e-Z8fPQYV73cTxLQJhJRXg"/>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-slate-100">Sneha Rao</p>
+<p class="text-xs text-slate-500">Studio 02 • Green Meadows</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-slate-900 dark:text-slate-100">₹12,500</p>
+<span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase tracking-tighter">Paid</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-background-dark/90 ios-blur border-t border-slate-200 dark:border-slate-800 px-4 pb-8 pt-2">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home_work</span>
+<span class="text-[10px] font-medium">Properties</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">account_balance_wallet</span>
+<span class="text-[10px] font-bold">Collections</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

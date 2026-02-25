@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShiftProof Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Public Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-primary/20 px-4 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">arrow_back</span>
+<h1 class="text-xl font-bold tracking-tight">Profile</h1>
+</div>
+<button class="p-2 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto">
+<!-- Section 1: Account Info -->
+<section class="p-6 flex flex-col items-center">
+<div class="relative">
+<div class="w-24 h-24 rounded-full border-4 border-primary/20 overflow-hidden bg-primary/10 flex items-center justify-center">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Professional headshot of a smiling man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXOCxnPdPJenbhWW_yTCs9_ENWm6HrqO7l6VJEi_Sp6GbWxJWnxEA8V89bceVc_tBt0HvHj2DdYkKJNJfGhsDVNr8jwEJkmJARzxgBx4wRD7EYkp3xlduniyeUyXNrXyc8w4u6CuMPYWNtlng_C_mhiSQXWE_KVHiXopiQNp-DTQvHjadrFvj-xUVuivywTBmdvkD7oykbpVTss58fO1lQyfsVasfFw-pyhia_hUFiM4xgHxQ_zNmdJPlAqX3BNUUF4oH_hHaaFQ"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full border-2 border-background-dark">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+</div>
+</div>
+<div class="mt-4 text-center">
+<h2 class="text-2xl font-bold">Marcus Sterling</h2>
+<p class="text-slate-500 dark:text-slate-400">marcus.sterling@shiftproof.com</p>
+<div class="mt-2 inline-flex items-center px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-semibold uppercase tracking-wider">
+                    Premium Member
+                </div>
+</div>
+</section>
+<!-- Profile Sections -->
+<div class="space-y-1 px-4 pb-20">
+<!-- Section 2: My Stay (Tenants) -->
+<div class="py-4">
+<h3 class="px-2 text-xs font-bold text-primary uppercase tracking-widest mb-2">Tenant Services</h3>
+<div class="bg-white dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">My Stay</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">View current lease and maintenance</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Section 3: Manage Properties (Owners) -->
+<div class="py-4">
+<h3 class="px-2 text-xs font-bold text-primary uppercase tracking-widest mb-2">Owner Dashboard</h3>
+<div class="bg-white dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors border-b border-slate-200 dark:border-primary/10" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">domain</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Manage Properties</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">8 active listings, 2 pending</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Performance</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Monthly revenue and insights</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Section 4: Subscription & Billing -->
+<div class="py-4">
+<h3 class="px-2 text-xs font-bold text-primary uppercase tracking-widest mb-2">Account Finance</h3>
+<div class="bg-white dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Subscription &amp; Billing</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Visa ending in 4242</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Section 5: Settings -->
+<div class="py-4">
+<h3 class="px-2 text-xs font-bold text-primary uppercase tracking-widest mb-2">General</h3>
+<div class="bg-white dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors border-b border-slate-200 dark:border-primary/10" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Settings</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Privacy, notifications, and app preferences</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">logout</span>
+</div>
+<div class="flex-1">
+<p class="font-medium text-red-500">Sign Out</p>
+</div>
+</a>
+</div>
+</div>
+<div class="py-8 text-center">
+<p class="text-xs text-slate-500 dark:text-slate-500 font-medium uppercase tracking-[0.2em]">One account. Multiple roles.</p>
+<p class="text-[10px] text-slate-400 dark:text-slate-600 mt-2">v2.4.0 • ShiftProof Real Estate</p>
+</div>
+</div>
+</main>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 flex justify-around items-center px-2 py-3">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-medium">Explore</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Saved</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-bold">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</nav>
+</body></html>

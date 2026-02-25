@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center p-4 justify-between">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back_ios</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">Payouts</h1>
+<div class="size-10"></div> <!-- Spacer for symmetry -->
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-32">
+<!-- Summary Card -->
+<div class="p-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Paid Out</p>
+<div class="flex items-baseline gap-1">
+<span class="text-primary text-3xl font-bold leading-tight">$14,500.00</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded-full w-fit">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12.5% from last month</span>
+</div>
+</div>
+</div>
+<!-- Transactions List Section -->
+<div class="px-4 pt-4 pb-2">
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Recent Transactions</h2>
+</div>
+<div class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900 mx-4 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+<!-- Transaction Item 1 -->
+<div class="flex items-center gap-4 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold">$1,200.00</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">24 Oct 2023</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">ID: 902348123 • Bank Transfer</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-600">chevron_right</span>
+</div>
+</div>
+<!-- Transaction Item 2 -->
+<div class="flex items-center gap-4 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold">$850.00</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">18 Oct 2023</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">ID: 883421092 • UPI Transfer</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-600">chevron_right</span>
+</div>
+</div>
+<!-- Transaction Item 3 -->
+<div class="flex items-center gap-4 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold">$2,100.00</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">12 Oct 2023</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">ID: 772109341 • Bank Transfer</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-600">chevron_right</span>
+</div>
+</div>
+<!-- Transaction Item 4 -->
+<div class="flex items-center gap-4 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold">$425.50</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">05 Oct 2023</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">ID: 661023945 • UPI Transfer</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-600">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- View More Button -->
+<div class="p-4 text-center">
+<button class="text-primary font-semibold text-sm hover:underline">View all transactions</button>
+</div>
+</main>
+<!-- Fixed Bottom CTA -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-6 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">download</span>
+                Download report
+            </button>
+</div>
+</div>
+</body></html>

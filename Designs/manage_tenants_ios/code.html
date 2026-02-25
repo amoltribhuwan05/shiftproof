@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenant Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#137fec",
+                "background-light": "#f6f7f8",
+                "background-dark": "#101922",
+              },
+              fontFamily: {
+                "display": ["Manrope", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- iOS Status Bar Spacer -->
+<div class="h-12 w-full bg-white/80 dark:bg-slate-900/80 sticky top-0 z-50 ios-blur">
+<div class="flex justify-between items-center px-6 h-full">
+<span class="text-sm font-bold">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-sm">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+<span class="material-symbols-outlined text-sm">battery_full</span>
+</div>
+</div>
+</div>
+<!-- Header -->
+<header class="bg-white/80 dark:bg-slate-900/80 sticky top-12 z-40 ios-blur border-b border-slate-200 dark:border-slate-800">
+<div class="px-4 py-4 flex items-center justify-between">
+<button class="text-primary flex items-center gap-1">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+<span class="text-lg">Properties</span>
+</button>
+<h1 class="text-lg font-bold">Tenants</h1>
+<button class="text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</div>
+<!-- Segmented Control -->
+<div class="px-4 pb-4">
+<div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg flex">
+<button class="flex-1 py-1.5 text-sm font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm">All</button>
+<button class="flex-1 py-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">Occupied</button>
+<button class="flex-1 py-1.5 text-sm font-medium text-slate-500 dark:text-slate-400">Vacant</button>
+</div>
+</div>
+</header>
+<main class="flex-1 pb-32">
+<!-- Room A Section -->
+<div class="mt-6">
+<h2 class="px-4 mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Room A</h2>
+<div class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Tenant 1 Card -->
+<div class="flex items-center p-4 gap-4">
+<img class="w-12 h-12 rounded-full object-cover bg-slate-100" data-alt="Close-up portrait of a young man smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdZtv_T8CSg7SZOjEzaEuJBlxLtCaZvTqb3bqzigiSVKQ_0C09QEnylSdJXzw5k5C_yob28ohNyD0jMR0LqOfAtkCxWoGD9ytt_m4EDRVGrmv03gBVJzdGr3cQuFPgeA6aR40CErmAGdJStVEGKTLP5VozC21Vl37GrfvQLu6o6F0dtpfgJh4suj3711WmnRwTyM42oAzyDnfAEXw0r6p5DaPo2pIlt0ITaGuelrE_P0B75WeHghXOO12scNOIdm2CUg3S4wEvDg"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-base">John Cooper</h3>
+<span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Paid</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Bed 1 • Check-in: Oct 12</p>
+</div>
+</div>
+<!-- Swipeable Actions (Mocked as visible buttons for UI demonstration) -->
+<div class="flex divide-x divide-slate-100 dark:divide-slate-800 h-14">
+<button class="flex-1 flex items-center justify-center gap-2 text-primary bg-primary/5 hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-xl">vpn_key</span>
+<span class="text-sm font-semibold">Handover</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 text-red-500 bg-red-50/50 hover:bg-red-50 transition-colors">
+<span class="material-symbols-outlined text-xl">logout</span>
+<span class="text-sm font-semibold">Move-out</span>
+</button>
+</div>
+<!-- Tenant 2 -->
+<div class="flex items-center p-4 gap-4">
+<img class="w-12 h-12 rounded-full object-cover bg-slate-100" data-alt="Professional headshot of a woman with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm0tDiVMMWlyTa79Hz7rdwOiCx_55cVO2iAr8dtFcMBHGISWO7IWN4MG-_8VYbwhh9xE1hb67DEx29fTzjZ3SMLMyeI8dX2jb-27Bgl1SIAIlLpT-Lnse7q8WwqDIBklCU7jOPq11gVlzTzRH73zRsOZJpRjc_k38GA8Zz5za3GYUOESM_BrheLwzvHdJQmqCJTx6Pbe_CNvgzjA_TzQPcg3amzD3uBUJSfBxJ3yJpjZnMJNu9frh_U1AWvCQxCNE34hRfzIaISw"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-base">Sarah Jenkins</h3>
+<span class="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Pending</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Bed 2 • Check-in: Sep 30</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Room B Section -->
+<div class="mt-8">
+<h2 class="px-4 mb-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Room B</h2>
+<div class="bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Tenant 3 -->
+<div class="flex items-center p-4 gap-4">
+<img class="w-12 h-12 rounded-full object-cover bg-slate-100" data-alt="Portrait of a businessman in a suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXsYAHOu6kkIFyByfpcj7sQanbocbwLmaheiUHLbSpc1AuFyWzXTlpQy5OnVxFm4L-xRC1ZB2sfkWVTLIMysgiWUx5V6JcprdvjZ7vLRLKfdWxb4K4SGAIH35MFmdzTkKSleR2bTWEkY_D23RP8WADS2SR75pLUijB8P38h4J8Z9t_IVswl-90HTm2ga3fILXyDX0i1Qu4FjEQ-o8OgGGR7gw0CQxYNbpQxVSLWVxbLUy5GLTjFd93J60c3ODoQgwp4RFPDUMCig"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-base">Michael Chen</h3>
+<span class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Paid</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Bed 1 • Check-in: Nov 02</p>
+</div>
+</div>
+<!-- Tenant 4 (Overdue) -->
+<div class="flex items-center p-4 gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                        DB
+                    </div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-base">David Brooks</h3>
+<span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Overdue</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Bed 2 • Check-in: Oct 25</p>
+</div>
+</div>
+<div class="flex divide-x divide-slate-100 dark:divide-slate-800 h-14">
+<button class="flex-1 flex items-center justify-center gap-2 text-primary bg-primary/5 hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-xl">vpn_key</span>
+<span class="text-sm font-semibold">Handover</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 text-red-500 bg-red-50/50 hover:bg-red-50 transition-colors">
+<span class="material-symbols-outlined text-xl">logout</span>
+<span class="text-sm font-semibold">Move-out</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add Tenant Fab Button -->
+<div class="fixed bottom-24 right-6">
+<button class="bg-primary text-white size-14 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-3xl">person_add</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-white/90 dark:bg-slate-900/90 ios-blur border-t border-slate-200 dark:border-slate-800 px-2 pb-8 pt-2">
+<div class="flex justify-around max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">apartment</span>
+<span class="text-[10px] font-medium">Properties</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="text-[10px] font-medium">Tenants</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-[10px] font-medium">Payments</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+<!-- iOS Home Indicator Spacer -->
+<div class="w-32 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-4"></div>
+</nav>
+</body></html>

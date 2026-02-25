@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Property Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between px-4 h-16 max-w-5xl mx-auto w-full">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Property Dashboard</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-red-500"></span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white ml-2 overflow-hidden">
+<img alt="Profile" data-alt="User profile photo showing a man smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrVBsIPzm8Cez4YaSQq6N6Of9Y03SfXR_emM9Io-blalxX_aenAo4W1zGbM7zgpQp2En1RD6hkzQdXb2n8WtcaHSVPZ7DHUMWnBMHYnSRaZK-tGPbBo90m3Ffu6T41_pT7SiqItpjul78RkvJd7YPInL9fTikHQmiCFYR8QKVDCP-25UlB5SXKjwEhZpFbzI_quxvE_EYb3tFO7hjoh-BBBtZZsU8tlFvMdihZfhHKFy6WE_iiTVC1QJaP4U7Z-Awz4F9_EJVe2A"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-5xl mx-auto p-4 space-y-8 pb-24">
+<!-- Summary Stats Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Overview</h2>
+<button class="text-primary text-sm font-medium hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Total Tenants Card -->
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+<div>
+<div class="bg-primary/10 text-primary w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+<span class="material-symbols-outlined">group</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Tenants</p>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-bold">124</span>
+<span class="text-green-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            12%
+                        </span>
+</div>
+</div>
+<!-- Occupied Beds Card -->
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+<div>
+<div class="bg-primary/10 text-primary w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+<span class="material-symbols-outlined">bed</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Occupied Beds</p>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-bold">118</span>
+<span class="text-green-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            5%
+                        </span>
+</div>
+</div>
+<!-- Monthly Collection Card -->
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+<div>
+<div class="bg-primary/10 text-primary w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Monthly Collection</p>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-bold">$42,500</span>
+<span class="text-green-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                            8%
+                        </span>
+</div>
+</div>
+<!-- Pending Payments Card -->
+<div class="bg-white dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+<div>
+<div class="bg-primary/10 text-primary w-10 h-10 rounded-lg flex items-center justify-center mb-3">
+<span class="material-symbols-outlined">pending_actions</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending Payments</p>
+</div>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="text-2xl font-bold">$1,200</span>
+<span class="text-red-500 text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-xs">trending_down</span>
+                            15%
+                        </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions Section -->
+<section>
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">Quick Actions</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<button class="group bg-primary text-white p-4 rounded-xl shadow-md hover:bg-primary/90 transition-all flex items-center gap-4 text-left">
+<div class="bg-white/20 p-2 rounded-lg">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div>
+<p class="font-bold">Manage Tenants</p>
+<p class="text-xs text-white/80">Active &amp; waitlist</p>
+</div>
+</button>
+<button class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm hover:border-primary/50 transition-all flex items-center gap-4 text-left">
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div>
+<p class="font-bold">View Payments</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Transaction history</p>
+</div>
+</button>
+<button class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm hover:border-primary/50 transition-all flex items-center gap-4 text-left">
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<p class="font-bold">View Reports</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Financial insights</p>
+</div>
+</button>
+<button class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm hover:border-primary/50 transition-all flex items-center gap-4 text-left">
+<div class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">swap_horiz</span>
+</div>
+<div>
+<p class="font-bold">Move-in/out</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Create records</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Recent Activity List -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Recent Activity</h2>
+<button class="text-primary text-sm font-medium hover:underline">View History</button>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+<ul class="divide-y divide-slate-200 dark:divide-slate-800">
+<li class="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="bg-green-500/10 text-green-500 p-2 rounded-full">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Payment Received from Unit 402</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">10 minutes ago • $1,250.00</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</li>
+<li class="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="bg-primary/10 text-primary p-2 rounded-full">
+<span class="material-symbols-outlined text-xl">login</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">New Move-in: Jane Cooper</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">2 hours ago • Unit 105</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</li>
+<li class="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="bg-orange-500/10 text-orange-500 p-2 rounded-full">
+<span class="material-symbols-outlined text-xl">report_problem</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Maintenance Request: Leak in Kitchen</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Yesterday • Unit 203</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</li>
+<li class="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="bg-slate-500/10 text-slate-500 p-2 rounded-full">
+<span class="material-symbols-outlined text-xl">logout</span>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Move-out Record: Robert Fox</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Oct 24, 2023 • Unit 312</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</li>
+</ul>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 z-50 px-4 pb-safe">
+<div class="max-w-md mx-auto flex justify-around py-3">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<div class="bg-primary/20 px-5 py-1 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+</div>
+<span class="text-[10px] font-bold tracking-wide uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<div class="px-5 py-1 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">apartment</span>
+</div>
+<span class="text-[10px] font-bold tracking-wide uppercase">Properties</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<div class="px-5 py-1 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-[10px] font-bold tracking-wide uppercase">Payments</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<div class="px-5 py-1 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<span class="text-[10px] font-bold tracking-wide uppercase">Settings</span>
+</a>
+</div>
+</nav>
+<!-- FAB for adding something quickly -->
+<button class="fixed bottom-24 right-6 bg-primary text-white h-14 w-14 rounded-2xl shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+</body></html>

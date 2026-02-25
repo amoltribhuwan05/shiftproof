@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom styles for Material 3 inspired elements */
+        .m3-input-border {
+            border: 1px solid rgba(19, 127, 236, 0.3);
+        }
+        .m3-input-focus:focus {
+            border-color: #137fec;
+            ring: 2px;
+            ring-color: #137fec;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-50 flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</div>
+<h2 class="ml-4 text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-slate-100 flex-1">Add Property</h2>
+</div>
+<!-- Main Content Container -->
+<main class="max-w-md mx-auto px-4 py-6">
+<!-- Header Text -->
+<div class="mb-8">
+<h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">Property Details</h1>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Tell us about your property to get started with ShiftProof.</p>
+</div>
+<!-- Form Fields -->
+<div class="space-y-6">
+<!-- Property Name -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-primary dark:text-primary">Property Name</label>
+<div class="relative">
+<input class="w-full bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-lg h-14 px-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Skyline Residency" type="text"/>
+</div>
+</div>
+<!-- Area -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-primary dark:text-primary">Area / Locality</label>
+<div class="relative">
+<input class="w-full bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 rounded-lg h-14 px-4 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Enter neighborhood or city" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-4 text-slate-500">location_on</span>
+</div>
+</div>
+<!-- Property Type Chips -->
+<div class="flex flex-col gap-3">
+<label class="text-sm font-semibold text-primary dark:text-primary">Property Type</label>
+<div class="flex flex-wrap gap-3">
+<!-- Selected Chip (PG) -->
+<label class="cursor-pointer">
+<input checked="" class="hidden peer" name="property_type" type="radio" value="pg"/>
+<div class="px-6 py-2.5 rounded-full border border-primary bg-primary text-white peer-checked:bg-primary peer-checked:text-white flex items-center gap-2 text-sm font-medium transition-all">
+<span class="material-symbols-outlined text-base">check</span>
+                            PG
+                        </div>
+</label>
+<!-- Normal Chip -->
+<label class="cursor-pointer">
+<input class="hidden peer" name="property_type" type="radio" value="flat"/>
+<div class="px-6 py-2.5 rounded-full border border-primary/20 dark:border-primary/30 bg-primary/5 dark:bg-primary/10 text-slate-700 dark:text-slate-300 peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary flex items-center gap-2 text-sm font-medium transition-all hover:bg-primary/10">
+                            Flat
+                        </div>
+</label>
+<!-- Normal Chip -->
+<label class="cursor-pointer">
+<input class="hidden peer" name="property_type" type="radio" value="house"/>
+<div class="px-6 py-2.5 rounded-full border border-primary/20 dark:border-primary/30 bg-primary/5 dark:bg-primary/10 text-slate-700 dark:text-slate-300 peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary flex items-center gap-2 text-sm font-medium transition-all hover:bg-primary/10">
+                            House
+                        </div>
+</label>
+</div>
+</div>
+<!-- Conditional Section (Visible for PG) -->
+<div class="p-4 bg-primary/5 dark:bg-primary/5 border border-primary/10 rounded-xl space-y-6">
+<div class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+<span class="material-symbols-outlined text-base">info</span>
+                    PG Configuration
+                </div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Number of Rooms -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-medium text-slate-600 dark:text-slate-400">Total Rooms</label>
+<input class="w-full bg-white dark:bg-background-dark border border-primary/20 dark:border-primary/30 rounded-lg h-12 px-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-primary transition-all" placeholder="0" type="number"/>
+</div>
+<!-- Tenants per room -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-medium text-slate-600 dark:text-slate-400">Tenants/Room</label>
+<input class="w-full bg-white dark:bg-background-dark border border-primary/20 dark:border-primary/30 rounded-lg h-12 px-3 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-primary transition-all" placeholder="0" type="number"/>
+</div>
+</div>
+</div>
+<!-- Property Map Preview (Visual aesthetic) -->
+<div class="relative h-40 w-full rounded-xl overflow-hidden border border-primary/10 mb-2">
+<div class="absolute inset-0 bg-slate-200 dark:bg-slate-800 flex items-center justify-center">
+<img alt="Map preview" class="w-full h-full object-cover opacity-60 grayscale brightness-50" data-alt="Modern dark themed stylized city map interface" data-location="New York" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDND_TcQsaNVEGx-8nT970xEwQwl34hGspORNx5QQFa6JKO_5GYFw81yTcltpKsdFuAnPoP1RSIsfMS9vLOq-UmwMfjKBJdyYZCIjnq2q5z9T-phdapsIToLFwtyac-wKDp_CJRM7QO_XUx8JQSbF3pqGxOxMcQ0S_dA5QKB9_-E-xZzf7DK-UBVyocU298v6FkNWk69IAzshZkWoS3KzJJh8ayUty28GoV5o8xZ6CkjtYlPXff0nQ0vULlYVJf59SO9BdHb-rFrQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+<div class="relative flex flex-col items-center">
+<span class="material-symbols-outlined text-primary text-4xl">location_on</span>
+<p class="text-[10px] text-white/70 mt-1 uppercase tracking-widest font-bold">Pin location on map</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Button Area -->
+<div class="mt-10 pb-10">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-transform active:scale-95">
+                Continue
+                <span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+<p class="text-center text-xs text-slate-500 mt-4">Step 1 of 3: General Information</p>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Properties - Owner Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header / Top App Bar -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">My Properties</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex px-4 gap-6">
+<button class="relative pb-3 text-sm font-bold text-primary border-b-2 border-primary">
+                All (12)
+            </button>
+<button class="pb-3 text-sm font-bold text-slate-500 dark:text-slate-400 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-200">
+                Active
+            </button>
+<button class="pb-3 text-sm font-bold text-slate-500 dark:text-slate-400 border-b-2 border-transparent hover:text-slate-700 dark:hover:text-slate-200">
+                Maintenance
+            </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
+<!-- Property Card 1 -->
+<div class="group bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+<div class="relative h-48 w-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-105" data-alt="Modern luxury villa with pool and garden" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoHV241Lxhp-CRPUUopTg4Epl2kPT_EVPlTRSkFOngQHJJrfRoR_CCkdOcHcij2ht5Id1WxoAJTtScY6-l7EgTumWbfDP8AT_zQi9KcpnI3MbOmRrsVg5o4npxnrs4pu0zBUDNAAV-246Iq57ZTM9qn4RbYXLNdpp3iSv8UL3ghrzvcN6wmtg06_RJhBWGS64jVQNcRQCNSGFLWNOniVTuuCKLqR0uF6Q5SJKhiI0tVVkxjmHfC-WKcuDkDzVUeok7uJtCmEx79Q')"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Medium PG</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Active</span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-lg font-bold">Greenwood Residency</h3>
+<div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 mt-0.5">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<p class="text-sm">HSR Layout, Bangalore</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹45,000</p>
+<p class="text-[10px] text-slate-500 uppercase font-semibold">Per Month</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+<div class="flex gap-4">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">group</span>
+<span class="text-sm font-medium">12 Tenants</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">meeting_room</span>
+<span class="text-sm font-medium">15 Units</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Property Card 2 -->
+<div class="group bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+<div class="relative h-48 w-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-105" data-alt="Apartment building exterior during sunset" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCvoS1KpQ745mlt1M0nLL64oblZjte_S8EskVOtIFmlV8h9wEVyHgMqTM6HcI4KxyMm6oOgixcAoZPeyXhI0DOTQGM9tYnHA8qfRvsF7gcw-RPV5NRy6yjvFn6f7NPUQhYWscyJjqNRRpHe3GCymnPCNEwuI5YDLqgwkXs1zX1hjGO08KTRT0Y8sDB6vNV1nPow7z0mUrYFb82-itxZxZAuN52Zidf-XSFZuW1828lAuiYej2vr9pRMhAMDAry6g6WYjur6-r0wLg')"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Small PG</span>
+<span class="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Maintenance</span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-lg font-bold">Skyline Heights</h3>
+<div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 mt-0.5">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<p class="text-sm">Koramangala, Bangalore</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹32,000</p>
+<p class="text-[10px] text-slate-500 uppercase font-semibold">Per Month</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+<div class="flex gap-4">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">group</span>
+<span class="text-sm font-medium">8 Tenants</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">meeting_room</span>
+<span class="text-sm font-medium">10 Units</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+<!-- Property Card 3 -->
+<div class="group bg-white dark:bg-slate-900/50 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
+<div class="relative h-48 w-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-105" data-alt="Suburban house with neat lawn" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDFOrqoyVgpuYYw_iuFhgGfrUHC6Bj1OPqCf6m1p5SdsBz4DttY4x7Z_YypAvwMXVJIdtIKWwlFc0-9Oz_CIrm1J9EpoWnP2swm5oFrPo8Ev7lCpE0tkE9R2IkRl9ejiMOimIdOGv0tvs_BJjrsDw3uYgU6eXeYodM23B_0To5_JXMmi2UOkRjVJrygMNkp7YK_Ligo-p1hh78V1KktRQst992RyJxMVO5g8Qjh_c0pdbaKGHQzvnMOzympD8M-C80o_WaWBhSkow')"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Premium PG</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Active</span>
+</div>
+</div>
+<div class="p-4 space-y-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-lg font-bold">The Urban Nest</h3>
+<div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 mt-0.5">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<p class="text-sm">Whitefield, Bangalore</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-primary font-bold text-lg">₹68,000</p>
+<p class="text-[10px] text-slate-500 uppercase font-semibold">Per Month</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+<div class="flex gap-4">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">group</span>
+<span class="text-sm font-medium">24 Tenants</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-lg fill-icon">meeting_room</span>
+<span class="text-sm font-medium">30 Units</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 flex items-center justify-center size-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/40 hover:scale-105 active:scale-95 transition-all z-20">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-2 pb-6 pt-2 z-10">
+<div class="flex justify-around items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 px-4 py-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined fill-icon">home</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wide">Properties</p>
+</a>
+<a class="flex flex-col items-center gap-1 px-4 py-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">group</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wide">Tenants</p>
+</a>
+<a class="flex flex-col items-center gap-1 px-4 py-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wide">Payments</p>
+</a>
+<a class="flex flex-col items-center gap-1 px-4 py-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wide">Profile</p>
+</a>
+</div>
+</nav>
+</body></html>

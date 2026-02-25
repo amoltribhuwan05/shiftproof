@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShiftProof Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header / Top Bar -->
+<header class="flex items-center bg-background-light dark:bg-background-dark px-4 py-4 border-b border-slate-200 dark:border-slate-800">
+<div class="flex size-10 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</div>
+<h1 class="ml-4 text-xl font-bold leading-tight tracking-tight">Settings</h1>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- User Profile Section -->
+<div class="p-4 mb-2">
+<div class="flex items-center gap-4 bg-primary/10 dark:bg-primary/5 p-4 rounded-xl border border-primary/20">
+<div class="size-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
+                        JD
+                    </div>
+<div>
+<h2 class="text-lg font-bold">John Doe</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Shift Worker Pro Plan</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-primary">edit</span>
+</div>
+</div>
+</div>
+<!-- Account Settings Section -->
+<section class="mt-4">
+<h3 class="text-primary text-sm font-semibold uppercase tracking-wider px-6 py-2">General Settings</h3>
+<div class="space-y-1">
+<!-- Notifications -->
+<div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
+<div class="flex items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 size-12 text-slate-700 dark:text-slate-300 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium">Notifications</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Alerts, sounds, and shift reminders</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Payment Methods -->
+<div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
+<div class="flex items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 size-12 text-slate-700 dark:text-slate-300 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium">Payment methods</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Manage cards and billing history</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Privacy -->
+<div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
+<div class="flex items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 size-12 text-slate-700 dark:text-slate-300 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium">Privacy</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Data permissions and security</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Help & Support -->
+<div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-100 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
+<div class="flex items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-800 size-12 text-slate-700 dark:text-slate-300 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</div>
+<div class="flex-1">
+<p class="text-base font-medium">Help &amp; support</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">FAQ, contact us, and app version</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Secure Storage Note -->
+<div class="mt-8 px-6 flex flex-col items-center justify-center gap-2 opacity-60">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+<p class="text-sm font-medium">All records are securely stored</p>
+</div>
+<p class="text-xs">v2.4.1 Build 2024.12</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar (reused style) -->
+<nav class="fixed bottom-0 left-0 right-0 flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark px-4 pb-3 pt-2 z-50">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-tight">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-tight">Schedule</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-tight">Earnings</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-tight">Settings</p>
+</a>
+</nav>
+</div>
+</body></html>

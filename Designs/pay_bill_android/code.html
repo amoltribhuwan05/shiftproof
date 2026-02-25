@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenant Monthly Bill Payment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex justify-center items-start">
+<!-- Mobile Container Emulator -->
+<div class="w-full max-w-[480px] min-h-screen bg-background-light dark:bg-background-dark shadow-2xl relative overflow-hidden flex flex-col">
+<!-- Top App Bar -->
+<header class="flex items-center px-4 py-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</button>
+<h1 class="ml-4 text-xl font-bold tracking-tight">Monthly Bill</h1>
+<div class="ml-auto flex gap-2">
+<button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-4 pb-24 overflow-y-auto">
+<!-- Status Card -->
+<div class="mt-4 p-5 rounded-xl border border-red-500/30 bg-red-500/5 flex items-center justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500 text-sm">warning</span>
+<p class="text-red-500 text-base font-bold leading-tight">Due by Oct 5th</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Status: Late</p>
+</div>
+<div class="bg-red-500/10 px-3 py-1 rounded-full">
+<span class="text-red-500 text-xs font-bold uppercase tracking-wider">Overdue</span>
+</div>
+</div>
+<!-- Bill Summary Section -->
+<section class="mt-8">
+<h2 class="text-lg font-bold mb-4 px-1">Payment Summary</h2>
+<div class="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-4 space-y-4">
+<div class="flex justify-between items-center py-1">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">apartment</span>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Rent</p>
+</div>
+<p class="font-bold text-slate-900 dark:text-slate-100">$15,000</p>
+</div>
+<div class="flex justify-between items-center py-1">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">bolt</span>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Electricity</p>
+</div>
+<p class="font-bold text-slate-900 dark:text-slate-100">$1,200</p>
+</div>
+<div class="flex justify-between items-center py-1">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">water_drop</span>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Water</p>
+</div>
+<p class="font-bold text-slate-900 dark:text-slate-100">$300</p>
+</div>
+<div class="flex justify-between items-center py-1">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">build</span>
+<p class="text-slate-600 dark:text-slate-400 font-medium">Maintenance</p>
+</div>
+<p class="font-bold text-slate-900 dark:text-slate-100">$500</p>
+</div>
+<div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+<p class="text-lg font-extrabold text-slate-900 dark:text-slate-100">Total Payable</p>
+<p class="text-2xl font-extrabold text-primary">$17,000</p>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="mt-8">
+<h2 class="text-lg font-bold mb-4 px-1">Payment Method</h2>
+<div class="space-y-3">
+<label class="flex items-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer hover:border-primary transition-colors">
+<input checked="" class="w-5 h-5 text-primary border-slate-300 dark:border-slate-700 bg-transparent" name="payment" type="radio"/>
+<div class="ml-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">qr_code_2</span>
+<span class="font-semibold">UPI (Google Pay, PhonePe)</span>
+</div>
+</label>
+<label class="flex items-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer hover:border-primary transition-colors">
+<input class="w-5 h-5 text-primary border-slate-300 dark:border-slate-700 bg-transparent" name="payment" type="radio"/>
+<div class="ml-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">credit_card</span>
+<span class="font-semibold">Credit / Debit Card</span>
+</div>
+</label>
+<label class="flex items-center p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer hover:border-primary transition-colors">
+<input class="w-5 h-5 text-primary border-slate-300 dark:border-slate-700 bg-transparent" name="payment" type="radio"/>
+<div class="ml-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">account_balance</span>
+<span class="font-semibold">Net Banking</span>
+</div>
+</label>
+</div>
+</section>
+</main>
+<!-- Fixed Footer CTA -->
+<footer class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 flex gap-4 items-center">
+<div class="flex-1 flex flex-col">
+<span class="text-xs text-slate-500 dark:text-slate-400">Grand Total</span>
+<span class="text-xl font-bold">$17,000</span>
+</div>
+<button class="flex-[1.5] bg-primary hover:bg-primary/90 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span>Pay Now</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</footer>
+</div>
+</body></html>

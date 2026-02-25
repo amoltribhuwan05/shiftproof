@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>ShiftProof - Add Property</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl">
+<!-- Top App Bar / Header -->
+<header class="flex items-center px-4 py-3 justify-between sticky top-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md z-10 border-b border-slate-200/60 dark:border-slate-800/60">
+<button class="text-primary flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined !text-[24px]">chevron_left</span>
+<span class="hidden">Back</span>
+</button>
+<h1 class="text-slate-900 dark:text-slate-100 text-[17px] font-semibold leading-tight tracking-tight">Add Property</h1>
+<div class="w-10"></div> <!-- Spacer for symmetry -->
+</header>
+<main class="flex-1 overflow-y-auto">
+<!-- Progress Bar -->
+<div class="px-5 pt-6 pb-2">
+<div class="flex justify-between items-end mb-2">
+<span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Step 1 of 4</span>
+<span class="text-primary text-xs font-bold">25% Complete</span>
+</div>
+<div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-300" style="width: 25%;"></div>
+</div>
+</div>
+<div class="px-5 py-6 space-y-8">
+<!-- Section 1: Basic Info -->
+<div class="space-y-4">
+<div class="group">
+<label class="block text-slate-900 dark:text-slate-100 text-sm font-semibold mb-2 ml-1">Property Name</label>
+<input class="w-full h-12 px-4 rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400" placeholder="e.g. Blue Sky Apartment" type="text"/>
+</div>
+<div class="group">
+<label class="block text-slate-900 dark:text-slate-100 text-sm font-semibold mb-2 ml-1">Area</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 !text-xl">location_on</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400" placeholder="e.g. Manhattan, NY" type="text"/>
+</div>
+</div>
+</div>
+<!-- Section 2: Property Type (iOS Segmented Control Style) -->
+<div>
+<label class="block text-slate-900 dark:text-slate-100 text-sm font-semibold mb-3 ml-1">Property Type</label>
+<div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center gap-1 h-12">
+<button class="flex-1 h-full flex items-center justify-center rounded-lg bg-white dark:bg-slate-700 shadow-sm text-primary font-bold text-sm transition-all">
+                            PG
+                        </button>
+<button class="flex-1 h-full flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 font-medium text-sm hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all">
+                            Flat
+                        </button>
+<button class="flex-1 h-full flex items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 font-medium text-sm hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all">
+                            House
+                        </button>
+</div>
+</div>
+<!-- Section 3: Conditional Details -->
+<div class="pt-2 space-y-4 border-t border-slate-100 dark:border-slate-800">
+<h3 class="text-slate-400 dark:text-slate-500 text-[11px] font-bold uppercase tracking-[0.1em] mb-4">Unit Details</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="group">
+<label class="block text-slate-900 dark:text-slate-100 text-xs font-semibold mb-2 ml-1">Total Rooms</label>
+<div class="flex items-center bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-2 h-12">
+<button class="p-1 text-primary hover:bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined !text-xl">remove</span>
+</button>
+<input class="w-full text-center bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 font-semibold" type="number" value="4"/>
+<button class="p-1 text-primary hover:bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined !text-xl">add</span>
+</button>
+</div>
+</div>
+<div class="group">
+<label class="block text-slate-900 dark:text-slate-100 text-xs font-semibold mb-2 ml-1">Tenants/Room</label>
+<div class="flex items-center bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-2 h-12">
+<button class="p-1 text-primary hover:bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined !text-xl">remove</span>
+</button>
+<input class="w-full text-center bg-transparent border-none focus:ring-0 text-slate-900 dark:text-slate-100 font-semibold" type="number" value="2"/>
+<button class="p-1 text-primary hover:bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined !text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-primary/10 p-4 rounded-xl flex items-start gap-3 mt-4">
+<span class="material-symbols-outlined text-primary !text-xl mt-0.5">info</span>
+<p class="text-[13px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                            This helps ShiftProof calculate your maximum occupancy and generate reports efficiently.
+                        </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Footer CTA -->
+<footer class="p-5 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-200/60 dark:border-slate-800/60">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold h-14 rounded-full shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span>Continue</span>
+<span class="material-symbols-outlined !text-xl">arrow_forward</span>
+</button>
+<p class="text-center text-slate-400 dark:text-slate-500 text-[11px] mt-4">
+                By continuing, you agree to our Terms of Service
+            </p>
+</footer>
+</div>
+</body></html>

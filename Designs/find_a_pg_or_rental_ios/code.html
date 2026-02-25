@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Find a PG or Rental - ShiftProof</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#1c2630",
+                        "border-dark": "#28323c",
+                        "text-secondary": "#9dabb9",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for horizontal scrolling areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-x-hidden text-slate-900 dark:text-slate-100 antialiased">
+<!-- Header & Search Area -->
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200 dark:border-border-dark">
+<!-- Top Bar -->
+<div class="flex items-center justify-between px-4 pt-12 pb-2">
+<div class="flex flex-col">
+<h2 class="text-sm font-medium text-primary uppercase tracking-wider mb-1">ShiftProof</h2>
+<h1 class="text-2xl font-bold leading-tight tracking-tight">Find a PG or Rental</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-surface-dark transition-colors relative">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+</button>
+</div>
+<!-- Search Input -->
+<div class="px-4 py-3">
+<div class="flex items-center w-full h-12 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all shadow-sm">
+<div class="flex items-center justify-center pl-4 pr-2 text-text-secondary">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-slate-900 dark:text-slate-100 placeholder-text-secondary focus:ring-0 text-base font-medium h-full" placeholder="Search area, city or property name" type="text"/>
+<div class="flex items-center justify-center pr-4 pl-2 text-text-secondary border-l border-gray-200 dark:border-border-dark h-6">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</div>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-3 px-4 pb-4 overflow-x-auto no-scrollbar">
+<button class="flex h-9 px-5 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/25 shrink-0 transition-transform active:scale-95">
+<span class="text-sm font-semibold">All</span>
+</button>
+<button class="flex h-9 px-5 items-center justify-center rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-border-dark shrink-0 transition-colors">
+<span class="text-sm font-medium">PG</span>
+</button>
+<button class="flex h-9 px-5 items-center justify-center rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-border-dark shrink-0 transition-colors">
+<span class="text-sm font-medium">Flat</span>
+</button>
+<button class="flex h-9 px-5 items-center justify-center rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-border-dark shrink-0 transition-colors">
+<span class="text-sm font-medium">Shared Room</span>
+</button>
+<button class="flex h-9 px-5 items-center justify-center rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-border-dark shrink-0 transition-colors">
+<span class="text-sm font-medium">Private Room</span>
+</button>
+</div>
+</div>
+<!-- Main Content List -->
+<main class="flex-1 px-4 py-2 space-y-4 pb-24">
+<!-- Property Card 1 -->
+<div class="group relative flex flex-col gap-4 py-4 border-b border-gray-200 dark:border-border-dark last:border-0">
+<div class="flex gap-4">
+<div class="w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-surface-dark relative">
+<img alt="Modern apartment interior living room" class="w-full h-full object-cover" data-alt="Modern apartment interior with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBllwu2b2-cQHCvco-rtpNitfdeGP2Hz-TuYQ1ArDJZIeN8C8dk_dE0SYxSaGKk_Hpu489n2O9-DGNfcuz6B-ySOGor1CZVLOE-3IGavGwmMZEWqb1P4KeuMcG8dSA_dJ1wiQ-PcoXOyHR4SNKztqXoLYdwW3qRQHHwhY5dVjK7mu4on_jJCc-TwcEIa48XjrwanLrcl4IZBZs-b9ontssf2f8FYv3G97L4uVBIX84wShz1lt41QhAwQGzgMFsHEsu36ZtWxvQ8mw"/>
+<div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">
+                        PG
+                    </div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">Sunrise Residency</h3>
+<button class="text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="text-sm text-text-secondary flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Koramangala, Bangalore
+                        </p>
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-medium">
+                                Single
+                            </span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-medium">
+                                Double
+                            </span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-xs text-text-secondary font-medium">Starts from</p>
+<p class="text-base font-bold text-primary">₹8,500<span class="text-xs font-normal text-text-secondary">/mo</span></p>
+</div>
+<a class="px-4 py-2 bg-slate-100 dark:bg-surface-dark text-slate-900 dark:text-slate-100 text-xs font-bold rounded-full hover:bg-slate-200 dark:hover:bg-border-dark transition-colors" href="#">
+                            View Details
+                        </a>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex -space-x-2">
+<img alt="Tenant avatar 1" class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark" data-alt="Portrait of a smiling woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFPfS2KvsvuERAVgPBhpd4SK3RJyy_rc56t4GHoaXmYeUMzq-QfG_-dk9SETeOhhcbeQnyLzhXTuoJ_z_ELjRl87Uio_8CtgjujUCZvTRUbYPDs3TvSo4dTCr4de3oBpVSAcemrEIwqquJDmaAxLX_LE1D2h7sUAdeK6lfNv7cJdU222Lpgcbbz2ZiaALYk6knctmjkRsIMpSbqsfEiGB9kuWVzCJLFSfz-9_wIq_EJO_fQjjS1zSl-be8pz8ZzEIQMImFJOKJFw"/>
+<img alt="Tenant avatar 2" class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark" data-alt="Portrait of a man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-cPkscwUSZoNHBpUe3KN0qP-lkbcKPxaU2m1vhV-lB2NI4jEzUME1CjhVoXootzBYuBhAI3IQ4tXWHsXwB6ZvKRBA_eGcJ_-ctiP_ZGn5YiZMyg-9mBnJPZqGuarmM9wtAAXqxybdBFy0hIsz0Tjp0_xDm2YWemD_tx-AsaZVzabOii1j1tzYaUl25FgePQni4SQDE9V3xj9rk4JuNobi-1UxZnIDDrQyRyhuV5EGLGCF-6OzsKXoVJ7R7ciDgpZbOfGre6V7KA"/>
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-100 dark:bg-surface-dark flex items-center justify-center text-[10px] font-bold text-text-secondary">
+                        +3
+                    </div>
+</div>
+<a class="text-xs font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+                    I manage this property <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Property Card 2 -->
+<div class="group relative flex flex-col gap-4 py-4 border-b border-gray-200 dark:border-border-dark last:border-0">
+<div class="flex gap-4">
+<div class="w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-surface-dark relative">
+<img alt="Cozy apartment living space" class="w-full h-full object-cover" data-alt="Modern living room with sofa and plant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzC_0gxWrcfM9bGQs9UWhkjMaGIUhGLkxkN8EQTOn8S7rhEIZWY6gqarF6Ujc2Wc17x_H9swo3fUzJkm0Is5leCRDWX-4SSLrgp9JRKZ506gGIw8XeLNCX1nBfINlzUsqU5ttWSKea0qr9KgXVA_JxC6ewl0Yav-2UDHDd_RQvx1A0Gcwggzkg8CtLrQji98t1jidQTAQ9qZMofJk6PmnoxAWQVX8Va4NQJpIPUVUw0YP5QwRLd_HbK2VffdVxz4zSmbVLwxP8kA"/>
+<div class="absolute top-2 left-2 bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">
+                        Flat
+                    </div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">Greenwood Apt</h3>
+<button class="text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px] fill-current text-red-500">favorite</span>
+</button>
+</div>
+<p class="text-sm text-text-secondary flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            HSR Layout, Bangalore
+                        </p>
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 text-xs font-medium">
+                                2 BHK
+                            </span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-xs font-medium">
+                                Furnished
+                            </span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-xs text-text-secondary font-medium">Rent</p>
+<p class="text-base font-bold text-primary">₹22,000<span class="text-xs font-normal text-text-secondary">/mo</span></p>
+</div>
+<a class="px-4 py-2 bg-slate-100 dark:bg-surface-dark text-slate-900 dark:text-slate-100 text-xs font-bold rounded-full hover:bg-slate-200 dark:hover:bg-border-dark transition-colors" href="#">
+                            View Details
+                        </a>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-1 text-xs text-text-secondary">
+<span class="material-symbols-outlined text-[16px] text-green-500">check_circle</span>
+                    Verified Owner
+                </div>
+<a class="text-xs font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+                    I manage this property <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Property Card 3 -->
+<div class="group relative flex flex-col gap-4 py-4 border-b border-gray-200 dark:border-border-dark last:border-0">
+<div class="flex gap-4">
+<div class="w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-surface-dark relative">
+<img alt="Minimalist bedroom design" class="w-full h-full object-cover" data-alt="Simple bedroom with white walls and window" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu37R2ILgdx4ojbV4dcOwB_terHwUW4vmBnd2R-qD27H69mwJ0cCaM83ig_tJQfUDcx1y5DAvHe3kePpVq3k5-u5WszNZRkZxZYrcKBi_0nA5WUJNo_cY1syKQgdqonXcqUxXACh6RQmIi03lcvLVM-kPhJIu4BrTYVdv9dbrNecStk0pdK5XQlrS6Sxvp9pk5iA1zbYEEsnRJtxOrDidv3F49PvOgj5dJ0QFwtRPX0RXRuml6QGeY8EP3X-QrUF4Vsp_TeSAmwA"/>
+<div class="absolute top-2 left-2 bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">
+                        Shared
+                    </div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">Elite Mens PG</h3>
+<button class="text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="text-sm text-text-secondary flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Indiranagar, Bangalore
+                        </p>
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-xs font-medium">
+                                3 Sharing
+                            </span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 text-xs font-medium">
+                                AC
+                            </span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-xs text-text-secondary font-medium">Starts from</p>
+<p class="text-base font-bold text-primary">₹6,500<span class="text-xs font-normal text-text-secondary">/mo</span></p>
+</div>
+<a class="px-4 py-2 bg-slate-100 dark:bg-surface-dark text-slate-900 dark:text-slate-100 text-xs font-bold rounded-full hover:bg-slate-200 dark:hover:bg-border-dark transition-colors" href="#">
+                            View Details
+                        </a>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex -space-x-2">
+<img alt="Tenant avatar 3" class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark" data-alt="Portrait of a young man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_agDSIyaIXwA_pKq1gAIopyH8ve0dJWXIWgJWssBZucXuvZhOE4cW0zH2U_k94IXIDBk2Arpjj5z-jMDRbU-QcToxsolTumBHDhkHnN7DyK4vHo811acek6VBRw_SZ_0Zej78DhSdkkA8RqHuMIJBUMF6AERSe0CkZTMYXwHNfMfu1raJsrq8zwYyWYcQTmdNDNDb7BHpTgqQDsvml91DJDbWGYWwozy1frIHl_uh832MS9JFG8SgqQn--wrMvabvYXXJFLK7tg"/>
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-100 dark:bg-surface-dark flex items-center justify-center text-[10px] font-bold text-text-secondary">
+                        +5
+                    </div>
+</div>
+<a class="text-xs font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+                    I manage this property <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Property Card 4 -->
+<div class="group relative flex flex-col gap-4 py-4 border-b border-gray-200 dark:border-border-dark last:border-0">
+<div class="flex gap-4">
+<div class="w-28 h-28 shrink-0 rounded-xl overflow-hidden bg-gray-200 dark:bg-surface-dark relative">
+<img alt="Bright and airy room" class="w-full h-full object-cover" data-alt="Sunlit bedroom with large window" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0NjDjaqV7wunixdwM676OR9rHLf8wMI_tcMrtvZXAVQtBIHm5zDmU9pUZxze4JogyDLaOxJU1iSjbwIImQ6gTMepCUqgzWV66xIj43A2yebntg-TtqSnemaq1ElWyfJqFAeLv-XteiFqiT2MVJdecBLzgNi_6HmN5HvMGrs__ZsA0VDZyb-FM9HDpXwVnhhSL1SJeLuwVhujLARF-qWBAAGJGGVtbStrX-pHfxkvrr9eavQknqfbuY5sD2aWF-_sevWWH8tejLw"/>
+<div class="absolute top-2 left-2 bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">
+                        Private
+                    </div>
+</div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">Urban Stay</h3>
+<button class="text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="text-sm text-text-secondary flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                            Whitefield, Bangalore
+                        </p>
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 text-xs font-medium">
+                                Studio
+                            </span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 text-xs font-medium">
+                                Food incl.
+                            </span>
+</div>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-xs text-text-secondary font-medium">Rent</p>
+<p class="text-base font-bold text-primary">₹12,000<span class="text-xs font-normal text-text-secondary">/mo</span></p>
+</div>
+<a class="px-4 py-2 bg-slate-100 dark:bg-surface-dark text-slate-900 dark:text-slate-100 text-xs font-bold rounded-full hover:bg-slate-200 dark:hover:bg-border-dark transition-colors" href="#">
+                            View Details
+                        </a>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex -space-x-2">
+<img alt="Tenant avatar 4" class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark" data-alt="Portrait of a serious woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2USESDdq187fGX5zTYsOg_Dav8UNvMzN0x5AKL1PSypTng5Shp9rWr2dBYRv5xbKdGRp1MhO4kNY0Hr_WPKuWZi1XbWX0MEI44TIVyl_hZHBNpPXouE5zY69mGA-vNzJoTVjyWko_CmCLXoYQbfONcVo3sYW-ieNCAYi9CcYeLoZ_VXVT65s9OalXnmBgUQGQgen-u1u_m73r6w9Uf9Wifg70AUujYMeyAZEDv4RofAbnp3Hk5TtB4mOJVL6Mx3AjwQ4y9fRMYg"/>
+<div class="w-6 h-6 rounded-full border-2 border-white dark:border-background-dark bg-gray-100 dark:bg-surface-dark flex items-center justify-center text-[10px] font-bold text-text-secondary">
+                        +2
+                    </div>
+</div>
+<a class="text-xs font-medium text-text-secondary hover:text-primary transition-colors flex items-center gap-1" href="#">
+                    I manage this property <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-surface-dark dark:bg-[#1c2127] border-t border-border-dark dark:border-[#283039] pb-safe pt-2 px-4 z-50">
+<!-- iOS Safe Area Padding Bottom Hack via padding-bottom utility or custom style if needed, assuming standard bottom nav height -->
+<div class="flex justify-between items-center pb-4">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">search</span>
+<span class="text-[10px] font-medium tracking-wide">Search</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-text-secondary hover:text-slate-100 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">favorite</span>
+<span class="text-[10px] font-medium tracking-wide">Saved</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-text-secondary hover:text-slate-100 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">calendar_today</span>
+<span class="text-[10px] font-medium tracking-wide">Bookings</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-text-secondary hover:text-slate-100 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">account_circle</span>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenant Dashboard - ShiftProof</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* iOS-like safe area spacing */
+        .safe-top {
+            padding-top: env(safe-area-inset-top, 20px);
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased selection:bg-primary/20 selection:text-primary">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden mx-auto max-w-md bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header / Navigation Bar -->
+<header class="safe-top sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+<div class="flex items-center justify-between px-4 py-3">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<div class="flex gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-full text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-4 pt-2 pb-32">
+<!-- Title Section -->
+<div class="mb-6 mt-2">
+<h1 class="text-[34px] font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">My Stay</h1>
+<p class="text-slate-500 dark:text-slate-400 font-medium">Manage your current rental details</p>
+</div>
+<!-- Property Card (iOS Grouped Style) -->
+<div class="mb-6 overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<!-- Image Header -->
+<div class="relative h-40 w-full overflow-hidden bg-slate-200">
+<img alt="Modern apartment building exterior with glass windows" class="h-full w-full object-cover transition-transform duration-500 hover:scale-105" data-alt="Modern apartment building exterior with glass windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZUsf6InsL8p8COCmG7mp0_HCWa-vhGxp3lFx8wkqxn6OBNcMuHfQ4RFIgONmsAoy0FT2lGkgad-Qe5NwKU-z5fx3L5DyWaMmuHB4c29dCLBohYKtCnLWJp0Zw2XMmlfvdTzKhE3sc82k3bAZqXOURjrlXuX9HC4NIeyiPl9VJFb2KeUJZtu-nw6iCTibNUcM4NX-68ajQ7o4whmdHFmh25FV3-JXwIpUohG6_rJryfR3R5ksOuJBHQwjR8BRV6KeJg8lf6f5n_Q"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-white">
+<h2 class="text-xl font-bold">Sunnyvale Heights</h2>
+<p class="text-sm text-slate-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            123 Market St, San Francisco
+                        </p>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-2 divide-x divide-slate-100 dark:divide-slate-800 border-b border-slate-100 dark:border-slate-800">
+<div class="p-4">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Room</p>
+<p class="text-base font-medium text-slate-900 dark:text-slate-100">204</p>
+</div>
+<div class="p-4">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Bed</p>
+<p class="text-base font-medium text-slate-900 dark:text-slate-100">Bed B</p>
+</div>
+</div>
+<div class="grid grid-cols-2 divide-x divide-slate-100 dark:divide-slate-800">
+<div class="p-4">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Start Date</p>
+<p class="text-base font-medium text-slate-900 dark:text-slate-100">Jan 1, 2024</p>
+</div>
+<div class="p-4">
+<p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">End Date</p>
+<p class="text-base font-medium text-slate-900 dark:text-slate-100">Dec 31, 2024</p>
+</div>
+</div>
+</div>
+<!-- Action Links (iOS Grouped List Style) -->
+<div class="mb-8 overflow-hidden rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<a class="group flex items-center justify-between p-4 active:bg-slate-50 dark:active:bg-slate-800 transition-colors" href="#">
+<div class="flex items-center gap-4">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="font-medium text-slate-900 dark:text-slate-100">View handover record</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">arrow_forward_ios</span>
+</a>
+<div class="h-px w-full bg-slate-100 dark:bg-slate-800 ml-[68px]"></div>
+<a class="group flex items-center justify-between p-4 active:bg-slate-50 dark:active:bg-slate-800 transition-colors" href="#">
+<div class="flex items-center gap-4">
+<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">history</span>
+</div>
+<span class="font-medium text-slate-900 dark:text-slate-100">View payment history</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm">arrow_forward_ios</span>
+</a>
+</div>
+<!-- Owner Contact Section -->
+<div class="mb-6">
+<h3 class="mb-3 px-1 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Property Manager</h3>
+<div class="flex items-center justify-between rounded-xl bg-white dark:bg-slate-900 p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Portrait of property manager smiling" class="h-12 w-12 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700" data-alt="Portrait of property manager smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALFwiv5mlkUUU98HXR1X9D_cvgU9RNkt7rebpVbVaWIKXxzN3tQ5NdQSX5CYWnoV2sA32aT0Y5KwnkygInVph7n2bQZ-9dGlBWfqRLWsxJWPWH2iiLHV2l1wK9lzhKA7elN80Rnlytt4lYmAAMEDbowMVCEwMp9nedFOwAKupft1xo41QNqyuu-t4FO1GynKm9E6J0oJ3Z15SfH8OwxeVJAs4kKIs_GTCioMT6QdZGbQFQM9qApnQRvCISLOjg4vlEEPTI3kLvFw"/>
+<div class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white dark:border-slate-900"></div>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-slate-100">David Chen</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Landlord</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">call</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Bottom Action Bar (Simulating Tab Bar + CTA) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 mx-auto max-w-md">
+<!-- CTA Button Floating above Tab Bar -->
+<div class="px-4 pb-4 bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark pt-8">
+<button class="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-4 text-white font-bold text-lg shadow-lg shadow-primary/30 active:scale-[0.98] transition-all hover:bg-primary/90">
+<span class="material-symbols-outlined">payments</span>
+                    Pay Monthly Bills
+                </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="safe-bottom border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 pb-2 pt-2 shadow-lg">
+<ul class="flex items-center justify-between">
+<li class="flex flex-1 flex-col items-center gap-1">
+<a class="group flex flex-col items-center text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+</li>
+<li class="flex flex-1 flex-col items-center gap-1">
+<a class="group flex flex-col items-center text-primary" href="#">
+<span class="material-symbols-outlined text-2xl fill-current">bed</span>
+<span class="text-[10px] font-medium">My Stay</span>
+</a>
+</li>
+<li class="flex flex-1 flex-col items-center gap-1">
+<a class="group flex flex-col items-center text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">construction</span>
+<span class="text-[10px] font-medium">Service</span>
+</a>
+</li>
+<li class="flex flex-1 flex-col items-center gap-1">
+<a class="group flex flex-col items-center text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-2xl">
+<!-- Status Bar Space (iOS Style) -->
+<div class="h-11 w-full bg-white/80 dark:bg-background-dark/80 sticky top-0 z-50 ios-blur">
+<div class="flex justify-between items-center px-6 h-full text-xs font-semibold">
+<span>9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="flex flex-col gap-1 bg-white/80 dark:bg-background-dark/80 px-4 pb-4 sticky top-11 z-40 border-b border-slate-200 dark:border-slate-800 ios-blur">
+<div class="flex items-center h-12 justify-between">
+<div class="text-primary flex size-10 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined text-[28px]">chevron_left</span>
+<span class="text-lg -ml-1">Back</span>
+</div>
+<div class="flex items-center justify-end gap-4">
+<button class="flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</button>
+<button class="flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">add_circle</span>
+</button>
+</div>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl font-bold leading-tight px-1">My Properties</h1>
+</div>
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto pb-32">
+<!-- Summary Card -->
+<div class="p-4">
+<div class="bg-primary/10 dark:bg-primary/20 rounded-xl p-4 flex items-center justify-between">
+<div>
+<p class="text-xs uppercase tracking-wider font-bold text-primary/80 mb-1">Portfolio Value</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-slate-100">$2,450,000</p>
+</div>
+<div class="bg-primary text-white rounded-full px-3 py-1 text-sm font-semibold">
+                        +4.2%
+                    </div>
+</div>
+</div>
+<!-- List of Properties -->
+<div class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Property 1 -->
+<div class="flex gap-4 bg-white dark:bg-background-dark px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 shrink-0 shadow-sm" data-alt="Modern luxury apartment exterior with glass balconies" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBoa-o2iy1lboap1SA4pwFmLJRXNRoLxUAEO0_dCPaX7gc55gxJVN-SUlFofWXqqEufxu3s0hx9iSIyLOVzGSkhvbOn-GY4PGBoDe4F-ZwyregyOUC7mWEslEEFrBtEEuJxcunB89-qwtD45BeYBoYaN5OCch2WMF48nx0Qais06OZYCZ67ULc3CM75BSdPQIzACOS72r8RztFg7uunOUIa169w-QRFEFjwzavukcXbc7AZDO6T2VhE9tc1T-kPA_DJu2sH19iYyw");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold truncate">Sunset Apartments</p>
+<span class="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Premium</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">straighten</span> 1,200 sqft
+                        </p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> 3 Tenants
+                        </p>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Property 2 -->
+<div class="flex gap-4 bg-white dark:bg-background-dark px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 shrink-0 shadow-sm" data-alt="White traditional villa with large swimming pool" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDs4ZxPHJ8iqlWs5H0ejjPnVdzPBuallp0vC9WsF_GS4xPYp6I0VLYRd2CAGvoWFOsrLv8Pj1D__CQpMf3csbm0hM9kfP6DshHNKxvltntqIu1oiE7ffykduzdWgjfcngSC6P0Vi0rTi5yYqOpDMlX14etis7xf1xNhkSa0S2tiE4ZC7lZaG17fPCqlC66le67zhQTry4VvsVg8YKNbyW6fXYTEUcfYJxjeBDnNJ8vIWJFO8WxKbFOJ09TNlzYp4WTrzuYGnhno9Q");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold truncate">Greenwood Villa</p>
+<span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Standard</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">straighten</span> 3,500 sqft
+                        </p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> 5 Tenants
+                        </p>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Property 3 -->
+<div class="flex gap-4 bg-white dark:bg-background-dark px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 shrink-0 shadow-sm" data-alt="Minimalist studio apartment interior with large windows" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCjz27Sa8-JiAnlqT30zkUrJ364zF-rrUTXQVwdYCVrXquzKZMh6t86Z4I85kvjzC4vXHZooFOBj6Jt8WmppQXzjEhf0gjFKocIcuG11jorwiFPgxzLCHhMSn1oI2B5TMBuu6SbNCgkI36h69Q5vSMCBbvYxb_myL6PO_3GT7xbCqMTAtYNcRSn-Zvsf-QMnBN48GvSWMerwN9bbvYIp8NzpZRTis325NE5PYy5PfRIG4VPfpaIzuuh6Gp7Bhiy9cc0rEVgBQ3Kiw");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold truncate">Oakwood Studio</p>
+<span class="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Basic</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">straighten</span> 500 sqft
+                        </p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> 1 Tenant
+                        </p>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Property 4 -->
+<div class="flex gap-4 bg-white dark:bg-background-dark px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 shrink-0 shadow-sm" data-alt="Small cozy suburban house with a garden" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB93Y7UclAyncWVJ9XVruGv0NuawYTw6G6Nz0zcdlgHh96diZ7Y_SpGCyNr_MjE27GaLLGL2Gn5hm8LpRwPdTlCPKzRNHPXqYoiRRJwU9XUBCzn4orFuoWmiUk55UTS7ZQTlbt7aX1DF9FTzCKU9MQKH2u6I-mMD0a8M90qGhAH7ZXhWrQXL6uYNLxW7O6NeJMiE-O-dndejjqA0vZNJhZeFtpG5lGGEcpz5eHC8G6pYG8O2zXYcUm5zOujJBBD_sOiE9flJytTIQ");'></div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold truncate">Maple Cottage</p>
+<span class="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Premium</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">straighten</span> 1,800 sqft
+                        </p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> 2 Tenants
+                        </p>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Empty State / Add Suggestion -->
+<div class="p-8 flex flex-col items-center justify-center text-center opacity-60">
+<span class="material-symbols-outlined text-4xl mb-2 text-slate-400">home_work</span>
+<p class="text-sm font-medium">Manage all your rental units in one place</p>
+</div>
+</div>
+<!-- Floating CTA Button -->
+<div class="fixed bottom-24 left-0 right-0 px-6 max-w-md mx-auto z-40">
+<button class="w-full h-14 bg-primary text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">add</span>
+                Add New Property
+            </button>
+</div>
+<!-- Bottom Tab Bar -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-50">
+<div class="flex border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-background-dark/95 ios-blur px-2 pb-8 pt-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px] fill-current" style="font-variation-settings: 'FILL' 1">home</span>
+<p class="text-[10px] font-semibold">Properties</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">group</span>
+<p class="text-[10px] font-medium">Tenants</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+<p class="text-[10px] font-medium">Finance</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">chat_bubble</span>
+<p class="text-[10px] font-medium">Messages</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<p class="text-[10px] font-medium">Settings</p>
+</a>
+</div>
+<!-- Home Indicator (iOS) -->
+<div class="bg-white/95 dark:bg-background-dark/95 h-6 flex justify-center items-end pb-2 ios-blur">
+<div class="w-32 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full"></div>
+</div>
+</div>
+</div>
+</body></html>

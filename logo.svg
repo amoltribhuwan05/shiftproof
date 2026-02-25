@@ -1,0 +1,31 @@
+<svg width="512" height="650" viewBox="0 0 512 650" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .brand-blue { fill: #1a5f95; }
+      .icon-stroke { stroke: #ffffff; stroke-width: 24; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .shield-fill { fill: #1a5f95; } /* Matches background to mask lines behind it */
+      .text-style { font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif; font-weight: 700; font-size: 80px; fill: #1a5f95; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <rect x="26" y="26" width="460" height="460" rx="90" class="brand-blue" />
+
+  <g transform="translate(0, 10)">
+    <path d="M165 190 V 150 H 205 V 155" class="icon-stroke" stroke-width="20" />
+    
+    <path d="M 150 400 V 250 L 256 160 L 330 225" class="icon-stroke" />
+    <path d="M 150 400 H 300" class="icon-stroke" />
+    
+    <rect x="195" y="290" width="50" height="65" rx="4" class="icon-stroke" stroke-width="18" />
+  </g>
+
+  <g transform="translate(0, 10)">
+    <path d="M 285 240 H 405 V 300 C 405 370 345 425 345 425 C 345 425 285 370 285 300 V 240 Z" 
+          class="shield-fill icon-stroke" />
+          
+    <path d="M 315 320 L 340 345 L 375 295" class="icon-stroke" stroke-width="20" />
+  </g>
+
+  <text x="256" y="600" class="text-style">ShiftProof</text>
+
+</svg>
