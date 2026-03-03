@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
+import '../../data/models/tenant_model.dart';
 
 class ManageTenantsScreen extends StatelessWidget {
   const ManageTenantsScreen({super.key});
@@ -8,11 +11,15 @@ class ManageTenantsScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    // Use tenants from prop_001 (Sunnyvale PG) as the default property view
+    final allTenants = MockApiService.getTenantsByProperty('prop_001');
+    final paidTenants = allTenants.where((t) => t.isPaid).toList();
+    final overdueTenants = allTenants
+        .where((t) => t.status == 'overdue')
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -29,6 +36,7 @@ class ManageTenantsScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.search,
@@ -64,55 +72,18 @@ class ManageTenantsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
-              tabs: const [
-                Tab(text: 'All Tenants'),
-                Tab(text: 'Occupied'),
-                Tab(text: 'Available'),
+              tabs: [
+                Tab(text: 'All (${allTenants.length})'),
+                Tab(text: 'Paid (${paidTenants.length})'),
+                Tab(text: 'Overdue (${overdueTenants.length})'),
               ],
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  // All Tenants Tab
-                  ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      _buildRoomSection(context, 'Room 101', 2, [
-                        _buildTenantCard(
-                          context,
-                          'John Doe',
-                          'Bed A',
-                          'Paid',
-                          Colors.green,
-                          'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop',
-                        ),
-                        _buildTenantCard(
-                          context,
-                          'Sarah Jenkins',
-                          'Bed B',
-                          'Overdue',
-                          Colors.red,
-                          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
-                        ),
-                      ]),
-                      const SizedBox(height: 24),
-                      _buildRoomSection(context, 'Room 102', 1, [
-                        _buildTenantCard(
-                          context,
-                          'Michael Chen',
-                          'Bed A',
-                          'Pending',
-                          Colors.amber,
-                          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop',
-                        ),
-                        _buildEmptyBedCard(context, 'Bed B'),
-                      ]),
-                    ],
-                  ),
-                  // Occupied Tab
-                  const Center(child: Text('Occupied Beds')),
-                  // Available Tab
-                  const Center(child: Text('Available Beds')),
+                  _buildTenantList(context, allTenants),
+                  _buildTenantList(context, paidTenants),
+                  _buildTenantList(context, overdueTenants),
                 ],
               ),
             ),
@@ -130,90 +101,37 @@ class ManageTenantsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRoomSection(
-    BuildContext context,
-    String roomName,
-    int tenantCount,
-    List<Widget> children,
-  ) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.meeting_room, color: colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(
-                  roomName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '$tenantCount Tenant${tenantCount == 1 ? '' : 's'}',
-                    style: TextStyle(
-                      color: colorScheme.primary,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            TextButton.icon(
-              onPressed: () {},
-              icon: Icon(Icons.add, size: 16, color: colorScheme.primary),
-              label: Text(
-                'Add Tenant',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ...children.map(
-          (child) => Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: child,
-          ),
-        ),
-      ],
+  Widget _buildTenantList(BuildContext context, List<Tenant> tenants) {
+    if (tenants.isEmpty) {
+      return const Center(child: Text('No tenants found'));
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: tenants.length,
+      itemBuilder: (context, index) =>
+          _buildTenantCard(context, tenants[index]),
     );
   }
 
-  Widget _buildTenantCard(
-    BuildContext context,
-    String name,
-    String bed,
-    String status,
-    Color statusColor,
-    String imageUrl,
-  ) {
+  Widget _buildTenantCard(BuildContext context, Tenant tenant) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
+    Color statusColor;
+    switch (tenant.status) {
+      case 'active':
+        statusColor = Colors.green;
+        break;
+      case 'overdue':
+        statusColor = Colors.red;
+        break;
+      default:
+        statusColor = Colors.amber;
+    }
+
     return Container(
+      margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark
@@ -234,8 +152,8 @@ class ManageTenantsScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundImage: NetworkImage(imageUrl),
-                    onBackgroundImageError: (exception, stackTrace) {},
+                    backgroundImage: NetworkImage(tenant.avatarUrl),
+                    onBackgroundImageError: (_, _) {},
                     child: const Icon(Icons.person, color: Colors.grey),
                   ),
                   const SizedBox(width: 12),
@@ -243,14 +161,14 @@ class ManageTenantsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name,
+                        tenant.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
                       Text(
-                        bed,
+                        tenant.room,
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -269,7 +187,7 @@ class ManageTenantsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  status.toUpperCase(),
+                  tenant.status.toUpperCase(),
                   style: TextStyle(
                     color: statusColor,
                     fontSize: 10,
@@ -280,7 +198,28 @@ class ManageTenantsScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+          Divider(color: isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _infoChip(
+                context,
+                Icons.currency_rupee,
+                tenant.rentAmount,
+                isDark,
+              ),
+              _infoChip(
+                context,
+                Icons.calendar_today,
+                'Due ${tenant.dueDate}',
+                isDark,
+              ),
+              _infoChip(context, Icons.phone, tenant.phone, isDark),
+            ],
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -297,27 +236,23 @@ class ManageTenantsScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {},
-                  icon: const Icon(Icons.assignment_return, size: 16),
-                  label: const Text('Handover'),
+                  icon: const Icon(Icons.chat_bubble_outline, size: 16),
+                  label: const Text('Message'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: BorderSide(
-                      color: isDark
-                          ? Colors.grey.shade700
-                          : Colors.grey.shade300,
-                    ),
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   onPressed: () {},
-                  icon: const Icon(Icons.logout, size: 16),
-                  label: const Text('Move-out'),
+                  icon: const Icon(Icons.receipt_long, size: 16),
+                  label: const Text('Collect Rent'),
                 ),
               ),
             ],
@@ -327,53 +262,28 @@ class ManageTenantsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyBedCard(BuildContext context, String bedName) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: isDark
-            ? Colors.grey.shade900.withValues(alpha: 0.5)
-            : Colors.grey.shade50,
-        border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-          style: BorderStyle.none,
+  Widget _infoChip(
+    BuildContext context,
+    IconData icon,
+    String label,
+    bool isDark,
+  ) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 13,
+          color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
         ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Center(
-        child: Column(
-          children: [
-            Text(
-              '$bedName is Available',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextButton.icon(
-              style: TextButton.styleFrom(
-                backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
-                foregroundColor: colorScheme.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () {},
-              icon: const Icon(Icons.person_add, size: 16),
-              label: const Text(
-                'Assign Tenant',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

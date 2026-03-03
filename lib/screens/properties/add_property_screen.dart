@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 
 class AddPropertyScreen extends StatelessWidget {
@@ -12,8 +13,6 @@ class AddPropertyScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -29,6 +28,7 @@ class AddPropertyScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: const [NotificationBellButton()],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),

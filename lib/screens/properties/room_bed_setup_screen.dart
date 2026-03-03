@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 
 class RoomBedSetupScreen extends StatelessWidget {
   const RoomBedSetupScreen({super.key});
@@ -11,8 +12,6 @@ class RoomBedSetupScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -29,6 +28,7 @@ class RoomBedSetupScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.more_vert,

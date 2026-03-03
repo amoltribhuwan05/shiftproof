@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
 
 class TenantDashboardScreen extends StatelessWidget {
   const TenantDashboardScreen({super.key});
@@ -8,11 +10,10 @@ class TenantDashboardScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final stay = MockApiService.getCurrentStay();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.95),
         leading: IconButton(
           icon: Icon(Icons.menu, color: isDark ? Colors.white : Colors.black87),
           onPressed: () {},
@@ -23,36 +24,7 @@ class TenantDashboardScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.notifications_none,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                onPressed: () {},
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: theme.scaffoldBackgroundColor,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+        actions: [const NotificationBellButton(hasUnread: true)],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -65,10 +37,8 @@ class TenantDashboardScreen extends StatelessWidget {
                 height: 250,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop',
-                    ),
+                  image: DecorationImage(
+                    image: NetworkImage(stay.imageUrl),
                     fit: BoxFit.cover,
                   ),
                   boxShadow: [
@@ -133,8 +103,8 @@ class TenantDashboardScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Sunnyvale PG - Room 302',
+                      Text(
+                        '${stay.propertyName} - ${stay.roomNumber}',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 22,
@@ -151,7 +121,7 @@ class TenantDashboardScreen extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Bed 2 • Occupied since Jan 2024',
+                            'Occupied since ${stay.leaseStart}',
                             style: TextStyle(
                               color: Colors.grey.shade300,
                               fontSize: 14,
@@ -174,9 +144,9 @@ class TenantDashboardScreen extends StatelessWidget {
                           ),
                           onPressed: () {},
                           icon: const Icon(Icons.payments),
-                          label: const Text(
-                            'Pay Monthly Bill',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          label: Text(
+                            'Pay \$${stay.rentAmount} — March Rent',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -200,7 +170,9 @@ class TenantDashboardScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: MediaQuery.of(context).size.width > 900
+                    ? 4
+                    : (MediaQuery.of(context).size.width > 600 ? 3 : 2),
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.5,
@@ -275,11 +247,13 @@ class TenantDashboardScreen extends StatelessWidget {
                     Container(
                       width: 48,
                       height: 48,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: NetworkImage(
-                            'https://i.pravatar.cc/150?img=12',
+                            stay.ownerAvatarUrl.isEmpty
+                                ? 'https://i.pravatar.cc/150?img=11'
+                                : stay.ownerAvatarUrl,
                           ),
                           fit: BoxFit.cover,
                         ),
@@ -291,13 +265,13 @@ class TenantDashboardScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Robert Fox',
+                            stay.ownerName,
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Owner • Sunnyvale PG',
+                            'Owner • ${stay.propertyName}',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: isDark
                                   ? Colors.grey.shade400

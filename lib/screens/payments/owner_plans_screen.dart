@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 
 class OwnerPlansScreen extends StatelessWidget {
@@ -11,8 +12,6 @@ class OwnerPlansScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.9),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -29,6 +28,7 @@ class OwnerPlansScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.help_outline,

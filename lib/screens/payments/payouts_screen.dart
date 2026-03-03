@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
 
 class PayoutsScreen extends StatelessWidget {
   const PayoutsScreen({super.key});
@@ -7,14 +9,15 @@ class PayoutsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Note: The design uses a specific primary color (orange: #ec5b13) for this owner screen.
     // We will apply this specific styling here.
-    final customPrimary = const Color(0xffec5b13);
     final theme = Theme.of(context);
+    final customPrimary = theme.colorScheme.primary;
     final isDark = theme.brightness == Brightness.dark;
+
+    final payouts = MockApiService.getPayouts();
+    final totalSettled = MockApiService.getTotalSettled();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -31,6 +34,7 @@ class PayoutsScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.filter_list,
@@ -74,9 +78,9 @@ class PayoutsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.baseline,
                         textBaseline: TextBaseline.alphabetic,
                         children: [
-                          const Text(
-                            '₹1,42,500',
-                            style: TextStyle(
+                          Text(
+                            totalSettled,
+                            style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
                             ),
@@ -131,50 +135,31 @@ class PayoutsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Payout List
-                _buildPayoutItem(
-                  context,
-                  ref: 'Ref: 329104829103',
-                  amount: '₹25,000',
-                  date: 'Oct 24, 2023',
-                  status: 'Success',
-                  statusColor: Colors.green,
-                  customPrimary: customPrimary,
-                ),
-                const SizedBox(height: 12),
-                _buildPayoutItem(
-                  context,
-                  ref: 'Ref: 329104829104',
-                  amount: '₹18,500',
-                  date: 'Oct 15, 2023',
-                  status: 'Success',
-                  statusColor: Colors.green,
-                  customPrimary: customPrimary,
-                ),
-                const SizedBox(height: 12),
-                _buildPayoutItem(
-                  context,
-                  ref: 'Ref: 329104828821',
-                  amount: '₹42,000',
-                  date: 'Oct 08, 2023',
-                  status: 'Success',
-                  statusColor: Colors.green,
-                  customPrimary: customPrimary,
-                ),
-                const SizedBox(height: 12),
-                Opacity(
-                  opacity: 0.8,
-                  child: _buildPayoutItem(
-                    context,
-                    ref: 'Ref: 329104827750',
-                    amount: '₹12,000',
-                    date: 'Sep 30, 2023',
-                    status: 'Archived',
-                    statusColor: Colors.grey,
-                    customPrimary: customPrimary,
-                  ),
-                ),
-
+                ...payouts.take(10).map((payout) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Opacity(
+                      opacity:
+                          payout.status.toLowerCase() == 'completed' ||
+                              payout.status.toLowerCase() == 'success'
+                          ? 1.0
+                          : 0.8,
+                      child: _buildPayoutItem(
+                        context,
+                        ref: payout.id,
+                        amount: payout.amount,
+                        date: payout.date,
+                        status: payout.status,
+                        statusColor:
+                            payout.status.toLowerCase() == 'completed' ||
+                                payout.status.toLowerCase() == 'success'
+                            ? Colors.green
+                            : Colors.grey,
+                        customPrimary: customPrimary,
+                      ),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 100), // padding for bottom button
               ],
             ),

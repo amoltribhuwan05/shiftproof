@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 
 class PayBillScreen extends StatefulWidget {
   const PayBillScreen({super.key});
@@ -18,8 +19,6 @@ class _PayBillScreenState extends State<PayBillScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -36,6 +35,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.more_vert,

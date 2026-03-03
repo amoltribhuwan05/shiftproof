@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../widgets/buttons/primary_button.dart';
 
@@ -13,8 +14,6 @@ class JoinPgScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -32,6 +31,7 @@ class JoinPgScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
+          const NotificationBellButton(),
           TextButton(
             onPressed: () {},
             child: Text(

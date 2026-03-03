@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// To be removed by dart fix if unused
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
 
 class PropertyDashboardScreen extends StatelessWidget {
   const PropertyDashboardScreen({super.key});
@@ -9,11 +10,13 @@ class PropertyDashboardScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final totalTenants = MockApiService.getTotalTenants();
+    final totalProperties = MockApiService.getProperties().length;
+    final collected = MockApiService.getTotalCollectedThisMonth();
+    final pending = MockApiService.getPendingAmount();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.95),
         leading: IconButton(
           icon: Icon(Icons.menu, color: isDark ? Colors.white : Colors.black87),
           onPressed: () {},
@@ -32,33 +35,9 @@ class PropertyDashboardScreen extends StatelessWidget {
             ),
             onPressed: () {},
           ),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.notifications_none,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-                onPressed: () {},
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: theme.scaffoldBackgroundColor,
-                      width: 2,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          const NotificationBellButton(
+            hasUnread: true,
+            dotColor: Colors.redAccent,
           ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0, left: 8.0),
@@ -98,7 +77,9 @@ class PropertyDashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: MediaQuery.of(context).size.width > 900
+                    ? 4
+                    : (MediaQuery.of(context).size.width > 600 ? 3 : 2),
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.4,
@@ -108,7 +89,7 @@ class PropertyDashboardScreen extends StatelessWidget {
                   _buildStatCard(
                     context,
                     title: 'Total Tenants',
-                    value: '124',
+                    value: '$totalTenants',
                     icon: Icons.group_outlined,
                     trendIcon: Icons.trending_up,
                     trendValue: '12%',
@@ -116,8 +97,8 @@ class PropertyDashboardScreen extends StatelessWidget {
                   ),
                   _buildStatCard(
                     context,
-                    title: 'Occupied Beds',
-                    value: '118',
+                    title: 'Properties',
+                    value: '$totalProperties',
                     icon: Icons.bed_outlined,
                     trendIcon: Icons.trending_up,
                     trendValue: '5%',
@@ -125,8 +106,8 @@ class PropertyDashboardScreen extends StatelessWidget {
                   ),
                   _buildStatCard(
                     context,
-                    title: 'Monthly Collection',
-                    value: '\$42,500',
+                    title: 'Collected (Mar)',
+                    value: collected,
                     icon: Icons.payments_outlined,
                     trendIcon: Icons.trending_up,
                     trendValue: '8%',
@@ -134,8 +115,8 @@ class PropertyDashboardScreen extends StatelessWidget {
                   ),
                   _buildStatCard(
                     context,
-                    title: 'Pending Payments',
-                    value: '\$1,200',
+                    title: 'Pending',
+                    value: pending,
                     icon: Icons.pending_actions_outlined,
                     trendIcon: Icons.trending_down,
                     trendValue: '15%',
@@ -149,7 +130,9 @@ class PropertyDashboardScreen extends StatelessWidget {
               _buildSectionTitle(context, 'QUICK ACTIONS'),
               const SizedBox(height: 16),
               GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: MediaQuery.of(context).size.width > 900
+                    ? 4
+                    : (MediaQuery.of(context).size.width > 600 ? 3 : 2),
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 2.2,

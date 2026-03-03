@@ -1,18 +1,52 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
+import '../../data/models/payment_model.dart';
 
 class PaymentHistoryScreen extends StatelessWidget {
   const PaymentHistoryScreen({super.key});
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.amber;
+      case 'overdue':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData _typeIcon(String type) {
+    switch (type) {
+      case 'rent':
+        return Icons.home_outlined;
+      case 'deposit':
+        return Icons.lock_outlined;
+      case 'electricity':
+        return Icons.electric_bolt_outlined;
+      case 'maintenance':
+        return Icons.build_outlined;
+      default:
+        return Icons.receipt_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final payments = MockApiService.getTenantPayments();
+    final paidPayments = payments.where((p) => p.status == 'paid').toList();
+    final pendingPayments = payments
+        .where((p) => p.status == 'pending' || p.status == 'overdue')
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -29,16 +63,10 @@ class PaymentHistoryScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.search,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
               color: isDark ? Colors.white : Colors.black87,
             ),
             onPressed: () {},
@@ -64,71 +92,18 @@ class PaymentHistoryScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
-              tabs: const [
-                Tab(text: 'All'),
-                Tab(text: 'Paid'),
-                Tab(text: 'Pending'),
+              tabs: [
+                Tab(text: 'All (${payments.length})'),
+                Tab(text: 'Paid (${paidPayments.length})'),
+                Tab(text: 'Pending (${pendingPayments.length})'),
               ],
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  // All Tab
-                  ListView(
-                    children: [
-                      _buildHistoryItem(
-                        context,
-                        month: 'October 2023',
-                        amount: '\$17,000.00',
-                        status: 'Paid',
-                        statusColor: Colors.green,
-                        iconColor: colorScheme.primary,
-                        icon: Icons.calendar_today,
-                      ),
-                      _buildHistoryItem(
-                        context,
-                        month: 'September 2023',
-                        amount: '\$17,000.00',
-                        status: 'Pending',
-                        statusColor: Colors.amber,
-                        iconColor: Colors.amber,
-                        icon: Icons.pending_actions,
-                      ),
-                      _buildHistoryItem(
-                        context,
-                        month: 'August 2023',
-                        amount: '\$17,000.00',
-                        status: 'Paid',
-                        statusColor: Colors.green,
-                        iconColor: colorScheme.primary,
-                        icon: Icons.calendar_today,
-                      ),
-                      _buildHistoryItem(
-                        context,
-                        month: 'July 2023',
-                        amount: '\$17,000.00',
-                        status: 'Paid',
-                        statusColor: Colors.green,
-                        iconColor: colorScheme.primary,
-                        icon: Icons.calendar_today,
-                      ),
-                      _buildHistoryItem(
-                        context,
-                        month: 'June 2023',
-                        amount: '\$17,000.00',
-                        status: 'Paid',
-                        statusColor: Colors.green,
-                        iconColor: colorScheme.primary,
-                        icon: Icons.calendar_today,
-                      ),
-                    ],
-                  ),
-
-                  // Paid Tab
-                  const Center(child: Text('Paid Payments')),
-
-                  // Pending Tab
-                  const Center(child: Text('Pending Payments')),
+                  _buildPaymentList(context, payments, isDark),
+                  _buildPaymentList(context, paidPayments, isDark),
+                  _buildPaymentList(context, pendingPayments, isDark),
                 ],
               ),
             ),
@@ -138,17 +113,27 @@ class PaymentHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem(
-    BuildContext context, {
-    required String month,
-    required String amount,
-    required String status,
-    required Color statusColor,
-    required Color iconColor,
-    required IconData icon,
-  }) {
+  Widget _buildPaymentList(
+    BuildContext context,
+    List<Payment> payments,
+    bool isDark,
+  ) {
+    if (payments.isEmpty) {
+      return const Center(child: Text('No payments found'));
+    }
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: payments.length,
+      itemBuilder: (context, index) =>
+          _buildHistoryItem(context, payments[index], isDark),
+    );
+  }
+
+  Widget _buildHistoryItem(BuildContext context, Payment payment, bool isDark) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
+    final statusColor = _statusColor(payment.status);
+    final icon = _typeIcon(payment.type);
 
     return InkWell(
       onTap: () {},
@@ -168,10 +153,10 @@ class PaymentHistoryScreen extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.1),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: Icon(icon, color: colorScheme.primary, size: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -181,11 +166,15 @@ class PaymentHistoryScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        month,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          payment.title,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Container(
@@ -201,7 +190,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          status.toUpperCase(),
+                          payment.status.toUpperCase(),
                           style: TextStyle(
                             color: statusColor,
                             fontSize: 10,
@@ -213,34 +202,38 @@ class PaymentHistoryScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    amount,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: isDark
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade500,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        payment.amount,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '• ${payment.date}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 16),
-            Row(
-              children: [
-                Icon(
-                  Icons.receipt_long,
-                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
-                  size: 20,
-                ),
-                const SizedBox(width: 4),
-                Icon(
-                  Icons.chevron_right,
-                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
-                  size: 20,
-                ),
-              ],
+            const SizedBox(width: 8),
+            Icon(
+              Icons.chevron_right,
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+              size: 20,
             ),
           ],
         ),

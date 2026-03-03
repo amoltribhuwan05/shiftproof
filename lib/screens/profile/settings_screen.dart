@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -11,8 +12,6 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
         title: Text(
           'Settings',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -28,6 +27,7 @@ class SettingsScreen extends StatelessWidget {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
         ),
+        actions: const [NotificationBellButton()],
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -17,9 +17,17 @@ class AppTheme {
         onError: Colors.white,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.lightPrimary,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black87,
         elevation: 0,
+        centerTitle: false,
+        iconTheme: IconThemeData(color: Colors.black87),
+        actionsIconTheme: IconThemeData(color: Colors.black87),
+        titleTextStyle: TextStyle(
+          color: Colors.black87,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(
@@ -65,6 +73,14 @@ class AppTheme {
         backgroundColor: AppColors.darkSurface,
         foregroundColor: Colors.white,
         elevation: 0,
+        centerTitle: false,
+        iconTheme: IconThemeData(color: Colors.white),
+        actionsIconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(

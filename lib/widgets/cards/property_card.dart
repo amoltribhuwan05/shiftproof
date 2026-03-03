@@ -51,7 +51,7 @@ class PropertyCard extends StatelessWidget {
           children: [
             // Image Stack
             SizedBox(
-              height: 180,
+              height: 160,
               width: double.infinity,
               child: Stack(
                 fit: StackFit.expand,

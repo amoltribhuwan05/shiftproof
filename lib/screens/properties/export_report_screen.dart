@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 
 class ExportReportScreen extends StatefulWidget {
@@ -13,15 +14,12 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Owner themes use orange custom color based on design
-    final customPrimary = const Color(0xffec5b13);
     final theme = Theme.of(context);
+    final customPrimary = theme.colorScheme.primary;
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: Container(
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -44,6 +42,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: const [NotificationBellButton()],
       ),
       body: Stack(
         children: [

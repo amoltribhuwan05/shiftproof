@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/cards/property_card.dart';
+import '../../data/services/mock_api_service.dart';
+import 'property_details_screen.dart';
 
 class MyPropertiesScreen extends StatelessWidget {
   const MyPropertiesScreen({super.key});
@@ -9,15 +12,13 @@ class MyPropertiesScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final properties = MockApiService.getProperties();
+    final activeProps = properties.where((p) => p.availableRooms > 0).toList();
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          elevation: 0,
-          backgroundColor: theme.scaffoldBackgroundColor.withValues(
-            alpha: 0.95,
-          ),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -34,6 +35,7 @@ class MyPropertiesScreen extends StatelessWidget {
             ),
           ),
           actions: [
+            const NotificationBellButton(),
             IconButton(
               icon: Icon(
                 Icons.search,
@@ -64,71 +66,86 @@ class MyPropertiesScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
-            tabs: const [
-              Tab(text: 'All (12)'),
-              Tab(text: 'Active'),
-              Tab(text: 'Maintenance'),
+            tabs: [
+              Tab(text: 'All (${properties.length})'),
+              Tab(text: 'Active (${activeProps.length})'),
+              const Tab(text: 'Maintenance'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
             // All Tab
-            ListView.builder(
+            GridView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: 3,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 400,
+                mainAxisExtent: 360,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: properties.length,
               itemBuilder: (context, index) {
-                if (index == 0) {
-                  return PropertyCard(
-                    title: 'Greenwood Residency',
-                    location: 'HSR Layout, Bangalore',
-                    price: '₹45,000',
-                    imageUrl:
-                        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2000&auto=format&fit=crop',
-                    typeTag: 'Medium PG',
-                    statusTag: 'Active',
-                    statusColor: Colors.green,
-                    tenants: 12,
-                    units: 15,
-                    onTap: () {},
-                  );
-                } else if (index == 1) {
-                  return PropertyCard(
-                    title: 'Skyline Heights',
-                    location: 'Koramangala, Bangalore',
-                    price: '₹32,000',
-                    imageUrl:
-                        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop',
-                    typeTag: 'Small PG',
-                    statusTag: 'Maintenance',
-                    statusColor: Colors.amber,
-                    tenants: 8,
-                    units: 10,
-                    onTap: () {},
-                  );
-                } else {
-                  return PropertyCard(
-                    title: 'The Urban Nest',
-                    location: 'Whitefield, Bangalore',
-                    price: '₹68,000',
-                    imageUrl:
-                        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop',
-                    typeTag: 'Premium PG',
-                    statusTag: 'Active',
-                    statusColor: Colors.green,
-                    tenants: 24,
-                    units: 30,
-                    onTap: () {},
-                  );
-                }
+                final p = properties[index];
+                final isFullyOccupied = p.availableRooms == 0;
+                return PropertyCard(
+                  title: p.title,
+                  location: p.location,
+                  price: p.price,
+                  imageUrl: p.imageUrl,
+                  typeTag: p.type,
+                  statusTag: isFullyOccupied ? 'Full' : 'Active',
+                  statusColor: isFullyOccupied ? Colors.amber : Colors.green,
+                  tenants: p.occupiedRooms,
+                  units: p.totalRooms,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PropertyDetailsScreen(property: p),
+                      ),
+                    );
+                  },
+                );
               },
             ),
-
-            // Active Tab Placeholder
-            const Center(child: Text('Active Properties')),
-
-            // Maintenance Tab Placeholder
-            const Center(child: Text('Properties Under Maintenance')),
+            // Active Tab
+            GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 400,
+                mainAxisExtent: 360,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: activeProps.length,
+              itemBuilder: (context, index) {
+                final p = activeProps[index];
+                return PropertyCard(
+                  title: p.title,
+                  location: p.location,
+                  price: p.price,
+                  imageUrl: p.imageUrl,
+                  typeTag: p.type,
+                  statusTag: 'Active',
+                  statusColor: Colors.green,
+                  tenants: p.occupiedRooms,
+                  units: p.totalRooms,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PropertyDetailsScreen(property: p),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            // Maintenance Tab
+            const Center(child: Text('No properties under maintenance')),
           ],
         ),
         floatingActionButton: FloatingActionButton(

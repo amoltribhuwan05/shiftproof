@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/cards/profile_menu_card.dart';
 import '../tenant/tenant_main_screen.dart';
 import 'settings_screen.dart';
+import '../../data/services/mock_api_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -11,11 +13,10 @@ class ProfileScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final user = MockApiService.getCurrentOwner();
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
         title: Text(
           'Profile',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -32,6 +33,7 @@ class ProfileScreen extends StatelessWidget {
           },
         ),
         actions: [
+          const NotificationBellButton(),
           Container(
             margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
@@ -67,7 +69,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     child: ClipOval(
                       child: Image.network(
-                        'https://i.pravatar.cc/150?img=11',
+                        user.avatarUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -108,17 +110,14 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Marcus Sterling',
+                user.name,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'marcus.sterling@shiftproof.com',
-                style: theme.textTheme.bodyMedium,
-              ),
+              Text(user.email, style: theme.textTheme.bodyMedium),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(

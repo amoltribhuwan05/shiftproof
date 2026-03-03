@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import '../../widgets/buttons/notification_bell_button.dart';
+import '../../data/services/mock_api_service.dart';
 
 class CollectionsScreen extends StatelessWidget {
   const CollectionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Owner themes use orange custom color based on design
-    final customPrimary = const Color(0xffec5b13);
     final theme = Theme.of(context);
+    final customPrimary = theme.colorScheme.primary;
     final isDark = theme.brightness == Brightness.dark;
+
+    final collections = MockApiService.getPayments();
+    final totalCollected = MockApiService.getTotalCollectedThisMonth();
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: customPrimary),
           onPressed: () {
@@ -27,6 +29,7 @@ class CollectionsScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          const NotificationBellButton(),
           IconButton(
             icon: Icon(
               Icons.search,
@@ -103,9 +106,9 @@ class CollectionsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
                       children: [
-                        const Text(
-                          '\$42,500',
-                          style: TextStyle(
+                        Text(
+                          totalCollected,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -158,7 +161,9 @@ class CollectionsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: customPrimary.withValues(alpha: 0.05),
-                      border: Border.all(color: customPrimary.withValues(alpha: 0.1)),
+                      border: Border.all(
+                        color: customPrimary.withValues(alpha: 0.1),
+                      ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
@@ -227,96 +232,26 @@ class CollectionsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  _buildTenantPaymentRow(
-                    context,
-                    'JS',
-                    'John Smith',
-                    'Room 402 • 12 Jan 2024',
-                    '\$1,200',
-                    'Paid',
-                    Colors.green,
-                    customPrimary,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildTenantPaymentRow(
-                    context,
-                    'AD',
-                    'Alice Davis',
-                    'Room 105 • 11 Jan 2024',
-                    '\$950',
-                    'Paid',
-                    Colors.green,
-                    customPrimary,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildTenantPaymentRow(
-                    context,
-                    'MR',
-                    'Michael Ross',
-                    'Room 208 • 10 Jan 2024',
-                    '\$1,550',
-                    'Paid',
-                    Colors.green,
-                    customPrimary,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildTenantPaymentRow(
-                    context,
-                    'EW',
-                    'Emma Wilson',
-                    'Room 312 • 09 Jan 2024',
-                    '\$1,100',
-                    'Paid',
-                    Colors.green,
-                    customPrimary,
-                  ),
+                  ...collections.take(5).map((payment) {
+                    final isPaid = payment.status == 'Paid';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildTenantPaymentRow(
+                        context,
+                        payment.tenantName.substring(0, 2).toUpperCase(),
+                        payment.tenantName,
+                        '${payment.type} • ${payment.date}',
+                        payment.amount,
+                        payment.status,
+                        isPaid ? Colors.green : Colors.amber,
+                        customPrimary,
+                      ),
+                    );
+                  }),
                 ],
               ),
             ),
-            const SizedBox(height: 80), // bottom nav padding
           ],
-        ),
-      ),
-
-      // Bottom Navigation Bar placeholder (MD3 style)
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          border: Border(
-            top: BorderSide(
-              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-            ),
-          ),
-        ),
-        child: SafeArea(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavIcon(context, Icons.home, 'Home', false, customPrimary),
-              _buildNavIcon(
-                context,
-                Icons.apartment,
-                'Properties',
-                false,
-                customPrimary,
-              ),
-              _buildNavIcon(
-                context,
-                Icons.receipt_long,
-                'Collections',
-                true,
-                customPrimary,
-              ),
-              _buildNavIcon(
-                context,
-                Icons.settings,
-                'Settings',
-                false,
-                customPrimary,
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -488,41 +423,6 @@ class CollectionsScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNavIcon(
-    BuildContext context,
-    IconData icon,
-    String label,
-    bool isSelected,
-    Color customPrimary,
-  ) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color: isSelected
-              ? customPrimary
-              : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-          size: 24,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected
-                ? customPrimary
-                : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-          ),
-        ),
-      ],
     );
   }
 }
