@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../data/services/mock_api_service.dart';
 
+import '../properties/manage_tenants_screen.dart';
+
 class PropertyDashboardScreen extends StatelessWidget {
   const PropertyDashboardScreen({super.key});
 
@@ -94,6 +96,14 @@ class PropertyDashboardScreen extends StatelessWidget {
                     trendIcon: Icons.trending_up,
                     trendValue: '12%',
                     isTrendPositive: true,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ManageTenantsScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _buildStatCard(
                     context,
@@ -294,13 +304,13 @@ class PropertyDashboardScreen extends StatelessWidget {
     required IconData trendIcon,
     required String trendValue,
     required bool isTrendPositive,
+    VoidCallback? onTap,
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final trendColor = isTrendPositive ? Colors.green : Colors.red;
 
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isDark
             ? theme.colorScheme.surface.withValues(alpha: 0.5)
@@ -312,57 +322,64 @@ class PropertyDashboardScreen extends StatelessWidget {
               : Colors.grey.shade200,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: theme.colorScheme.primary, size: 20),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-            ),
-          ),
-          const Spacer(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: theme.colorScheme.primary, size: 20),
+              ),
+              const SizedBox(height: 8),
               Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                title,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
-              const SizedBox(width: 8),
+              const Spacer(),
               Row(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Icon(trendIcon, color: trendColor, size: 12),
-                  const SizedBox(width: 2),
                   Text(
-                    trendValue,
-                    style: TextStyle(
-                      fontSize: 10,
+                    value,
+                    style: const TextStyle(
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: trendColor,
                     ),
+                  ),
+                  const SizedBox(width: 8),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(trendIcon, color: trendColor, size: 12),
+                      const SizedBox(width: 2),
+                      Text(
+                        trendValue,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: trendColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

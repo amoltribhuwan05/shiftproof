@@ -32,7 +32,6 @@ class PropertyCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: isDark
             ? theme.colorScheme.surface.withValues(alpha: 0.5)
