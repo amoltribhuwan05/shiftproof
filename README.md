@@ -72,6 +72,12 @@ lib/
     └── network/     # Network status and connection wrappers
 ```
 
+## Documentation
+
+| Document                                         | Description                                                                                                       |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| [API Response Structures](docs/api_responses.md) | JSON schemas, field types, and descriptions for all features (Auth, Properties, Tenants, Payments, Notifications) |
+
 ## Important Implementation Details
 
 - **State Management:** Screens primarily rely on local `setState` combined with stateless presentation widgets.

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../data/services/mock_api_service.dart';
 import '../../data/models/payment_model.dart';
 
@@ -199,7 +200,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        payment.amount,
+                        CurrencyFormatter.format(payment.amount),
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

@@ -2,15 +2,27 @@ class Tenant {
   final String id;
   final String name;
   final String room;
-  final String rentAmount;
+
+  /// Monthly rent in rupees (integer). Use CurrencyFormatter.format() for display.
+  final int rentAmount;
+
+  /// ISO 8601 date string (e.g. "2026-03-05"). Parse with DateTime.parse() for comparisons.
   final String dueDate;
+
+  /// True if the current period's rent has been paid.
   final bool isPaid;
+
   final String avatarUrl;
   final String phone;
   final String email;
+
+  /// ISO 8601 date string (e.g. "2025-06-01"). Parse for tenancy duration calculations.
   final String joinDate;
+
   final String propertyId;
-  final String status; // 'active', 'pending', 'overdue'
+
+  /// Rent status: 'active' | 'pending' | 'overdue'
+  final String status;
 
   const Tenant({
     required this.id,
@@ -27,12 +39,23 @@ class Tenant {
     required this.status,
   });
 
+  /// Number of months this tenant has been staying. Returns -1 if unparseable.
+  int get monthsStaying {
+    try {
+      final start = DateTime.parse(joinDate);
+      final now = DateTime.now();
+      return (now.year - start.year) * 12 + now.month - start.month;
+    } catch (_) {
+      return -1;
+    }
+  }
+
   factory Tenant.fromJson(Map<String, dynamic> json) {
     return Tenant(
       id: json['id'] as String,
       name: json['name'] as String,
       room: json['room'] as String,
-      rentAmount: json['rentAmount'] as String,
+      rentAmount: (json['rentAmount'] as num).toInt(),
       dueDate: json['dueDate'] as String,
       isPaid: json['isPaid'] as bool,
       avatarUrl: json['avatarUrl'] as String,

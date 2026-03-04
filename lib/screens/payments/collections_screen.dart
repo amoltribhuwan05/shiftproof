@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../data/services/mock_api_service.dart';
 import '../../widgets/buttons/filter_chip_widget.dart';
 import '../../widgets/cards/progress_row_widget.dart';
@@ -253,7 +254,7 @@ class CollectionsScreen extends StatelessWidget {
                             .toUpperCase(),
                         name: payment.tenantName,
                         subtitle: '${payment.type} • ${payment.date}',
-                        amount: payment.amount,
+                        amount: CurrencyFormatter.format(payment.amount),
                         status: payment.status,
                         statusColor: isPaid
                             ? const Color(0xFF4CAF50)

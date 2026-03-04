@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../data/services/mock_api_service.dart';
 import '../../widgets/cards/quick_action_card.dart';
 
@@ -148,7 +149,7 @@ class TenantDashboardScreen extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.payments),
                           label: Text(
-                            'Pay \$${stay.rentAmount} — March Rent',
+                            'Pay ${CurrencyFormatter.format(stay.rentAmount)} — March Rent',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),

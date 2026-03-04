@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../data/services/mock_api_service.dart';
 import '../../widgets/cards/payout_item.dart';
 
@@ -138,7 +139,7 @@ class PayoutsScreen extends StatelessWidget {
                           : 0.8,
                       child: PayoutItem(
                         ref: payout.id,
-                        amount: payout.amount,
+                        amount: CurrencyFormatter.format(payout.amount),
                         date: payout.date,
                         status: payout.status,
                         statusColor:

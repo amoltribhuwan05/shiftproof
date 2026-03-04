@@ -22,7 +22,7 @@ class PropertyDetailsScreen extends StatelessWidget {
     final String propTitle = property?.title ?? 'Sunshine Heights PG';
     final String propLocation =
         property?.location ?? 'Koramangala 4th Block, Bangalore';
-    final String propRating = property?.rating ?? '4.8';
+    final double propRating = property?.rating ?? 4.8;
     final List<String> propAmenities =
         property?.amenities ??
         [
@@ -196,7 +196,7 @@ class PropertyDetailsScreen extends StatelessWidget {
                                   Row(
                                     children: [
                                       Text(
-                                        propRating,
+                                        propRating.toStringAsFixed(1),
                                         style: const TextStyle(
                                           color: Colors.amber,
                                           fontWeight: FontWeight.bold,

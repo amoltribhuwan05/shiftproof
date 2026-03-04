@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../widgets/cards/property_card.dart';
 import '../../data/services/mock_api_service.dart';
 import 'property_details_screen.dart';
@@ -81,7 +82,7 @@ class MyPropertiesScreen extends StatelessWidget {
                 return PropertyCard(
                   title: p.title,
                   location: p.location,
-                  price: p.price,
+                  price: '${CurrencyFormatter.format(p.price)}/mo',
                   imageUrl: p.imageUrl,
                   typeTag: p.type,
                   statusTag: isFullyOccupied ? 'Full' : 'Active',
@@ -117,7 +118,7 @@ class MyPropertiesScreen extends StatelessWidget {
                 return PropertyCard(
                   title: p.title,
                   location: p.location,
-                  price: p.price,
+                  price: '${CurrencyFormatter.format(p.price)}/mo',
                   imageUrl: p.imageUrl,
                   typeTag: p.type,
                   statusTag: 'Active',

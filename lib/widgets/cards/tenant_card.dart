@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/currency_formatter.dart';
 import '../../data/models/tenant_model.dart';
 
 class TenantCard extends StatelessWidget {
@@ -105,7 +106,11 @@ class TenantCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _infoChip(context, Icons.currency_rupee, tenant.rentAmount),
+              _infoChip(
+                context,
+                Icons.currency_rupee,
+                CurrencyFormatter.format(tenant.rentAmount),
+              ),
               _infoChip(context, Icons.calendar_today, 'Due ${tenant.dueDate}'),
               _infoChip(context, Icons.phone, tenant.phone),
             ],

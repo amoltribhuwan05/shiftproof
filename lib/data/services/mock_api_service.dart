@@ -4,6 +4,7 @@ import '../models/tenant_model.dart';
 import '../models/payment_model.dart';
 import '../models/notification_model.dart';
 import '../models/user_model.dart';
+import '../../core/utils/currency_formatter.dart';
 
 /// Mock API service — all data comes from MockApi (mock_api.dart).
 /// To switch to a real backend: replace each method body with an
@@ -54,38 +55,42 @@ class MockApiService {
   static List<Payment> getCollections() =>
       getPayments().where((p) => p.type == 'rent').toList();
 
-  // Dashboard summary
-  static String getTotalCollectedThisMonth() {
-    final paid = getPayments()
+  // Dashboard summary — returns int for clean arithmetic
+  static int getTotalCollectedThisMonthRaw() {
+    return getPayments()
         .where((p) => p.status == 'paid' && p.date.contains('Mar 2026'))
-        .map((p) => _parseAmount(p.amount))
-        .fold(0, (a, b) => a + b);
-    return '₹${_formatAmount(paid)}';
+        .fold(0, (sum, p) => sum + p.amount);
   }
 
-  static String getPendingAmount() {
-    final pending = getPayments()
+  static int getPendingAmountRaw() {
+    return getPayments()
         .where((p) => p.status == 'pending' || p.status == 'overdue')
-        .map((p) => _parseAmount(p.amount))
-        .fold(0, (a, b) => a + b);
-    return '₹${_formatAmount(pending)}';
+        .fold(0, (sum, p) => sum + p.amount);
   }
+
+  // Formatted versions for backwards-compatible display use
+  static String getTotalCollectedThisMonth() =>
+      CurrencyFormatter.format(getTotalCollectedThisMonthRaw());
+
+  static String getPendingAmount() =>
+      CurrencyFormatter.format(getPendingAmountRaw());
 
   // ─── Payouts ─────────────────────────────────────────────
   static List<Payout> getPayouts() =>
       MockApi.payouts.map(Payout.fromJson).toList();
 
-  static String getTotalSettled() {
-    final settled = getPayouts()
+  static int getTotalSettledRaw() {
+    return getPayouts()
         .where(
           (p) =>
               p.status.toLowerCase() == 'completed' ||
               p.status.toLowerCase() == 'success',
         )
-        .map((p) => _parseAmount(p.amount))
-        .fold(0, (a, b) => a + b);
-    return '₹${_formatAmount(settled)}';
+        .fold(0, (sum, p) => sum + p.amount);
   }
+
+  static String getTotalSettled() =>
+      CurrencyFormatter.format(getTotalSettledRaw());
 
   // ─── Notifications ───────────────────────────────────────
   static List<AppNotification> getNotifications() =>
@@ -93,22 +98,4 @@ class MockApiService {
 
   static int getUnreadCount() =>
       getNotifications().where((n) => !n.isRead).length;
-
-  // ─── Helpers ─────────────────────────────────────────────
-  static int _parseAmount(String amount) {
-    return int.tryParse(
-          amount.replaceAll('₹', '').replaceAll(',', '').trim(),
-        ) ??
-        0;
-  }
-
-  static String _formatAmount(int amount) {
-    if (amount >= 100000) {
-      return '${(amount / 100000).toStringAsFixed(1)}L';
-    } else if (amount >= 1000) {
-      final s = amount.toString();
-      return '${s.substring(0, s.length - 3)},${s.substring(s.length - 3)}';
-    }
-    return amount.toString();
-  }
 }

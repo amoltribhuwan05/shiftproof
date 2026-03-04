@@ -5,6 +5,7 @@ class AppUser {
   final String phone;
   final String avatarUrl;
   final String role; // 'owner', 'tenant'
+  /// ISO 8601 date string (e.g. "2023-01-15"). Use DateTime.parse() for logic.
   final String joinDate;
   final String location;
 
@@ -37,14 +38,24 @@ class CurrentStay {
   final String propertyName;
   final String roomNumber;
   final String address;
-  final String rentAmount;
+
+  /// Monthly rent in rupees (integer). Use CurrencyFormatter.format() for display.
+  final int rentAmount;
+
+  /// ISO 8601 date string (e.g. "2026-03-05"). Parse with DateTime.parse() for comparisons.
   final String dueDate;
+
   final String ownerName;
   final String ownerPhone;
   final String ownerAvatarUrl;
+
+  /// ISO 8601 date strings for lease period. Parse for duration calculations.
   final String leaseStart;
   final String leaseEnd;
+
   final String imageUrl;
+
+  /// True if rent for the current period is unpaid.
   final bool isRentDue;
 
   const CurrentStay({
@@ -62,12 +73,21 @@ class CurrentStay {
     required this.isRentDue,
   });
 
+  /// Convenience getter — parses leaseEnd to compute remaining days.
+  int get daysUntilLeaseExpiry {
+    try {
+      return DateTime.parse(leaseEnd).difference(DateTime.now()).inDays;
+    } catch (_) {
+      return -1;
+    }
+  }
+
   factory CurrentStay.fromJson(Map<String, dynamic> json) {
     return CurrentStay(
       propertyName: json['propertyName'] as String,
       roomNumber: json['roomNumber'] as String,
       address: json['address'] as String,
-      rentAmount: json['rentAmount'] as String,
+      rentAmount: (json['rentAmount'] as num).toInt(),
       dueDate: json['dueDate'] as String,
       ownerName: json['ownerName'] as String,
       ownerPhone: json['ownerPhone'] as String,

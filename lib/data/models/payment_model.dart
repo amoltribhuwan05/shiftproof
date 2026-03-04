@@ -1,10 +1,19 @@
 class Payment {
   final String id;
   final String title;
-  final String amount;
+
+  /// Amount in rupees (integer). Use CurrencyFormatter.format() for display.
+  final int amount;
+
+  /// ISO 8601 date string (e.g. "2026-03-01"). Parse with DateTime.parse() for sorting/filtering.
   final String date;
-  final String status; // 'paid', 'pending', 'overdue'
-  final String type; // 'rent', 'deposit', 'maintenance', 'electricity'
+
+  /// Payment status: 'paid' | 'pending' | 'overdue'
+  final String status;
+
+  /// Payment category: 'rent' | 'deposit' | 'maintenance' | 'electricity'
+  final String type;
+
   final String tenantName;
   final String propertyId;
   final String description;
@@ -21,11 +30,15 @@ class Payment {
     required this.description,
   });
 
+  bool get isPaid => status == 'paid';
+  bool get isOverdue => status == 'overdue';
+  bool get isPending => status == 'pending';
+
   factory Payment.fromJson(Map<String, dynamic> json) {
     return Payment(
       id: json['id'] as String,
       title: json['title'] as String,
-      amount: json['amount'] as String,
+      amount: (json['amount'] as num).toInt(),
       date: json['date'] as String,
       status: json['status'] as String,
       type: json['type'] as String,
@@ -38,10 +51,19 @@ class Payment {
 
 class Payout {
   final String id;
-  final String amount;
+
+  /// Payout amount in rupees (integer). Use CurrencyFormatter.format() for display.
+  final int amount;
+
+  /// ISO 8601 date string (e.g. "2026-02-05"). Parse for sorting/filtering.
   final String date;
-  final String status; // 'completed', 'processing', 'failed'
+
+  /// Transfer status: 'completed' | 'processing' | 'failed'
+  final String status;
+
+  /// Last 4 digits of the destination bank account.
   final String bankLast4;
+
   final String propertyTitle;
   final String description;
 
@@ -55,10 +77,13 @@ class Payout {
     required this.description,
   });
 
+  bool get isCompleted =>
+      status.toLowerCase() == 'completed' || status.toLowerCase() == 'success';
+
   factory Payout.fromJson(Map<String, dynamic> json) {
     return Payout(
       id: json['id'] as String,
-      amount: json['amount'] as String,
+      amount: (json['amount'] as num).toInt(),
       date: json['date'] as String,
       status: json['status'] as String,
       bankLast4: json['bankLast4'] as String,
