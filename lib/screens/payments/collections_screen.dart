@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../data/services/mock_api_service.dart';
+import '../../widgets/buttons/filter_chip_widget.dart';
+import '../../widgets/cards/progress_row_widget.dart';
+import '../../widgets/cards/tenant_payment_row.dart';
 
 class CollectionsScreen extends StatelessWidget {
   const CollectionsScreen({super.key});
@@ -33,14 +36,18 @@ class CollectionsScreen extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.search,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: isDark
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             onPressed: () {},
           ),
           IconButton(
             icon: Icon(
               Icons.more_vert,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: isDark
+                  ? theme.colorScheme.onSurface.withValues(alpha: 0.7)
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             onPressed: () {},
           ),
@@ -56,9 +63,9 @@ class CollectionsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  _buildFilterChip(context, 'Select Month', customPrimary),
+                  FilterChipWidget(label: 'Select Month'),
                   const SizedBox(width: 12),
-                  _buildFilterChip(context, 'Select Property', customPrimary),
+                  FilterChipWidget(label: 'Select Property'),
                 ],
               ),
             ),
@@ -86,17 +93,19 @@ class CollectionsScreen extends StatelessWidget {
                     Text(
                       'MONTHLY SUMMARY',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: theme.colorScheme.onPrimary.withValues(
+                          alpha: 0.8,
+                        ),
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Total Collected',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -108,8 +117,8 @@ class CollectionsScreen extends StatelessWidget {
                       children: [
                         Text(
                           totalCollected,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: theme.colorScheme.onPrimary,
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                           ),
@@ -121,12 +130,17 @@ class CollectionsScreen extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
+                            color: theme.colorScheme.onPrimary.withValues(
+                              alpha: 0.2,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
+                          child: Text(
                             '+12% vs last month',
-                            style: TextStyle(color: Colors.white, fontSize: 10),
+                            style: TextStyle(
+                              color: theme.colorScheme.onPrimary,
+                              fontSize: 10,
+                            ),
                           ),
                         ),
                       ],
@@ -168,28 +182,25 @@ class CollectionsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        _buildProgressRow(
-                          context,
-                          'UPI',
-                          '60%',
-                          0.6,
-                          customPrimary,
+                        ProgressRowWidget(
+                          label: 'UPI',
+                          valueLabel: '60%',
+                          value: 0.6,
+                          color: customPrimary,
                         ),
                         const SizedBox(height: 12),
-                        _buildProgressRow(
-                          context,
-                          'Cash',
-                          '30%',
-                          0.3,
-                          customPrimary.withValues(alpha: 0.7),
+                        ProgressRowWidget(
+                          label: 'Cash',
+                          valueLabel: '30%',
+                          value: 0.3,
+                          color: customPrimary.withValues(alpha: 0.7),
                         ),
                         const SizedBox(height: 12),
-                        _buildProgressRow(
-                          context,
-                          'Card',
-                          '10%',
-                          0.1,
-                          customPrimary.withValues(alpha: 0.4),
+                        ProgressRowWidget(
+                          label: 'Card',
+                          valueLabel: '10%',
+                          value: 0.1,
+                          color: customPrimary.withValues(alpha: 0.4),
                         ),
                       ],
                     ),
@@ -236,15 +247,18 @@ class CollectionsScreen extends StatelessWidget {
                     final isPaid = payment.status == 'Paid';
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: _buildTenantPaymentRow(
-                        context,
-                        payment.tenantName.substring(0, 2).toUpperCase(),
-                        payment.tenantName,
-                        '${payment.type} • ${payment.date}',
-                        payment.amount,
-                        payment.status,
-                        isPaid ? Colors.green : Colors.amber,
-                        customPrimary,
+                      child: TenantPaymentRow(
+                        initials: payment.tenantName
+                            .substring(0, 2)
+                            .toUpperCase(),
+                        name: payment.tenantName,
+                        subtitle: '${payment.type} • ${payment.date}',
+                        amount: payment.amount,
+                        status: payment.status,
+                        statusColor: isPaid
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFFFC107),
+                        customPrimary: customPrimary,
                       ),
                     );
                   }),
@@ -253,175 +267,6 @@ class CollectionsScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip(
-    BuildContext context,
-    String label,
-    Color customPrimary,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: customPrimary.withValues(alpha: 0.1),
-        border: Border.all(color: customPrimary.withValues(alpha: 0.2)),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(width: 8),
-          const Icon(Icons.expand_more, size: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressRow(
-    BuildContext context,
-    String label,
-    String valueLabel,
-    double value,
-    Color color,
-  ) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            Text(
-              valueLabel,
-              style: TextStyle(
-                color: color,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        LinearProgressIndicator(
-          value: value,
-          backgroundColor: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-          valueColor: AlwaysStoppedAnimation<Color>(color),
-          borderRadius: BorderRadius.circular(4),
-          minHeight: 8,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTenantPaymentRow(
-    BuildContext context,
-    String initials,
-    String name,
-    String subtitle,
-    String amount,
-    String status,
-    Color statusColor,
-    Color customPrimary,
-  ) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade900 : Colors.white,
-        border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: customPrimary.withValues(alpha: 0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    initials,
-                    style: TextStyle(
-                      color: customPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark
-                          ? Colors.grey.shade500
-                          : Colors.grey.shade500,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                amount,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  status.toUpperCase(),
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

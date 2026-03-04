@@ -24,10 +24,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -74,8 +71,12 @@ class ProfileScreen extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: isDark
-                                ? Colors.grey.shade800
-                                : Colors.grey.shade200,
+                                ? theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.1,
+                                  )
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.05,
+                                  ),
                             child: const Icon(
                               Icons.person,
                               size: 48,
@@ -99,9 +100,9 @@ class ProfileScreen extends StatelessWidget {
                           width: 2,
                         ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.verified_user,
-                        color: Colors.white,
+                        color: theme.colorScheme.onPrimary,
                         size: 14,
                       ),
                     ),
@@ -230,7 +231,7 @@ class ProfileScreen extends StatelessWidget {
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2.0,
-                  color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 8),
@@ -238,7 +239,7 @@ class ProfileScreen extends StatelessWidget {
                 'v1.0.0 • ShiftProof Real Estate',
                 style: TextStyle(
                   fontSize: 10,
-                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
               const SizedBox(height: 40),

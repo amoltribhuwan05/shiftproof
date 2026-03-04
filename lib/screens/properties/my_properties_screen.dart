@@ -11,7 +11,6 @@ class MyPropertiesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final properties = MockApiService.getProperties();
     final activeProps = properties.where((p) => p.availableRooms > 0).toList();
 
@@ -20,10 +19,7 @@ class MyPropertiesScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
             onPressed: () {
               if (Navigator.canPop(context)) Navigator.pop(context);
             },
@@ -37,25 +33,19 @@ class MyPropertiesScreen extends StatelessWidget {
           actions: [
             const NotificationBellButton(),
             IconButton(
-              icon: Icon(
-                Icons.search,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
+              icon: Icon(Icons.search, color: theme.colorScheme.onSurface),
               onPressed: () {},
             ),
             IconButton(
-              icon: Icon(
-                Icons.more_vert,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
+              icon: Icon(Icons.more_vert, color: theme.colorScheme.onSurface),
               onPressed: () {},
             ),
           ],
           bottom: TabBar(
             labelColor: colorScheme.primary,
-            unselectedLabelColor: isDark
-                ? Colors.grey.shade500
-                : Colors.grey.shade500,
+            unselectedLabelColor: theme.colorScheme.onSurface.withValues(
+              alpha: 0.6,
+            ),
             indicatorColor: colorScheme.primary,
             indicatorWeight: 3,
             labelStyle: const TextStyle(
@@ -95,7 +85,9 @@ class MyPropertiesScreen extends StatelessWidget {
                   imageUrl: p.imageUrl,
                   typeTag: p.type,
                   statusTag: isFullyOccupied ? 'Full' : 'Active',
-                  statusColor: isFullyOccupied ? Colors.amber : Colors.green,
+                  statusColor: isFullyOccupied
+                      ? const Color(0xFFFFC107)
+                      : const Color(0xFF4CAF50),
                   tenants: p.occupiedRooms,
                   units: p.totalRooms,
                   onTap: () {
@@ -129,7 +121,7 @@ class MyPropertiesScreen extends StatelessWidget {
                   imageUrl: p.imageUrl,
                   typeTag: p.type,
                   statusTag: 'Active',
-                  statusColor: Colors.green,
+                  statusColor: const Color(0xFF4CAF50),
                   tenants: p.occupiedRooms,
                   units: p.totalRooms,
                   onTap: () {
@@ -152,7 +144,7 @@ class MyPropertiesScreen extends StatelessWidget {
           heroTag: 'my_properties_fab',
           onPressed: () {},
           backgroundColor: colorScheme.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: theme.colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

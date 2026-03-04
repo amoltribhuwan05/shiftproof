@@ -11,7 +11,6 @@ class FindPgScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     final properties = MockApiService.getProperties();
 
@@ -42,7 +41,7 @@ class FindPgScreen extends StatelessWidget {
               'Find your next home',
               style: TextStyle(
                 fontSize: 11,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -58,7 +57,7 @@ class FindPgScreen extends StatelessWidget {
             child: Container(
               height: 48,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
@@ -66,19 +65,14 @@ class FindPgScreen extends StatelessWidget {
                   hintText: 'Search area, PG name, or landmark',
                   hintStyle: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade500,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   prefixIcon: Icon(
                     Icons.search,
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.tune,
-                      color: isDark
-                          ? Colors.grey.shade300
-                          : Colors.grey.shade700,
-                    ),
+                    icon: Icon(Icons.tune, color: theme.colorScheme.onSurface),
                     onPressed: () {},
                   ),
                   border: InputBorder.none,
@@ -137,7 +131,7 @@ class FindPgScreen extends StatelessWidget {
                       imageUrl: property.imageUrl,
                       typeTag: property.type,
                       statusTag: 'Verified',
-                      statusColor: Colors.green,
+                      statusColor: const Color(0xFF4CAF50),
                       tenants: property.occupiedRooms,
                       units: property.totalRooms,
                       onTap: () {
@@ -168,24 +162,21 @@ class FindPgScreen extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected
-            ? colorScheme.primary
-            : (isDark ? Colors.grey.shade800 : Colors.white),
+        color: isSelected ? colorScheme.primary : theme.colorScheme.surface,
         border: Border.all(
           color: isSelected
               ? Colors.transparent
-              : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+              : theme.colorScheme.outlineVariant,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: colorScheme.primary.withValues(alpha: 0.3),
+                  color: colorScheme.shadow.withValues(alpha: 0.2),
                   blurRadius: 4,
                 ),
               ]
@@ -198,8 +189,8 @@ class FindPgScreen extends StatelessWidget {
             icon,
             size: 18,
             color: isSelected
-                ? Colors.white
-                : (isDark ? Colors.grey.shade300 : Colors.grey.shade700),
+                ? theme.colorScheme.onPrimary
+                : theme.colorScheme.onSurface,
           ),
           const SizedBox(width: 8),
           Text(
@@ -208,8 +199,8 @@ class FindPgScreen extends StatelessWidget {
               fontSize: 14,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
               color: isSelected
-                  ? Colors.white
-                  : (isDark ? Colors.grey.shade300 : Colors.grey.shade700),
+                  ? theme.colorScheme.onPrimary
+                  : theme.colorScheme.onSurface,
             ),
           ),
         ],

@@ -15,15 +15,11 @@ class _PayBillScreenState extends State<PayBillScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -37,10 +33,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
         actions: [
           const NotificationBellButton(),
           IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            icon: Icon(Icons.more_vert, color: theme.colorScheme.onSurface),
             onPressed: () {},
           ),
         ],
@@ -64,9 +57,9 @@ class _PayBillScreenState extends State<PayBillScreen> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: isDark ? 0.1 : 0.05),
+                    color: const Color(0xFFF44336).withValues(alpha: 0.1),
                     border: Border.all(
-                      color: Colors.red.withValues(alpha: 0.3),
+                      color: const Color(0xFFF44336).withValues(alpha: 0.3),
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -80,14 +73,14 @@ class _PayBillScreenState extends State<PayBillScreen> {
                             children: [
                               const Icon(
                                 Icons.warning_amber_rounded,
-                                color: Colors.red,
+                                color: Color(0xFFF44336),
                                 size: 18,
                               ),
                               const SizedBox(width: 8),
                               const Text(
                                 'Due by Oct 5th',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Color(0xFFF44336),
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
@@ -98,9 +91,9 @@ class _PayBillScreenState extends State<PayBillScreen> {
                           Text(
                             'Status: Late',
                             style: TextStyle(
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                             ),
@@ -113,13 +106,15 @@ class _PayBillScreenState extends State<PayBillScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.15),
+                          color: const Color(
+                            0xFFF44336,
+                          ).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Text(
                           'OVERDUE',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: Color(0xFFF44336),
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
@@ -142,9 +137,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? colorScheme.surface.withValues(alpha: 0.5)
-                        : Colors.grey.shade50,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -178,9 +171,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
                       ),
                       const SizedBox(height: 16),
                       Divider(
-                        color: isDark
-                            ? Colors.grey.shade800
-                            : Colors.grey.shade200,
+                        color: theme.colorScheme.outlineVariant,
                         height: 1,
                       ),
                       const SizedBox(height: 16),
@@ -265,9 +256,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
                 border: Border(
-                  top: BorderSide(
-                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                  ),
+                  top: BorderSide(color: theme.colorScheme.outlineVariant),
                 ),
               ),
               child: SafeArea(
@@ -283,9 +272,9 @@ class _PayBillScreenState extends State<PayBillScreen> {
                             'Grand Total',
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade500,
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
                             ),
                           ),
                           const Text(
@@ -348,7 +337,6 @@ class _PayBillScreenState extends State<PayBillScreen> {
     String amount,
     IconData icon,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -360,7 +348,9 @@ class _PayBillScreenState extends State<PayBillScreen> {
               title,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -381,7 +371,6 @@ class _PayBillScreenState extends State<PayBillScreen> {
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
     final isSelected = _selectedPaymentMethod == value;
 
     return GestureDetector(
@@ -393,14 +382,12 @@ class _PayBillScreenState extends State<PayBillScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark
-              ? colorScheme.surface.withValues(alpha: 0.5)
-              : Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? colorScheme.primary
-                : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+                : theme.colorScheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -416,14 +403,14 @@ class _PayBillScreenState extends State<PayBillScreen> {
                   if (states.contains(WidgetState.selected)) {
                     return colorScheme.primary;
                   }
-                  return isDark ? Colors.grey.shade600 : Colors.grey.shade400;
+                  return theme.colorScheme.onSurface.withValues(alpha: 0.5);
                 }),
               ),
             ),
             const SizedBox(width: 16),
             Icon(
               icon,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               size: 22,
             ),
             const SizedBox(width: 12),

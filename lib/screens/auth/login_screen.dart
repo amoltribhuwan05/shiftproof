@@ -12,7 +12,6 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       body: SafeArea(
@@ -81,7 +80,7 @@ class LoginScreen extends StatelessWidget {
               Text(
                 'Manage PGs or rent properties',
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
                 ),
@@ -93,14 +92,14 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   const Icon(
                     Icons.verified_user,
-                    color: Colors.green,
+                    color: Color(0xFF4CAF50),
                     size: 18,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'No spam. No ads.',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade500,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -143,31 +142,23 @@ class LoginScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? Colors.grey.shade700
-                            : Colors.grey.shade200,
-                      ),
+                      child: Divider(color: theme.colorScheme.outlineVariant),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'OR',
                         style: TextStyle(
-                          color: isDark
-                              ? Colors.grey.shade500
-                              : Colors.grey.shade400,
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                     Expanded(
-                      child: Divider(
-                        color: isDark
-                            ? Colors.grey.shade700
-                            : Colors.grey.shade200,
-                      ),
+                      child: Divider(color: theme.colorScheme.outlineVariant),
                     ),
                   ],
                 ),
@@ -196,9 +187,9 @@ class LoginScreen extends StatelessWidget {
                   );
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: isDark
-                      ? Colors.grey.shade400
-                      : Colors.grey.shade500,
+                  foregroundColor: theme.colorScheme.onSurface.withValues(
+                    alpha: 0.6,
+                  ),
                 ),
                 child: const Text(
                   'Skip for now',
@@ -209,7 +200,7 @@ class LoginScreen extends StatelessWidget {
               Text(
                 'By continuing, you agree to our Terms of Service and Privacy Policy.',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,

@@ -8,15 +8,11 @@ class OwnerPlansScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -30,10 +26,7 @@ class OwnerPlansScreen extends StatelessWidget {
         actions: [
           const NotificationBellButton(),
           IconButton(
-            icon: Icon(
-              Icons.help_outline,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            icon: Icon(Icons.help_outline, color: theme.colorScheme.onSurface),
             onPressed: () {},
           ),
         ],
@@ -61,7 +54,7 @@ class OwnerPlansScreen extends StatelessWidget {
                   'Select a plan that fits your current needs. You can scale your operations as you grow.',
                   style: TextStyle(
                     fontSize: 14,
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -117,9 +110,9 @@ class OwnerPlansScreen extends StatelessWidget {
                       Icon(
                         Icons.info_outline,
                         size: 16,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade500,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -127,9 +120,9 @@ class OwnerPlansScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: isDark
-                              ? Colors.grey.shade400
-                              : Colors.grey.shade500,
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                     ],
@@ -149,9 +142,7 @@ class OwnerPlansScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: theme.scaffoldBackgroundColor,
                 border: Border(
-                  top: BorderSide(
-                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
-                  ),
+                  top: BorderSide(color: theme.colorScheme.outlineVariant),
                 ),
               ),
               child: SafeArea(
@@ -191,12 +182,12 @@ class OwnerPlansScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark
                 ? colorScheme.surface.withValues(alpha: 0.5)
-                : Colors.white,
+                : theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isRecommended
                   ? colorScheme.primary
-                  : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+                  : theme.colorScheme.outlineVariant,
               width: isRecommended ? 2 : 1,
             ),
             boxShadow: isRecommended && !isDark
@@ -217,7 +208,7 @@ class OwnerPlansScreen extends StatelessWidget {
                 style: TextStyle(
                   color: isRecommended
                       ? colorScheme.primary
-                      : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
@@ -233,7 +224,7 @@ class OwnerPlansScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
-                      color: isDark ? Colors.white : Colors.black87,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   if (duration != null) ...[
@@ -243,9 +234,9 @@ class OwnerPlansScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade600,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                     ),
                   ],
@@ -270,9 +261,7 @@ class OwnerPlansScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: isDark
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade700,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                       ),

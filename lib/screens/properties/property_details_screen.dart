@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../data/models/property_model.dart';
+import '../../widgets/cards/room_card.dart';
+import '../../widgets/cards/facility_item.dart';
 
 class PropertyDetailsScreen extends StatelessWidget {
   final Property? property;
@@ -41,7 +43,7 @@ class PropertyDetailsScreen extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
             onPressed: () {
               if (Navigator.canPop(context)) Navigator.pop(context);
             },
@@ -52,7 +54,7 @@ class PropertyDetailsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon: const Icon(Icons.share, color: Colors.black87),
+              icon: Icon(Icons.share, color: theme.colorScheme.onSurface),
               onPressed: () {},
             ),
           ),
@@ -247,18 +249,16 @@ class PropertyDetailsScreen extends StatelessWidget {
                       primary: false,
                       shrinkWrap: true,
                       children: [
-                        _buildRoomCard(
-                          context,
+                        RoomCard(
                           title: 'Single Private',
                           icon: Icons.single_bed,
                           tag: '2 Left',
-                          tagColor: Colors.green,
+                          tagColor: const Color(0xFF4CAF50),
                           desc: 'Ideally for students needing privacy.',
                           price: '₹12,000',
                         ),
                         const SizedBox(width: 12),
-                        _buildRoomCard(
-                          context,
+                        RoomCard(
                           title: 'Double Sharing',
                           icon: Icons.bed,
                           tag: 'Popular',
@@ -270,12 +270,13 @@ class PropertyDetailsScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Opacity(
                           opacity: 0.6,
-                          child: _buildRoomCard(
-                            context,
+                          child: RoomCard(
                             title: 'Triple Sharing',
                             icon: Icons.bed,
                             tag: 'Sold Out',
-                            tagColor: Colors.grey,
+                            tagColor: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.5,
+                            ),
                             desc: 'Budget friendly option for groups.',
                             price: '₹6,000',
                           ),
@@ -310,14 +311,13 @@ class PropertyDetailsScreen extends StatelessWidget {
                     crossAxisSpacing: 16,
                     children: [
                       ...propAmenities.take(7).map((amenity) {
-                        return _buildFacility(
-                          context,
-                          amenity,
-                          _getIconForAmenity(amenity),
+                        return FacilityItem(
+                          title: amenity,
+                          icon: _getIconForAmenity(amenity),
                         );
                       }),
                       if (propAmenities.length > 7)
-                        _buildFacility(context, 'More', null, isMore: true),
+                        const FacilityItem(title: 'More', isMore: true),
                     ],
                   ),
                 ],
@@ -553,162 +553,6 @@ class PropertyDetailsScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildRoomCard(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required String tag,
-    required Color tagColor,
-    required String desc,
-    required String price,
-    bool isPopular = false,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      width: 250,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark
-            ? theme.colorScheme.surface.withValues(alpha: 0.5)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark
-              ? theme.colorScheme.primary.withValues(alpha: 0.1)
-              : Colors.grey.shade200,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    icon,
-                    color: tagColor == Colors.grey
-                        ? Colors.grey
-                        : theme.colorScheme.primary,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: tagColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  tag,
-                  style: TextStyle(
-                    color: tagColor,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            desc,
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-            ),
-            maxLines: 2,
-          ),
-          const Spacer(),
-          Divider(
-            height: 1,
-            color: isDark
-                ? theme.colorScheme.primary.withValues(alpha: 0.1)
-                : Colors.grey.shade200,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                price,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                '/mo',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFacility(
-    BuildContext context,
-    String title,
-    IconData? icon, {
-    bool isMore = false,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Column(
-      children: [
-        Container(
-          height: 48,
-          width: 48,
-          decoration: BoxDecoration(
-            color: isMore
-                ? (isDark ? Colors.grey.shade800 : Colors.grey.shade200)
-                : theme.colorScheme.primary.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: isMore
-              ? Center(
-                  child: Text(
-                    '+5',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                )
-              : Icon(icon, color: theme.colorScheme.primary),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
-            color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
     );
   }
 

@@ -14,10 +14,7 @@ class AddPropertyScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -45,7 +42,7 @@ class AddPropertyScreen extends StatelessWidget {
             Text(
               'Tell us about your property to get started with ShiftProof.',
               style: TextStyle(
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                color: theme.textTheme.bodyMedium?.color,
                 fontSize: 14,
               ),
             ),
@@ -93,7 +90,7 @@ class AddPropertyScreen extends StatelessWidget {
                 hintText: 'Enter neighborhood or city',
                 suffixIcon: Icon(
                   Icons.location_on,
-                  color: Colors.grey.shade500,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
                 filled: true,
                 fillColor: colorScheme.primary.withValues(
@@ -181,9 +178,7 @@ class AddPropertyScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
+                                color: theme.textTheme.bodyMedium?.color,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -201,9 +196,7 @@ class AddPropertyScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
+                                color: theme.textTheme.bodyMedium?.color,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -274,10 +267,13 @@ class AddPropertyScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Center(
+            Center(
               child: Text(
                 'Step 1 of 3: General Information',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+                style: TextStyle(
+                  color: theme.textTheme.bodyMedium?.color,
+                  fontSize: 12,
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -309,12 +305,12 @@ class AddPropertyScreen extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Colors.white, size: 16),
+          Icon(icon, color: theme.colorScheme.onPrimary, size: 16),
           const SizedBox(width: 8),
           Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: theme.colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
@@ -341,7 +337,7 @@ class AddPropertyScreen extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+          color: theme.textTheme.bodyMedium?.color,
           fontWeight: FontWeight.w500,
           fontSize: 14,
         ),
@@ -357,7 +353,9 @@ class AddPropertyScreen extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         filled: true,
-        fillColor: isDark ? theme.scaffoldBackgroundColor : Colors.white,
+        fillColor: isDark
+            ? theme.scaffoldBackgroundColor
+            : theme.colorScheme.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(

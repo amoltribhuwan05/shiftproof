@@ -1,17 +1,80 @@
-# shiftproof
+# ShiftProof
 
-A new Flutter project.
+ShiftProof is a comprehensive property management and tenant portal mobile application built with Flutter.
 
-## Getting Started
+## Overview
 
-This project is a starting point for a Flutter application.
+The application features role-based access for both property owners and tenants:
 
-A few resources to get you started if this is your first Flutter project:
+- **For Owners**: Dashboard for properties, rent collection, occupancy status, tenant management, and payment history.
+- **For Tenants**: Dashboard for rent payment, upcoming dues, maintenance requests, and announcements.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## UI Architecture & Guidelines
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This project strictly adheres to a centralized UI design system to ensure consistency, responsiveness, and performance.
+
+### Core Principles
+
+1. **Theming & Styling**
+   - **No Hardcoded Values:** Colors, text styles, and spacing are driven by `Theme.of(context)`. The `lib/core/theme/app_theme.dart` is the single source of truth.
+   - **Dynamic Theme Support:** Full support for dynamic color switching (Light / Dark mode) utilizing `theme.colorScheme`.
+
+2. **Responsiveness & Adaptive Layouts**
+   - Built to be screen-agnostic, adapting to different aspect ratios safely using `Expanded`, `Flexible`, and grid delegates.
+   - Uses `SafeArea` to prevent overlap with notches and navigation bars.
+   - Strict adherence to scrollable boundaries (`SingleChildScrollView`, `ListView`, `CustomScrollView`) avoiding overflow errors.
+
+3. **Reusability**
+   - Standardized atomic components are isolated within the `lib/widgets/` directory.
+   - Complex inline builders have been extracted to generic, parameterized stateless widgets.
+
+4. **Performance Constraints**
+   - Pervasive use of `const` constructors for unmutating rendering paths.
+   - Use of `CustomScrollView` and sliver delegates for efficient rendering of heavy dynamic lists.
+   - Clean architecture separating services, screens, and reusable widgets.
+
+## Development
+
+Before committing code, ensure the following checks pass:
+
+```bash
+# Format the codebase
+dart format lib/
+
+# Run static analysis
+dart analyze lib/
+```
+
+## Setup
+
+1. Install Flutter (minimum version according to `pubspec.yaml`).
+2. Run `flutter pub get` to fetch dependencies.
+3. Run `flutter run` on an emulator or physical device.
+
+## Directory Structure
+
+```text
+lib/
+├── core/            # App-wide theme and color constants
+├── data/            # Mock services and data models
+├── screens/         # UI Screens grouped by feature module
+│   ├── auth/        # Authentication screens
+│   ├── dashboard/   # Owner/Tenant main dashboards
+│   ├── notifications/# Notifications UI
+│   ├── payments/    # Collections, Payouts, Bills, Payment History
+│   ├── profile/     # Settings and user profile
+│   ├── properties/  # Property management (add, edit, view, rooms, tenants, exports)
+│   └── tenant/      # Tenant specific flows (join PG, find PG)
+└── widgets/         # Reusable atomic UI components
+    ├── buttons/     # Standardized app buttons
+    ├── cards/       # Various reusable cards (stat, activity, property, action, room, etc.)
+    ├── nav/         # Bottom navigation bars
+    └── network/     # Network status and connection wrappers
+```
+
+## Important Implementation Details
+
+- **State Management:** Screens primarily rely on local `setState` combined with stateless presentation widgets.
+- **Routing:** Current routing utilizes `Navigator.push` and `Navigator.pushReplacement` with `MaterialPageRoute`.
+- **Mock Services:** The app utilizes `MockApiService` to inject mock data into the UI without a backend attached. Replace these mock definitions with actual REST/GraphQL API endpoints in production.
+- **UI Performance/Layout:** Ensure heavily scrolling lists utilizing `ListView.builder` or `SliverList` bounds remain wrapped properly to avoid render overflows on smaller screens. Explicit padding/spacing strictly adheres to an 8-point grid paradigm.

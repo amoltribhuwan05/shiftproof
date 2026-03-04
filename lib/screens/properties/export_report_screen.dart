@@ -22,15 +22,12 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
       appBar: AppBar(
         leading: Container(
           margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: isDark ? Colors.transparent : Colors.transparent,
+            color: Colors.transparent,
           ),
           child: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
             onPressed: () {
               if (Navigator.canPop(context)) Navigator.pop(context);
             },
@@ -57,7 +54,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    customPrimary.withValues(alpha: isDark ? 0.1 : 0.1),
+                    customPrimary.withValues(alpha: 0.1),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 1.0],
@@ -127,9 +124,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade700,
+                        color: theme.textTheme.bodyMedium?.color,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -138,7 +133,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                       decoration: BoxDecoration(
                         color: isDark
                             ? customPrimary.withValues(alpha: 0.05)
-                            : Colors.white,
+                            : theme.colorScheme.surface,
                         border: Border.all(
                           color: customPrimary.withValues(alpha: 0.2),
                         ),
@@ -154,7 +149,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                               child: Text(
                                 'Oct 1, 2023 - Oct 31, 2023',
                                 style: TextStyle(
-                                  color: isDark ? Colors.white : Colors.black87,
+                                  color: theme.colorScheme.onSurface,
                                   fontSize: 16,
                                 ),
                               ),
@@ -183,9 +178,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: isDark
-                            ? Colors.grey.shade400
-                            : Colors.grey.shade700,
+                        color: theme.textTheme.bodyMedium?.color,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -195,7 +188,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                       decoration: BoxDecoration(
                         color: isDark
                             ? customPrimary.withValues(alpha: 0.05)
-                            : Colors.white,
+                            : theme.colorScheme.surface,
                         border: Border.all(
                           color: customPrimary.withValues(alpha: 0.2),
                         ),
@@ -213,12 +206,10 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                                   color: customPrimary,
                                 ),
                                 style: TextStyle(
-                                  color: isDark ? Colors.white : Colors.black87,
+                                  color: theme.colorScheme.onSurface,
                                   fontSize: 16,
                                 ),
-                                dropdownColor: isDark
-                                    ? Colors.grey.shade900
-                                    : Colors.white,
+                                dropdownColor: theme.colorScheme.surface,
                                 items:
                                     [
                                       'All Properties',
@@ -271,9 +262,9 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                       'Report will be generated and saved to your device.',
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark
-                            ? Colors.grey.shade500
-                            : Colors.grey.shade500,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                     ),
                   ],
@@ -295,7 +286,6 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
     required Color customPrimary,
   }) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final isSelected = _selectedFormat == value;
 
     return GestureDetector(
@@ -344,9 +334,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: isDark
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
+                      color: theme.textTheme.bodyMedium?.color,
                     ),
                   ),
                 ],

@@ -87,11 +87,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: isDark ? theme.colorScheme.surface : Colors.white,
+        backgroundColor: theme.colorScheme.surface,
         title: Row(
           children: [
             Text(
@@ -111,8 +109,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 ),
                 child: Text(
                   '$_unreadCount',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: theme.colorScheme.onPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -137,7 +135,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ],
       ),
       body: _notifications.isEmpty
-          ? _buildEmptyState(theme, isDark)
+          ? _buildEmptyState(theme)
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: _notifications.length,
@@ -165,7 +163,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme, bool isDark) {
+  Widget _buildEmptyState(ThemeData theme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -174,15 +172,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             width: 96,
             height: 96,
             decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.05)
-                  : Colors.grey.shade100,
+              color: theme.colorScheme.surfaceContainerHighest,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.notifications_off_outlined,
               size: 44,
-              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: 24),
@@ -190,14 +186,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             'All caught up!',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : Colors.black87,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'No new notifications right now.',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
         ],

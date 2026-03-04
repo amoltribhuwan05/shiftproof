@@ -9,13 +9,13 @@ class PaymentHistoryScreen extends StatelessWidget {
   Color _statusColor(String status) {
     switch (status) {
       case 'paid':
-        return Colors.green;
+        return const Color(0xFF4CAF50);
       case 'pending':
-        return Colors.amber;
+        return const Color(0xFFFFC107);
       case 'overdue':
-        return Colors.red;
+        return const Color(0xFFF44336);
       default:
-        return Colors.grey;
+        return const Color(0xFF9E9E9E);
     }
   }
 
@@ -48,10 +48,7 @@ class PaymentHistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -65,10 +62,7 @@ class PaymentHistoryScreen extends StatelessWidget {
         actions: [
           const NotificationBellButton(),
           IconButton(
-            icon: Icon(
-              Icons.search,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            icon: Icon(Icons.search, color: theme.colorScheme.onSurface),
             onPressed: () {},
           ),
         ],
@@ -79,9 +73,9 @@ class PaymentHistoryScreen extends StatelessWidget {
           children: [
             TabBar(
               labelColor: colorScheme.primary,
-              unselectedLabelColor: isDark
-                  ? Colors.grey.shade500
-                  : Colors.grey.shade500,
+              unselectedLabelColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.5,
+              ),
               indicatorColor: colorScheme.primary,
               indicatorWeight: 3,
               labelStyle: const TextStyle(
@@ -142,7 +136,7 @@ class PaymentHistoryScreen extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              color: theme.colorScheme.outlineVariant,
               width: 1,
             ),
           ),
@@ -209,9 +203,7 @@ class PaymentHistoryScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? Colors.grey.shade300
-                              : Colors.grey.shade700,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -219,9 +211,9 @@ class PaymentHistoryScreen extends StatelessWidget {
                         '• ${payment.date}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark
-                              ? Colors.grey.shade500
-                              : Colors.grey.shade500,
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                     ],
@@ -232,7 +224,7 @@ class PaymentHistoryScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Icon(
               Icons.chevron_right,
-              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
               size: 20,
             ),
           ],

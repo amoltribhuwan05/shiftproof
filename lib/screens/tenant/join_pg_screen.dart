@@ -10,15 +10,11 @@ class JoinPgScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: isDark ? Colors.white : Colors.black87,
-          ),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
@@ -60,9 +56,7 @@ class JoinPgScreen extends StatelessWidget {
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                          color: colorScheme.primary.withValues(
-                            alpha: isDark ? 0.2 : 0.1,
-                          ),
+                          color: colorScheme.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -91,9 +85,9 @@ class JoinPgScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isDark
-                              ? Colors.grey.shade400
-                              : Colors.grey.shade600,
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.6,
+                          ),
                           height: 1.5,
                         ),
                       ),
@@ -116,14 +110,10 @@ class JoinPgScreen extends StatelessWidget {
                           Container(
                             height: 56,
                             decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.grey.shade900
-                                  : Colors.white,
+                              color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: isDark
-                                    ? Colors.grey.shade800
-                                    : Colors.grey.shade300,
+                                color: theme.colorScheme.outlineVariant,
                               ),
                             ),
                             child: TextField(
@@ -140,16 +130,16 @@ class JoinPgScreen extends StatelessWidget {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 2,
-                                  color: isDark
-                                      ? Colors.grey.shade600
-                                      : Colors.grey.shade400,
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.5,
+                                  ),
                                 ),
                                 border: InputBorder.none,
                                 suffixIcon: Icon(
                                   Icons.vpn_key,
-                                  color: isDark
-                                      ? Colors.grey.shade600
-                                      : Colors.grey.shade400,
+                                  color: theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.5,
+                                  ),
                                 ),
                               ),
                             ),
@@ -162,9 +152,7 @@ class JoinPgScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Divider(
-                              color: isDark
-                                  ? Colors.grey.shade800
-                                  : Colors.grey.shade300,
+                              color: theme.colorScheme.outlineVariant,
                             ),
                           ),
                           Padding(
@@ -174,17 +162,15 @@ class JoinPgScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: isDark
-                                    ? Colors.grey.shade500
-                                    : Colors.grey.shade500,
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.5,
+                                ),
                               ),
                             ),
                           ),
                           Expanded(
                             child: Divider(
-                              color: isDark
-                                  ? Colors.grey.shade800
-                                  : Colors.grey.shade300,
+                              color: theme.colorScheme.outlineVariant,
                             ),
                           ),
                         ],
@@ -197,17 +183,10 @@ class JoinPgScreen extends StatelessWidget {
                         width: double.infinity,
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: isDark
-                                ? Colors.grey.shade900
-                                : Colors.grey.shade100,
-                            foregroundColor: isDark
-                                ? Colors.white
-                                : Colors.black87,
-                            side: BorderSide(
-                              color: isDark
-                                  ? Colors.transparent
-                                  : Colors.transparent,
-                            ),
+                            backgroundColor:
+                                theme.colorScheme.surfaceContainerHighest,
+                            foregroundColor: theme.colorScheme.onSurface,
+                            side: const BorderSide(color: Colors.transparent),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -247,9 +226,9 @@ class JoinPgScreen extends StatelessWidget {
                       'By joining, you agree to our Terms of Service',
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark
-                            ? Colors.grey.shade500
-                            : Colors.grey.shade500,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
                         fontWeight: FontWeight.w500,
                       ),
                     ),

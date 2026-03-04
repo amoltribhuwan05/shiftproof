@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../data/services/mock_api_service.dart';
+import '../../widgets/cards/quick_action_card.dart';
 
 class TenantDashboardScreen extends StatelessWidget {
   const TenantDashboardScreen({super.key});
@@ -15,7 +16,7 @@ class TenantDashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.menu, color: isDark ? Colors.white : Colors.black87),
+          icon: Icon(Icons.menu, color: theme.colorScheme.onSurface),
           onPressed: () {},
         ),
         title: Text(
@@ -43,7 +44,7 @@ class TenantDashboardScreen extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: theme.colorScheme.shadow.withValues(alpha: 0.2),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -73,10 +74,12 @@ class TenantDashboardScreen extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.greenAccent.withValues(alpha: 0.2),
+                          color: const Color(0xFF00C853).withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
-                            color: Colors.greenAccent.withValues(alpha: 0.3),
+                            color: const Color(
+                              0xFF00C853,
+                            ).withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
@@ -86,7 +89,7 @@ class TenantDashboardScreen extends StatelessWidget {
                               width: 6,
                               height: 6,
                               decoration: const BoxDecoration(
-                                color: Colors.greenAccent,
+                                color: Color(0xFF00C853),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -94,7 +97,7 @@ class TenantDashboardScreen extends StatelessWidget {
                             const Text(
                               'Active Tenant',
                               style: TextStyle(
-                                color: Colors.greenAccent,
+                                color: Color(0xFF00C853),
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -105,7 +108,7 @@ class TenantDashboardScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         '${stay.propertyName} - ${stay.roomNumber}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -116,14 +119,14 @@ class TenantDashboardScreen extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.bed,
-                            color: Colors.grey.shade300,
+                            color: Colors.white.withValues(alpha: 0.8),
                             size: 16,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Occupied since ${stay.leaseStart}',
                             style: TextStyle(
-                              color: Colors.grey.shade300,
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -137,7 +140,7 @@ class TenantDashboardScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorScheme.primary,
-                            foregroundColor: Colors.white,
+                            foregroundColor: theme.colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -179,37 +182,33 @@ class TenantDashboardScreen extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _buildActionCard(
-                    context,
+                  QuickActionCard(
                     title: 'Handover Record',
                     subtitle: 'Check inventory list',
                     icon: Icons.assignment_outlined,
                     iconColor: colorScheme.primary,
                     iconBgColor: colorScheme.primary.withValues(alpha: 0.1),
                   ),
-                  _buildActionCard(
-                    context,
+                  QuickActionCard(
                     title: 'Payment History',
                     subtitle: 'View past transactions',
                     icon: Icons.history,
-                    iconColor: Colors.orange,
-                    iconBgColor: Colors.orange.withValues(alpha: 0.1),
+                    iconColor: const Color(0xFFFF9800),
+                    iconBgColor: const Color(0xFFFF9800).withValues(alpha: 0.1),
                   ),
-                  _buildActionCard(
-                    context,
+                  QuickActionCard(
                     title: 'Report Issue',
                     subtitle: 'Maintenance request',
                     icon: Icons.report_problem_outlined,
-                    iconColor: Colors.purple,
-                    iconBgColor: Colors.purple.withValues(alpha: 0.1),
+                    iconColor: const Color(0xFF9C27B0),
+                    iconBgColor: const Color(0xFF9C27B0).withValues(alpha: 0.1),
                   ),
-                  _buildActionCard(
-                    context,
+                  QuickActionCard(
                     title: 'Agreement',
                     subtitle: 'Rental contract',
                     icon: Icons.history_edu,
-                    iconColor: Colors.teal,
-                    iconBgColor: Colors.teal.withValues(alpha: 0.1),
+                    iconColor: const Color(0xFF009688),
+                    iconBgColor: const Color(0xFF009688).withValues(alpha: 0.1),
                   ),
                 ],
               ),
@@ -234,12 +233,12 @@ class TenantDashboardScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isDark
                       ? theme.colorScheme.surface.withValues(alpha: 0.5)
-                      : Colors.white,
+                      : theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isDark
                         ? theme.colorScheme.primary.withValues(alpha: 0.1)
-                        : Colors.grey.shade200,
+                        : theme.colorScheme.onSurface.withValues(alpha: 0.1),
                   ),
                 ),
                 child: Row(
@@ -273,9 +272,7 @@ class TenantDashboardScreen extends StatelessWidget {
                           Text(
                             'Owner • ${stay.propertyName}',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade500,
+                              color: theme.textTheme.bodySmall?.color,
                             ),
                           ),
                         ],
@@ -285,17 +282,15 @@ class TenantDashboardScreen extends StatelessWidget {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? Colors.grey.shade800
-                                : Colors.grey.shade100,
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.05,
+                            ),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
                             icon: Icon(
                               Icons.message_outlined,
-                              color: isDark
-                                  ? Colors.grey.shade300
-                                  : Colors.grey.shade600,
+                              color: theme.colorScheme.onSurface,
                             ),
                             onPressed: () {},
                           ),
@@ -303,11 +298,16 @@ class TenantDashboardScreen extends StatelessWidget {
                         const SizedBox(width: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.green.withValues(alpha: 0.1),
+                            color: const Color(
+                              0xFF4CAF50,
+                            ).withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.call, color: Colors.green),
+                            icon: const Icon(
+                              Icons.call,
+                              color: Color(0xFF4CAF50),
+                            ),
                             onPressed: () {},
                           ),
                         ),
@@ -320,63 +320,6 @@ class TenantDashboardScreen extends StatelessWidget {
             const SizedBox(height: 24),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildActionCard(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBgColor,
-  }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDark
-            ? theme.colorScheme.surface.withValues(alpha: 0.5)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark
-              ? theme.colorScheme.primary.withValues(alpha: 0.1)
-              : Colors.grey.shade200,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
-          ),
-          const Spacer(),
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 11,
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
       ),
     );
   }
