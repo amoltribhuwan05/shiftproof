@@ -52,3 +52,9 @@ app.*.map.json
 .symlinks/
 ios/Pods/
 macos/Pods/
+
+# Firebase
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+firebase.json

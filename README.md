@@ -74,9 +74,10 @@ lib/
 
 ## Documentation
 
-| Document                                         | Description                                                                                                       |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
-| [API Response Structures](docs/api_responses.md) | JSON schemas, field types, and descriptions for all features (Auth, Properties, Tenants, Payments, Notifications) |
+| Document                                           | Description                                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [Backend Development Guide](docs/backend_guide.md) | **Start here for backend work** — API contracts, type rules, business logic, Antigravity setup |
+| [API Response Structures](docs/api_responses.md)   | Detailed JSON schemas and field reference for all endpoints                                    |
 
 ## Important Implementation Details
 
