@@ -9,6 +9,8 @@ description: Shiftproof Flutter Module Architecture & Routing
 ### Auth & Onboarding (`lib/screens/auth/`)
 
 - Enforce boundaries around `GetStartedScreen` and specific role (Owner/Tenant) initial states.
+- **Unified Auth Pattern**: Email authentication should _always_ route through a single `email_auth_screen.dart` that attempts sign in first.
+  - If `invalid-credential` or `user-not-found` is thrown, smoothly route arguments (email, password) to `email_registration_screen.dart` to gather just the remaining info (Full Name) to complete sign up.
 
 ### Dashboard (`lib/screens/dashboard/`)
 

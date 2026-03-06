@@ -1,12 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../tenant/tenant_main_screen.dart';
-import '../properties/owner_main_screen.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../widgets/buttons/social_button.dart';
+import 'email_auth_screen.dart';
+import '../../services/auth_service.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final AuthService _authService = AuthService();
+  bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => _isGoogleLoading = true);
+    try {
+      final user = await _authService.signInWithGoogle();
+      if (user != null && mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An unexpected error occurred.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isGoogleLoading = false);
+      }
+    }
+  }
+
+  Future<void> _handleAppleSignIn() async {
+    setState(() => _isAppleLoading = true);
+    try {
+      final user = await _authService.signInWithApple();
+      if (user != null && mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An unexpected error occurred.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isAppleLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +110,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: colorScheme.shadow.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -87,29 +149,30 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.verified_user,
-                    color: Color(0xFF4CAF50),
-                    size: 18,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.verified_user,
+                        color: theme.colorScheme.primary,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'No spam. No ads.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'No spam. No ads.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ],
-              ),
 
               const Spacer(flex: 2),
 
               // Action Buttons
               SocialButton(
                 text: 'Continue with Google',
+                isLoading: _isGoogleLoading,
                 iconWidget: Image.network(
                   'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
                   width: 24,
@@ -117,12 +180,18 @@ class LoginScreen extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) =>
                       const Icon(Icons.g_mobiledata, size: 24),
                 ),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const OwnerMainScreen()),
-                  );
-                },
+                onPressed: _isGoogleLoading || _isAppleLoading
+                    ? null
+                    : _handleGoogleSignIn,
+              ),
+              const SizedBox(height: 16),
+              SocialButton(
+                text: 'Continue with Apple',
+                isLoading: _isAppleLoading,
+                iconWidget: const Icon(Icons.apple, size: 28),
+                onPressed: _isAppleLoading || _isGoogleLoading
+                    ? null
+                    : _handleAppleSignIn,
               ),
               const SizedBox(height: 16),
               PrimaryButton(
@@ -136,7 +205,6 @@ class LoginScreen extends StatelessWidget {
                 },
               ),
 
-              // Divider
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Row(
@@ -148,11 +216,10 @@ class LoginScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'OR',
-                        style: TextStyle(
+                        style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.onSurface.withValues(
                             alpha: 0.5,
                           ),
-                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -169,9 +236,9 @@ class LoginScreen extends StatelessWidget {
                 icon: Icons.mail_outline,
                 isSecondary: true,
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const TenantMainScreen()),
+                    MaterialPageRoute(builder: (_) => const EmailAuthScreen()),
                   );
                 },
               ),
@@ -191,9 +258,11 @@ class LoginScreen extends StatelessWidget {
                     alpha: 0.6,
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Skip for now',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),

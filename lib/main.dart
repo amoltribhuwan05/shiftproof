@@ -4,9 +4,23 @@ import 'screens/auth/login_screen.dart';
 import 'widgets/network/connection_wrapper.dart';
 
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  print('Attempting Firebase Init...');
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase Initialized Successfully!');
+  } catch (e, stack) {
+    print('FIREBASE INIT ERROR: $e');
+    print('STACKTRACE: $stack');
+  }
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

@@ -39,9 +39,7 @@ class PrimaryButton extends StatelessWidget {
           ),
           side: isSecondary
               ? BorderSide(
-                  color: theme.brightness == Brightness.light
-                      ? Colors.grey.shade300
-                      : Colors.grey.shade700,
+                  color: theme.colorScheme.outlineVariant,
                 )
               : BorderSide.none,
         ),
@@ -55,7 +53,7 @@ class PrimaryButton extends StatelessWidget {
             ],
             Text(
               text,
-              style: const TextStyle(
+              style: theme.textTheme.labelLarge?.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
