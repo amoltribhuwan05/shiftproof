@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FilterChipWidget extends StatelessWidget {
+  const FilterChipWidget({required this.label, super.key});
   final String label;
-
-  const FilterChipWidget({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {

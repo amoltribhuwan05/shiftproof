@@ -11,13 +11,6 @@ enum NotificationType {
 
 /// Data model for a single notification item.
 class NotificationItem {
-  final String id;
-  final NotificationType type;
-  final String title;
-  final String description;
-  final DateTime timestamp;
-  final bool isRead;
-
   const NotificationItem({
     required this.id,
     required this.type,
@@ -26,6 +19,12 @@ class NotificationItem {
     required this.timestamp,
     this.isRead = false,
   });
+  final String id;
+  final NotificationType type;
+  final String title;
+  final String description;
+  final DateTime timestamp;
+  final bool isRead;
 }
 
 /// A card widget for displaying a single notification.
@@ -36,16 +35,15 @@ class NotificationItem {
 /// - Right-aligned timestamp
 /// - Subtle unread dot indicator
 class NotificationCard extends StatelessWidget {
-  final NotificationItem notification;
-  final VoidCallback? onTap;
-  final VoidCallback? onDismiss;
-
   const NotificationCard({
-    super.key,
     required this.notification,
+    super.key,
     this.onTap,
     this.onDismiss,
   });
+  final NotificationItem notification;
+  final VoidCallback? onTap;
+  final VoidCallback? onDismiss;
 
   // --- Static helpers for icon/color based on type ---
 

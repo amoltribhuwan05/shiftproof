@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/buttons/primary_button.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
 class OwnerPlansScreen extends StatelessWidget {
   const OwnerPlansScreen({super.key});
@@ -35,10 +35,10 @@ class OwnerPlansScreen extends StatelessWidget {
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-              bottom: 120.0,
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: 120,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,8 +167,8 @@ class OwnerPlansScreen extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String price,
-    String? duration,
     required List<String> features,
+    String? duration,
     bool isRecommended = false,
   }) {
     final theme = Theme.of(context);
@@ -245,9 +245,8 @@ class OwnerPlansScreen extends StatelessWidget {
               const SizedBox(height: 16),
               ...features.map(
                 (feature) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.check_circle,

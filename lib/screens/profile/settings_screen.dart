@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../services/user_service.dart';
-import '../../data/models/models.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/services/user_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -30,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error loading user for settings: $e');
       if (mounted) {
         setState(() {
@@ -68,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -96,11 +96,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: colorScheme.primary.withValues(alpha: 0.2),
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  _user?.isOwner == true ? 'Property Owner' : 'Premium Member',
+                                  _user?.isOwner ?? false
+                                      ? 'Property Owner'
+                                      : 'Premium Member',
                                   style: TextStyle(
                                     color: colorScheme.primary,
                                     fontSize: 10,
@@ -198,10 +202,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final avatarUrl = _user?.avatarUrl;
     final name = _user?.name;
-    final String initial = name?.isNotEmpty == true ? name![0].toUpperCase() : 'U';
+    final initial = name?.isNotEmpty ?? false ? name![0].toUpperCase() : 'U';
 
     return Container(
       width: 64,
@@ -214,14 +218,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       child: ClipOval(
-        child: avatarUrl?.isNotEmpty == true
+        child: avatarUrl?.isNotEmpty ?? false
             ? CachedNetworkImage(
                 imageUrl: avatarUrl!,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
                   color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 ),
-                errorWidget: (context, url, error) => _buildDefaultAvatar(theme, initial),
+                errorWidget: (context, url, error) =>
+                    _buildDefaultAvatar(theme, initial),
               )
             : _buildDefaultAvatar(theme, initial),
       ),
@@ -252,7 +257,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           color: Theme.of(context).colorScheme.primary,
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          letterSpacing: 2.0,
+          letterSpacing: 2,
         ),
       ),
     );
@@ -292,7 +297,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Icon(

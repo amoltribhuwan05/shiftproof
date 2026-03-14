@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ProfileMenuCard extends StatelessWidget {
+  const ProfileMenuCard({required this.items, super.key});
   final List<ProfileMenuItem> items;
-
-  const ProfileMenuCard({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class ProfileMenuCard extends StatelessWidget {
                   isLast && items.length == 1 ? 12 : 0,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
                       Container(
@@ -110,17 +109,16 @@ class ProfileMenuCard extends StatelessWidget {
 }
 
 class ProfileMenuItem {
+  ProfileMenuItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.subtitle,
+    this.isDestructive = false,
+  });
   final IconData icon;
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
   final bool isDestructive;
-
-  ProfileMenuItem({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    required this.onTap,
-    this.isDestructive = false,
-  });
 }

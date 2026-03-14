@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../widgets/buttons/primary_button.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
 class JoinPgScreen extends StatelessWidget {
   const JoinPgScreen({super.key});
@@ -42,7 +42,7 @@ class JoinPgScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
               Expanded(
@@ -98,7 +98,7 @@ class JoinPgScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Padding(
-                            padding: EdgeInsets.only(left: 4.0, bottom: 8.0),
+                            padding: EdgeInsets.only(left: 4, bottom: 8),
                             child: Text(
                               'Property Code',
                               style: TextStyle(

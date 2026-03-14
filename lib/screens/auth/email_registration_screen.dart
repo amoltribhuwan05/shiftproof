@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../services/auth_service.dart';
-import '../../../../widgets/auth/custom_text_field.dart';
-import '../../../../widgets/auth/primary_auth_button.dart';
+import 'package:shiftproof/services/auth_service.dart';
+import 'package:shiftproof/widgets/auth/custom_text_field.dart';
+import 'package:shiftproof/widgets/auth/primary_auth_button.dart';
 
 class EmailRegistrationScreen extends StatefulWidget {
   const EmailRegistrationScreen({super.key});
@@ -55,14 +56,20 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Account Created Successfully!')),
           );
-          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          unawaited(
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            ),
+          );
         }
       } on AuthException catch (e) {
         if (mounted) {
           if (e.code == 'email-already-in-use') {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Incorrect password for this email.'),
+                content: const Text('Incorrect password for this email.'),
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),
             );
@@ -77,11 +84,11 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
             );
           }
         }
-      } catch (e) {
+      } on Exception catch (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('An unexpected error occurred.'),
+              content: const Text('An unexpected error occurred.'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
@@ -108,7 +115,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Form(
             key: _formKey,
             child: Column(

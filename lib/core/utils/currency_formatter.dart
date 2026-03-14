@@ -25,9 +25,10 @@ class CurrencyFormatter {
     if (len <= 3) {
       result.write(str);
     } else {
-      result.write(str.substring(0, len - 3));
-      result.write(',');
-      result.write(str.substring(len - 3));
+      result
+        ..write(str.substring(0, len - 3))
+        ..write(',')
+        ..write(str.substring(len - 3));
       // Group remaining digits in pairs (for cr/lakh formatting)
       // The above handles up to lakhs; for larger numbers use formatCompact.
     }

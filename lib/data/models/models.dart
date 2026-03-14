@@ -1,6 +1,6 @@
+export 'api_error.dart';
 export 'app_user.dart';
 export 'current_stay.dart';
-export 'api_error.dart';
 export 'notification.dart';
 export 'pagination.dart';
 export 'payment.dart';

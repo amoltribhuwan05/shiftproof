@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
 class ActionCard extends StatelessWidget {
+  const ActionCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.isPrimary,
+    super.key,
+    this.onTap,
+  });
   final String title;
   final String subtitle;
   final IconData icon;
   final bool isPrimary;
   final VoidCallback? onTap;
-
-  const ActionCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isPrimary,
-    this.onTap,
-  });
 
   @override
   Widget build(BuildContext context) {

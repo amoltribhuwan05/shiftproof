@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/cards/profile_menu_card.dart';
-import '../tenant/tenant_main_screen.dart';
-import 'settings_screen.dart';
-import '../../widgets/cards/owner_onboarding_card.dart';
-import '../../services/user_service.dart';
-import '../../data/models/models.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/screens/profile/settings_screen.dart';
+import 'package:shiftproof/screens/tenant/tenant_main_screen.dart';
+import 'package:shiftproof/services/user_service.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/owner_onboarding_card.dart';
+import 'package:shiftproof/widgets/cards/profile_menu_card.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -43,10 +43,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Set management mode if owner, but keep tenant as default view
           // unless you want to default to management if they are an owner.
           // Based on brainstorming, tenant is default for everyone.
-          _isManagementMode = false; 
+          _isManagementMode = false;
         });
       }
-    } catch (e) {
+    } on Exception catch (_) {
       if (mounted) {
         setState(() {
           _error = 'Failed to load profile. Please try again.';
@@ -74,16 +74,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
         ),
-        actions: const [
-          NotificationBellButton(),
-        ],
+        actions: const [NotificationBellButton()],
       ),
       body: RefreshIndicator(
         onRefresh: _fetchProfile,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 const SizedBox(height: 24),
@@ -93,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildErrorState(context)
                 else ...[
                   _buildProfileHeader(context, _user!),
-                  
+
                   // Ownership Status / Onboarding / Mode Switcher
                   const SizedBox(height: 32),
                   if (_user!.isOwner)
@@ -103,12 +101,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onActionPressed: () {
                         // In a real app, navigate to ownership registration
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Onboarding flow coming soon!')),
+                          const SnackBar(
+                            content: Text('Onboarding flow coming soon!'),
+                          ),
                         );
                       },
                     ),
                 ],
-                
+
                 if (_user != null) ...[
                   const SizedBox(height: 32),
 
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            MaterialPageRoute<void>(
                               builder: (_) => const SettingsScreen(),
                             ),
                           );
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           // In a real app, sign out from AuthService here
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(
+                            MaterialPageRoute<void>(
                               builder: (_) => const TenantMainScreen(),
                             ),
                             (route) => false,
@@ -206,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0,
+                    letterSpacing: 2,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
@@ -253,7 +253,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         imageUrl: user.avatarUrl!,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => _buildShimmerCircle(96),
-                        errorWidget: (context, url, error) => _buildDefaultAvatar(user, isDark, theme),
+                        errorWidget: (context, url, error) =>
+                            _buildDefaultAvatar(user, isDark, theme),
                       )
                     : _buildDefaultAvatar(user, isDark, theme),
               ),
@@ -292,10 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Text(user.email ?? 'No Email', style: theme.textTheme.bodyMedium),
         const SizedBox(height: 8),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 4,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
             color: colorScheme.primary.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(16),
@@ -306,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: colorScheme.primary,
               fontSize: 10,
               fontWeight: FontWeight.bold,
-              letterSpacing: 1.0,
+              letterSpacing: 1,
             ),
           ),
         ),
@@ -317,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildDefaultAvatar(AppUser user, bool isDark, ThemeData theme) {
     final name = user.name ?? 'U';
     final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
-    
+
     return Container(
       color: theme.colorScheme.primary.withValues(alpha: 0.1),
       alignment: Alignment.center,
@@ -410,15 +408,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: theme.textTheme.bodyMedium?.copyWith(color: Colors.red),
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _fetchProfile,
-            child: const Text('Retry'),
-          ),
+          ElevatedButton(onPressed: _fetchProfile, child: const Text('Retry')),
         ],
       ),
     );
   }
-
 
   Widget _buildModeSwitcher(BuildContext context) {
     final theme = Theme.of(context);
@@ -477,7 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
-                  )
+                  ),
                 ]
               : null,
         ),
@@ -485,7 +479,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: isSelected ? colorScheme.onPrimary : theme.textTheme.bodyMedium?.color,
+            color: isSelected
+                ? colorScheme.onPrimary
+                : theme.textTheme.bodyMedium?.color,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             fontSize: 13,
           ),
@@ -505,7 +501,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Theme.of(context).colorScheme.primary,
             fontSize: 10,
             fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
+            letterSpacing: 2,
           ),
         ),
       ),

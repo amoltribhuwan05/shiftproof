@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/buttons/primary_button.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
 class ExportReportScreen extends StatefulWidget {
   const ExportReportScreen({super.key});
@@ -64,7 +64,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
           ),
 
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

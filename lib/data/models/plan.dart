@@ -1,13 +1,4 @@
 class Plan {
-  final String? id;
-  final List<String>? features;
-  final bool? isCurrent;
-  final bool? isPopular;
-  final int? maxProperties;
-  final int? maxTenants;
-  final String? name;
-  final int? price;
-
   const Plan({
     this.id,
     this.features,
@@ -22,7 +13,9 @@ class Plan {
   factory Plan.fromJson(Map<String, dynamic> json) {
     return Plan(
       id: json['id'] as String?,
-      features: (json['features'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      features: (json['features'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       isCurrent: json['isCurrent'] as bool?,
       isPopular: json['isPopular'] as bool?,
       maxProperties: json['maxProperties'] as int?,
@@ -31,6 +24,14 @@ class Plan {
       price: json['price'] as int?,
     );
   }
+  final String? id;
+  final List<String>? features;
+  final bool? isCurrent;
+  final bool? isPopular;
+  final int? maxProperties;
+  final int? maxTenants;
+  final String? name;
+  final int? price;
 
   Map<String, dynamic> toJson() {
     return {

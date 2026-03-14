@@ -1,17 +1,4 @@
 class CurrentStay {
-  final String? address;
-  final String? dueDate;
-  final String? imageUrl;
-  final bool? isRentDue;
-  final String? leaseEnd;
-  final String? leaseStart;
-  final String? ownerAvatarUrl;
-  final String? ownerName;
-  final String? ownerPhone;
-  final String? propertyName;
-  final int? rentAmount;
-  final String? roomNumber;
-
   const CurrentStay({
     this.address,
     this.dueDate,
@@ -43,6 +30,18 @@ class CurrentStay {
       roomNumber: json['roomNumber'] as String?,
     );
   }
+  final String? address;
+  final String? dueDate;
+  final String? imageUrl;
+  final bool? isRentDue;
+  final String? leaseEnd;
+  final String? leaseStart;
+  final String? ownerAvatarUrl;
+  final String? ownerName;
+  final String? ownerPhone;
+  final String? propertyName;
+  final int? rentAmount;
+  final String? roomNumber;
 
   Map<String, dynamic> toJson() {
     return {

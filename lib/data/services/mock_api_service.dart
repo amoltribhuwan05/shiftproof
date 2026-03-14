@@ -1,10 +1,10 @@
-import '../mock_api.dart';
-import '../models/property_model.dart';
-import '../models/tenant_model.dart';
-import '../models/payment_model.dart';
-import '../models/notification_model.dart';
-import '../models/user_model.dart';
-import '../../core/utils/currency_formatter.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/mock_api.dart';
+import 'package:shiftproof/data/models/notification_model.dart';
+import 'package:shiftproof/data/models/payment_model.dart';
+import 'package:shiftproof/data/models/property_model.dart';
+import 'package:shiftproof/data/models/tenant_model.dart';
+import 'package:shiftproof/data/models/user_model.dart';
 
 /// Mock API service — all data comes from MockApi (mock_api.dart).
 /// To switch to a real backend: replace each method body with an
@@ -27,7 +27,7 @@ class MockApiService {
   static Property? getPropertyById(String id) {
     try {
       return getProperties().firstWhere((p) => p.id == id);
-    } catch (_) {
+    } on Exception catch (_) {
       return null;
     }
   }

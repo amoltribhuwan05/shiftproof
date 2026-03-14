@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {
+  const PrimaryButton({
+    required this.text,
+    required this.onPressed,
+    super.key,
+    this.icon,
+    this.isSecondary = false,
+  });
   final String text;
   final VoidCallback onPressed;
   final IconData? icon;
   final bool isSecondary;
-
-  const PrimaryButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.icon,
-    this.isSecondary = false,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +37,7 @@ class PrimaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(28), // Fully rounded
           ),
           side: isSecondary
-              ? BorderSide(
-                  color: theme.colorScheme.outlineVariant,
-                )
+              ? BorderSide(color: theme.colorScheme.outlineVariant)
               : BorderSide.none,
         ),
         onPressed: onPressed,

@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 enum SocialProvider { google, apple }
 
 class SocialLoginButton extends StatelessWidget {
-  final SocialProvider provider;
-  final VoidCallback onPressed;
-
   const SocialLoginButton({
-    super.key,
     required this.provider,
     required this.onPressed,
+    super.key,
   });
+  final SocialProvider provider;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class SocialLoginButton extends StatelessWidget {
         : Icons.apple; // Use generic icons or assets if preferred
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: SizedBox(
         width: double.infinity,
         height: 56,

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
-import '../../../../services/auth_service.dart';
-import '../../../../widgets/auth/custom_text_field.dart';
-import '../../../../widgets/auth/primary_auth_button.dart';
-import '../../../../widgets/auth/social_login_button.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/services/auth_service.dart';
+import 'package:shiftproof/widgets/auth/custom_text_field.dart';
+import 'package:shiftproof/widgets/auth/primary_auth_button.dart';
+import 'package:shiftproof/widgets/auth/social_login_button.dart';
 
 class EmailAuthScreen extends StatefulWidget {
   const EmailAuthScreen({super.key});
@@ -43,20 +44,28 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Successfully Signed In')),
           );
-          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          unawaited(
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+            ),
+          );
         }
       } on AuthException catch (e) {
         if (mounted) {
           if (e.code == 'invalid-credential' ||
               e.code == 'user-not-found' ||
               e.code == 'wrong-password') {
-            Navigator.pushNamed(
-              context,
-              '/signup',
-              arguments: {
-                'email': _emailController.text.trim(),
-                'password': _passwordController.text.trim(),
-              },
+            unawaited(
+              Navigator.pushNamed(
+                context,
+                '/signup',
+                arguments: {
+                  'email': _emailController.text.trim(),
+                  'password': _passwordController.text.trim(),
+                },
+              ),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -67,11 +76,11 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
             );
           }
         }
-      } catch (e) {
+      } on Exception catch (_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('An unexpected error occurred.'),
+              content: const Text('An unexpected error occurred.'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
@@ -91,7 +100,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Form(
             key: _formKey,
             child: Column(
@@ -174,7 +183,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'OR',
                         style: theme.textTheme.bodyMedium?.copyWith(

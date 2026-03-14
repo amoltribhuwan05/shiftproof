@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../screens/notifications/notifications_screen.dart';
+import 'package:shiftproof/screens/notifications/notifications_screen.dart';
 
 /// A reusable notification bell icon button for app bars.
 /// Shows a colored dot indicator when [hasUnread] is true.
 class NotificationBellButton extends StatelessWidget {
-  final bool hasUnread;
-  final Color? dotColor;
-
   const NotificationBellButton({
     super.key,
     this.hasUnread = true,
     this.dotColor,
   });
+  final bool hasUnread;
+  final Color? dotColor;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,9 @@ class NotificationBellButton extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+              MaterialPageRoute<void>(
+                builder: (_) => const NotificationsScreen(),
+              ),
             );
           },
         ),

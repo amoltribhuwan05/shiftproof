@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
 class RoomCard extends StatelessWidget {
+  const RoomCard({
+    required this.title,
+    required this.icon,
+    required this.tag,
+    required this.tagColor,
+    required this.desc,
+    required this.price,
+    super.key,
+    this.isPopular = false,
+  });
   final String title;
   final IconData icon;
   final String tag;
@@ -8,17 +18,6 @@ class RoomCard extends StatelessWidget {
   final String desc;
   final String price;
   final bool isPopular;
-
-  const RoomCard({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.tag,
-    required this.tagColor,
-    required this.desc,
-    required this.price,
-    this.isPopular = false,
-  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
 class PrimaryAuthButton extends StatelessWidget {
+  const PrimaryAuthButton({
+    required this.text,
+    required this.onPressed,
+    super.key,
+    this.isLoading = false,
+  });
   final String text;
   final VoidCallback onPressed;
   final bool isLoading;
-
-  const PrimaryAuthButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.isLoading = false,
-  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: SizedBox(
         width: double.infinity,
         height: 56,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../data/services/mock_api_service.dart';
-import '../../data/models/payment_model.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/models/payment_model.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 
 class PaymentHistoryScreen extends StatelessWidget {
   const PaymentHistoryScreen({super.key});
@@ -136,10 +136,7 @@ class PaymentHistoryScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(
-              color: theme.colorScheme.outlineVariant,
-              width: 1,
-            ),
+            bottom: BorderSide(color: theme.colorScheme.outlineVariant),
           ),
         ),
         child: Row(

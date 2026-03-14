@@ -1,19 +1,4 @@
 class Property {
-  final String? id;
-  final List<String>? amenities;
-  final int? deposit;
-  final String? description;
-  final String? imageUrl;
-  final String? location;
-  final int? occupiedRooms;
-  final String? ownerAvatarUrl;
-  final String? ownerName;
-  final int? price;
-  final double? rating;
-  final String? title;
-  final int? totalRooms;
-  final String? type;
-
   const Property({
     this.id,
     this.amenities,
@@ -34,7 +19,9 @@ class Property {
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property(
       id: json['id'] as String?,
-      amenities: (json['amenities'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      amenities: (json['amenities'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       deposit: json['deposit'] as int?,
       description: json['description'] as String?,
       imageUrl: json['imageUrl'] as String?,
@@ -49,6 +36,20 @@ class Property {
       type: json['type'] as String?,
     );
   }
+  final String? id;
+  final List<String>? amenities;
+  final int? deposit;
+  final String? description;
+  final String? imageUrl;
+  final String? location;
+  final int? occupiedRooms;
+  final String? ownerAvatarUrl;
+  final String? ownerName;
+  final int? price;
+  final double? rating;
+  final String? title;
+  final int? totalRooms;
+  final String? type;
 
   Map<String, dynamic> toJson() {
     return {
@@ -71,15 +72,6 @@ class Property {
 }
 
 class CreatePropertyRequest {
-  final String location;
-  final int price;
-  final String title;
-  final String type;
-  final List<String>? amenities;
-  final int? deposit;
-  final String? description;
-  final int? totalRooms;
-
   const CreatePropertyRequest({
     required this.location,
     required this.price,
@@ -90,6 +82,14 @@ class CreatePropertyRequest {
     this.description,
     this.totalRooms,
   });
+  final String location;
+  final int price;
+  final String title;
+  final String type;
+  final List<String>? amenities;
+  final int? deposit;
+  final String? description;
+  final int? totalRooms;
 
   Map<String, dynamic> toJson() {
     return {

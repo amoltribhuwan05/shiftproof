@@ -1,14 +1,4 @@
 class Payment {
-  final String? id;
-  final int? amount;
-  final String? date;
-  final String? description;
-  final String? propertyId;
-  final String? status;
-  final String? tenantName;
-  final String? title;
-  final String? type;
-
   const Payment({
     this.id,
     this.amount,
@@ -34,6 +24,15 @@ class Payment {
       type: json['type'] as String?,
     );
   }
+  final String? id;
+  final int? amount;
+  final String? date;
+  final String? description;
+  final String? propertyId;
+  final String? status;
+  final String? tenantName;
+  final String? title;
+  final String? type;
 
   Map<String, dynamic> toJson() {
     return {
@@ -51,11 +50,6 @@ class Payment {
 }
 
 class PaymentSummary {
-  final int? overdueTenants;
-  final int? pendingAmount;
-  final int? totalCollectedThisMonth;
-  final int? totalTenants;
-
   const PaymentSummary({
     this.overdueTenants,
     this.pendingAmount,
@@ -71,24 +65,23 @@ class PaymentSummary {
       totalTenants: json['totalTenants'] as int?,
     );
   }
+  final int? overdueTenants;
+  final int? pendingAmount;
+  final int? totalCollectedThisMonth;
+  final int? totalTenants;
 
   Map<String, dynamic> toJson() {
     return {
       if (overdueTenants != null) 'overdueTenants': overdueTenants,
       if (pendingAmount != null) 'pendingAmount': pendingAmount,
-      if (totalCollectedThisMonth != null) 'totalCollectedThisMonth': totalCollectedThisMonth,
+      if (totalCollectedThisMonth != null)
+        'totalCollectedThisMonth': totalCollectedThisMonth,
       if (totalTenants != null) 'totalTenants': totalTenants,
     };
   }
 }
 
 class CreatePaymentRequest {
-  final int amount;
-  final String propertyId;
-  final String title;
-  final String type;
-  final String? description;
-
   const CreatePaymentRequest({
     required this.amount,
     required this.propertyId,
@@ -96,6 +89,11 @@ class CreatePaymentRequest {
     required this.type,
     this.description,
   });
+  final int amount;
+  final String propertyId;
+  final String title;
+  final String type;
+  final String? description;
 
   Map<String, dynamic> toJson() {
     return {

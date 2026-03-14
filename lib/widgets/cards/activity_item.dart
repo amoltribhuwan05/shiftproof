@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ActivityItem extends StatelessWidget {
+  const ActivityItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.iconColor,
+    required this.iconBgColor,
+    super.key,
+    this.onTap,
+  });
   final String title;
   final String subtitle;
   final IconData icon;
@@ -8,22 +17,12 @@ class ActivityItem extends StatelessWidget {
   final Color iconBgColor;
   final VoidCallback? onTap;
 
-  const ActivityItem({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.iconColor,
-    required this.iconBgColor,
-    this.onTap,
-  });
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Container(

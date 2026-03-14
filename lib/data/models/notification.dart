@@ -1,11 +1,4 @@
 class AppNotification {
-  final String? id;
-  final String? description;
-  final bool? isRead;
-  final String? timestamp;
-  final String? title;
-  final String? type;
-
   const AppNotification({
     this.id,
     this.description,
@@ -25,6 +18,12 @@ class AppNotification {
       type: json['type'] as String?,
     );
   }
+  final String? id;
+  final String? description;
+  final bool? isRead;
+  final String? timestamp;
+  final String? title;
+  final String? type;
 
   Map<String, dynamic> toJson() {
     return {

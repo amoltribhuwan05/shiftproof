@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 
 class PayBillScreen extends StatefulWidget {
   const PayBillScreen({super.key});
@@ -42,10 +42,10 @@ class _PayBillScreenState extends State<PayBillScreen> {
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-              bottom: 120.0,
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: 120,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,15 +69,15 @@ class _PayBillScreenState extends State<PayBillScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.warning_amber_rounded,
                                 color: Color(0xFFF44336),
                                 size: 18,
                               ),
-                              const SizedBox(width: 8),
-                              const Text(
+                              SizedBox(width: 8),
+                              Text(
                                 'Due by Oct 5th',
                                 style: TextStyle(
                                   color: Color(0xFFF44336),
@@ -145,28 +145,28 @@ class _PayBillScreenState extends State<PayBillScreen> {
                       _buildSummaryRow(
                         context,
                         'Rent',
-                        '\$15,000',
+                        r'$15,000',
                         Icons.apartment,
                       ),
                       const SizedBox(height: 12),
                       _buildSummaryRow(
                         context,
                         'Electricity',
-                        '\$1,200',
+                        r'$1,200',
                         Icons.bolt,
                       ),
                       const SizedBox(height: 12),
                       _buildSummaryRow(
                         context,
                         'Water',
-                        '\$300',
+                        r'$300',
                         Icons.water_drop_outlined,
                       ),
                       const SizedBox(height: 12),
                       _buildSummaryRow(
                         context,
                         'Maintenance',
-                        '\$500',
+                        r'$500',
                         Icons.build_outlined,
                       ),
                       const SizedBox(height: 16),
@@ -186,7 +186,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
                             ),
                           ),
                           Text(
-                            '\$17,000',
+                            r'$17,000',
                             style: TextStyle(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.w900,
@@ -263,7 +263,6 @@ class _PayBillScreenState extends State<PayBillScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 1,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -278,7 +277,7 @@ class _PayBillScreenState extends State<PayBillScreen> {
                             ),
                           ),
                           const Text(
-                            '\$17,000',
+                            r'$17,000',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -288,7 +287,6 @@ class _PayBillScreenState extends State<PayBillScreen> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
                       child: SizedBox(
                         height: 56,
                         child: ElevatedButton(

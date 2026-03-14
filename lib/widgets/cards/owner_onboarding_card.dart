@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OwnerOnboardingCard extends StatelessWidget {
+  const OwnerOnboardingCard({required this.onActionPressed, super.key});
   final VoidCallback onActionPressed;
-
-  const OwnerOnboardingCard({
-    super.key,
-    required this.onActionPressed,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +43,7 @@ class OwnerOnboardingCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

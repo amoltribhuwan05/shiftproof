@@ -1,20 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 class PropertyCard extends StatelessWidget {
-  final String title;
-  final String location;
-  final String price;
-  final String imageUrl;
-  final String typeTag;
-  final String statusTag;
-  final Color statusColor;
-  final int tenants;
-  final int units;
-  final VoidCallback onTap;
-
   const PropertyCard({
-    super.key,
     required this.title,
     required this.location,
     required this.price,
@@ -25,7 +13,18 @@ class PropertyCard extends StatelessWidget {
     required this.tenants,
     required this.units,
     required this.onTap,
+    super.key,
   });
+  final String title;
+  final String location;
+  final String price;
+  final String imageUrl;
+  final String typeTag;
+  final String statusTag;
+  final Color statusColor;
+  final int tenants;
+  final int units;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -59,18 +58,21 @@ class PropertyCard extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: imageUrl,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
+                    placeholder: (context, url) => ColoredBox(
                       color: isDark
                           ? theme.colorScheme.surface
                           : Colors.grey.shade200,
                       child: const Center(child: CircularProgressIndicator()),
                     ),
-                    errorWidget: (context, url, error) => Container(
+                    errorWidget: (context, url, error) => ColoredBox(
                       color: isDark
                           ? theme.colorScheme.surface
                           : Colors.grey.shade200,
                       child: const Center(
-                        child: Icon(Icons.image_not_supported, color: Colors.grey),
+                        child: Icon(
+                          Icons.image_not_supported,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
@@ -127,7 +129,7 @@ class PropertyCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   // Title and Price Row

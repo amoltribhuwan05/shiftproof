@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NoInternetScreen extends StatelessWidget {
+  const NoInternetScreen({required this.onRetry, super.key});
   final VoidCallback onRetry;
-
-  const NoInternetScreen({super.key, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class NoInternetScreen extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

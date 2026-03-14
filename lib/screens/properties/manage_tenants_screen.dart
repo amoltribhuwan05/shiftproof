@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../data/services/mock_api_service.dart';
-import '../../data/models/tenant_model.dart';
-import '../../widgets/cards/tenant_card.dart';
+import 'package:shiftproof/data/models/tenant_model.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/tenant_card.dart';
 
 class ManageTenantsScreen extends StatelessWidget {
   const ManageTenantsScreen({super.key});

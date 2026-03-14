@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/buttons/primary_button.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
 class AddPropertyScreen extends StatelessWidget {
   const AddPropertyScreen({super.key});
@@ -29,7 +29,7 @@ class AddPropertyScreen extends StatelessWidget {
         actions: const [NotificationBellButton()],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -377,7 +377,7 @@ class AddPropertyScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(color: theme.colorScheme.primary),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../data/services/mock_api_service.dart';
-import '../../widgets/cards/payout_item.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/payout_item.dart';
 
 class PayoutsScreen extends StatelessWidget {
   const PayoutsScreen({super.key});
@@ -42,7 +42,7 @@ class PayoutsScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -81,8 +81,8 @@ class PayoutsScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Icon(
                                 Icons.trending_up,
                                 color: Color(0xFF4CAF50), // semantic green

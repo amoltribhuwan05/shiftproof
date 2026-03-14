@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../widgets/cards/property_card.dart';
-import '../../data/services/mock_api_service.dart';
-import 'property_details_screen.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/screens/properties/property_details_screen.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/property_card.dart';
 
 class MyPropertiesScreen extends StatelessWidget {
   const MyPropertiesScreen({super.key});
@@ -94,7 +94,7 @@ class MyPropertiesScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<void>(
                         builder: (context) =>
                             PropertyDetailsScreen(property: p),
                       ),
@@ -128,7 +128,7 @@ class MyPropertiesScreen extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<void>(
                         builder: (context) =>
                             PropertyDetailsScreen(property: p),
                       ),

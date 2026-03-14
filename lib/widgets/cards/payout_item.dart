@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
 class PayoutItem extends StatelessWidget {
-  final String ref;
-  final String amount;
-  final String date;
-  final String status;
-  final Color statusColor;
-
   const PayoutItem({
-    super.key,
     required this.ref,
     required this.amount,
     required this.date,
     required this.status,
     required this.statusColor,
+    super.key,
   });
+  final String ref;
+  final String amount;
+  final String date;
+  final String status;
+  final Color statusColor;
 
   @override
   Widget build(BuildContext context) {

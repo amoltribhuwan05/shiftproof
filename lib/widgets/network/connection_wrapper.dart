@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'no_internet_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/widgets/network/no_internet_screen.dart';
 
 class ConnectionWrapper extends StatefulWidget {
+  const ConnectionWrapper({required this.child, super.key});
   final Widget child;
-
-  const ConnectionWrapper({super.key, required this.child});
 
   @override
   State<ConnectionWrapper> createState() => _ConnectionWrapperState();
@@ -37,7 +37,7 @@ class _ConnectionWrapperState extends State<ConnectionWrapper> {
     late List<ConnectivityResult> result;
     try {
       result = await _connectivity.checkConnectivity();
-    } catch (e) {
+    } on Exception catch (_) {
       // Return true if failed to avoid false positives blocking the app
       setState(() {
         _hasInternet = true;
@@ -62,10 +62,10 @@ class _ConnectionWrapperState extends State<ConnectionWrapper> {
     });
   }
 
-  void _retryConnection() async {
+  Future<void> _retryConnection() async {
     // Show a loading indicator briefly or just re-check immediately
     final result = await _connectivity.checkConnectivity();
-    _updateConnectionStatus(result);
+    unawaited(_updateConnectionStatus(result));
   }
 
   @override

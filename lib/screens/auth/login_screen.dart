@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../tenant/tenant_main_screen.dart';
-import '../../widgets/buttons/primary_button.dart';
-import '../../widgets/buttons/social_button.dart';
-import 'email_auth_screen.dart';
-import '../../services/auth_service.dart';
+import 'package:shiftproof/screens/auth/email_auth_screen.dart';
+import 'package:shiftproof/screens/tenant/tenant_main_screen.dart';
+import 'package:shiftproof/services/auth_service.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
+import 'package:shiftproof/widgets/buttons/social_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,17 +25,21 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithGoogle();
       if (user != null && mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        unawaited(
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
+        );
       }
     } on AuthException catch (e, stack) {
-      debugPrint('AuthException during Google SignIn: ${e.code} - ${e.message}');
+      debugPrint(
+        'AuthException during Google SignIn: ${e.code} - ${e.message}',
+      );
       debugPrintStack(stackTrace: stack);
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(e.message)));
       }
-    } catch (e, stack) {
+    } on Exception catch (e, stack) {
       debugPrint('Unexpected error during Google SignIn: $e');
       debugPrintStack(stackTrace: stack);
       if (mounted) {
@@ -54,7 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithApple();
       if (user != null && mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        unawaited(
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
+        );
       }
     } on AuthException catch (e) {
       if (mounted) {
@@ -62,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text(e.message)));
       }
-    } catch (e) {
+    } on Exception catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('An unexpected error occurred.')),
@@ -83,9 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Header / Back button
               Align(
@@ -199,22 +205,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: 'Continue with Phone',
                 icon: Icons.call,
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const TenantMainScreen()),
+                  unawaited(
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const TenantMainScreen(),
+                      ),
+                    ),
                   );
                 },
               ),
 
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Row(
                   children: [
                     Expanded(
                       child: Divider(color: theme.colorScheme.outlineVariant),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'OR',
                         style: theme.textTheme.labelMedium?.copyWith(
@@ -237,9 +247,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 icon: Icons.mail_outline,
                 isSecondary: true,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const EmailAuthScreen()),
+                  unawaited(
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const EmailAuthScreen(),
+                      ),
+                    ),
                   );
                 },
               ),
@@ -249,9 +263,13 @@ class _LoginScreenState extends State<LoginScreen> {
               // Footer
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const TenantMainScreen()),
+                  unawaited(
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const TenantMainScreen(),
+                      ),
+                    ),
                   );
                 },
                 style: TextButton.styleFrom(

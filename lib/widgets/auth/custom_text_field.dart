@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
+  const CustomTextField({
+    required this.label,
+    required this.hint,
+    required this.controller,
+    super.key,
+    this.isPassword = false,
+    this.keyboardType = TextInputType.text,
+    this.validator,
+  });
   final String label;
   final String hint;
   final bool isPassword;
@@ -8,22 +17,12 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
 
-  const CustomTextField({
-    super.key,
-    required this.label,
-    required this.hint,
-    required this.controller,
-    this.isPassword = false,
-    this.keyboardType = TextInputType.text,
-    this.validator,
-  });
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: controller,
         obscureText: isPassword,

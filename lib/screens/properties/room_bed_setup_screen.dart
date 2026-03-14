@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/cards/room_setup_card.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/room_setup_card.dart';
 
 class RoomBedSetupScreen extends StatelessWidget {
   const RoomBedSetupScreen({super.key});
@@ -36,10 +36,10 @@ class RoomBedSetupScreen extends StatelessWidget {
         children: [
           SingleChildScrollView(
             padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
-              bottom: 120.0,
+              left: 16,
+              right: 16,
+              top: 16,
+              bottom: 120,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,21 +55,21 @@ class RoomBedSetupScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                RoomSetupCard(
+                const RoomSetupCard(
                   roomNumber: 'Room 101',
                   roomType: 'Main Wing · Standard',
                   totalBeds: 2,
                   occupiedBeds: 1,
                 ),
                 const SizedBox(height: 12),
-                RoomSetupCard(
+                const RoomSetupCard(
                   roomNumber: 'Room 102',
                   roomType: 'Main Wing · Dormitory',
                   totalBeds: 4,
                   occupiedBeds: 2,
                 ),
                 const SizedBox(height: 12),
-                RoomSetupCard(
+                const RoomSetupCard(
                   roomNumber: 'Room 103',
                   roomType: 'East Wing · Single',
                   totalBeds: 1,

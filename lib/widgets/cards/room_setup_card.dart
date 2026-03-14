@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 class RoomSetupCard extends StatelessWidget {
-  final String roomNumber;
-  final String roomType;
-  final int totalBeds;
-  final int occupiedBeds;
-
   const RoomSetupCard({
-    super.key,
     required this.roomNumber,
     required this.roomType,
     required this.totalBeds,
     required this.occupiedBeds,
+    super.key,
   });
+  final String roomNumber;
+  final String roomType;
+  final int totalBeds;
+  final int occupiedBeds;
 
   @override
   Widget build(BuildContext context) {

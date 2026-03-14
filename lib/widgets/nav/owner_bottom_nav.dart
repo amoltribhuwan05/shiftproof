@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 class OwnerBottomNav extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-
   const OwnerBottomNav({
-    super.key,
     required this.currentIndex,
     required this.onTap,
+    super.key,
   });
+  final int currentIndex;
+  final ValueChanged<int> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class OwnerBottomNav extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

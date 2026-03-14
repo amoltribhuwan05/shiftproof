@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../services/auth_service.dart';
+import 'package:shiftproof/services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () async {
               await authService.signOut();
               if (context.mounted) {
-                Navigator.pushReplacementNamed(context, '/signin');
+                unawaited(Navigator.pushReplacementNamed(context, '/signin'));
               }
             },
           ),

@@ -1,14 +1,4 @@
 class AppUser {
-  final String id;
-  final String? avatarUrl;
-  final String? email;
-  final String? joinDate;
-  final String? location;
-  final String? name;
-  final String? phone;
-  final String? role;
-  final bool isOwner;
-
   const AppUser({
     required this.id,
     this.avatarUrl,
@@ -34,6 +24,15 @@ class AppUser {
       isOwner: json['isOwner'] as bool? ?? false,
     );
   }
+  final String id;
+  final String? avatarUrl;
+  final String? email;
+  final String? joinDate;
+  final String? location;
+  final String? name;
+  final String? phone;
+  final String? role;
+  final bool isOwner;
 
   Map<String, dynamic> toJson() {
     return {

@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../data/models/tenant_model.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/models/tenant_model.dart';
 
 class TenantCard extends StatelessWidget {
+  const TenantCard({required this.tenant, super.key});
   final Tenant tenant;
-
-  const TenantCard({super.key, required this.tenant});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +17,8 @@ class TenantCard extends StatelessWidget {
     switch (tenant.status) {
       case 'active':
         statusColor = const Color(0xFF4CAF50);
-        break;
       case 'overdue':
         statusColor = const Color(0xFFF44336);
-        break;
       default:
         statusColor = const Color(0xFFFFC107);
     }
@@ -50,7 +47,9 @@ class TenantCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundImage: CachedNetworkImageProvider(tenant.avatarUrl),
+                    backgroundImage: CachedNetworkImageProvider(
+                      tenant.avatarUrl,
+                    ),
                     onBackgroundImageError: (_, _) {},
                     child: Icon(
                       Icons.person,

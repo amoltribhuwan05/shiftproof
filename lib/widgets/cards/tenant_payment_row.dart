@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TenantPaymentRow extends StatelessWidget {
-  final String initials;
-  final String name;
-  final String subtitle;
-  final String amount;
-  final String status;
-  final Color statusColor;
-  final Color customPrimary;
-
   const TenantPaymentRow({
-    super.key,
     required this.initials,
     required this.name,
     required this.subtitle,
@@ -18,7 +9,15 @@ class TenantPaymentRow extends StatelessWidget {
     required this.status,
     required this.statusColor,
     required this.customPrimary,
+    super.key,
   });
+  final String initials;
+  final String name;
+  final String subtitle;
+  final String amount;
+  final String status;
+  final Color statusColor;
+  final Color customPrimary;
 
   @override
   Widget build(BuildContext context) {

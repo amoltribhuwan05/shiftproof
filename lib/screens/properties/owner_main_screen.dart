@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../dashboard/property_dashboard_screen.dart';
-import '../properties/my_properties_screen.dart';
-import '../payments/collections_screen.dart';
-import '../profile/profile_screen.dart';
-import '../../widgets/nav/owner_bottom_nav.dart';
+import 'package:shiftproof/screens/dashboard/property_dashboard_screen.dart';
+import 'package:shiftproof/screens/payments/collections_screen.dart';
+import 'package:shiftproof/screens/profile/profile_screen.dart';
+import 'package:shiftproof/screens/properties/my_properties_screen.dart';
+import 'package:shiftproof/widgets/nav/owner_bottom_nav.dart';
 
 class OwnerMainScreen extends StatefulWidget {
   const OwnerMainScreen({super.key});

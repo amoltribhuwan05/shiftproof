@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/buttons/primary_button.dart';
-import '../../data/models/property_model.dart';
-import '../../widgets/cards/room_card.dart';
-import '../../widgets/cards/facility_item.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/data/models/property_model.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/buttons/primary_button.dart';
+import 'package:shiftproof/widgets/cards/facility_item.dart';
+import 'package:shiftproof/widgets/cards/room_card.dart';
 
 class PropertyDetailsScreen extends StatelessWidget {
-  final Property? property;
-
   const PropertyDetailsScreen({super.key, this.property});
+  final Property? property;
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +16,14 @@ class PropertyDetailsScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     // Use passed property or fall back to defaults
-    final String heroImage =
+    final heroImage =
         property?.imageUrl ??
         'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop';
-    final String propTitle = property?.title ?? 'Sunshine Heights PG';
-    final String propLocation =
+    final propTitle = property?.title ?? 'Sunshine Heights PG';
+    final propLocation =
         property?.location ?? 'Koramangala 4th Block, Bangalore';
-    final double propRating = property?.rating ?? 4.8;
-    final List<String> propAmenities =
+    final propRating = property?.rating ?? 4.8;
+    final propAmenities =
         property?.amenities ??
         [
           'Fast Wifi',
@@ -35,14 +34,14 @@ class PropertyDetailsScreen extends StatelessWidget {
           'Cleaning',
           'Gym',
         ];
-    final int propTenants = property?.occupiedRooms ?? 18;
+    final propTenants = property?.occupiedRooms ?? 18;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
             onPressed: () {
@@ -53,7 +52,7 @@ class PropertyDetailsScreen extends StatelessWidget {
         actions: [
           const NotificationBellButton(),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: IconButton(
               icon: Icon(Icons.share, color: theme.colorScheme.onSurface),
               onPressed: () {},
@@ -75,11 +74,11 @@ class PropertyDetailsScreen extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: heroImage,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
+                    placeholder: (context, url) => ColoredBox(
                       color: Colors.grey.shade200,
                       child: const Center(child: CircularProgressIndicator()),
                     ),
-                    errorWidget: (context, url, error) => Container(
+                    errorWidget: (context, url, error) => ColoredBox(
                       color: Colors.grey.shade300,
                       child: const Center(
                         child: Icon(
@@ -236,7 +235,7 @@ class PropertyDetailsScreen extends StatelessWidget {
 
             // Room Types
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -254,11 +253,11 @@ class PropertyDetailsScreen extends StatelessWidget {
                       primary: false,
                       shrinkWrap: true,
                       children: [
-                        RoomCard(
+                        const RoomCard(
                           title: 'Single Private',
                           icon: Icons.single_bed,
                           tag: '2 Left',
-                          tagColor: const Color(0xFF4CAF50),
+                          tagColor: Color(0xFF4CAF50),
                           desc: 'Ideally for students needing privacy.',
                           price: '₹12,000',
                         ),
@@ -295,7 +294,7 @@ class PropertyDetailsScreen extends StatelessWidget {
 
             // Facilities
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -331,7 +330,7 @@ class PropertyDetailsScreen extends StatelessWidget {
 
             // Current Tenants Snippet
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -354,9 +353,10 @@ class PropertyDetailsScreen extends StatelessWidget {
                                 left: 0,
                                 child: CircleAvatar(
                                   radius: 16,
-                                  backgroundImage: const CachedNetworkImageProvider(
-                                    'https://i.pravatar.cc/100?img=1',
-                                  ),
+                                  backgroundImage:
+                                      const CachedNetworkImageProvider(
+                                        'https://i.pravatar.cc/100?img=1',
+                                      ),
                                   onBackgroundImageError:
                                       (exception, stackTrace) {},
                                 ),
@@ -368,9 +368,10 @@ class PropertyDetailsScreen extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     radius: 14,
-                                    backgroundImage: const CachedNetworkImageProvider(
-                                      'https://i.pravatar.cc/100?img=2',
-                                    ),
+                                    backgroundImage:
+                                        const CachedNetworkImageProvider(
+                                          'https://i.pravatar.cc/100?img=2',
+                                        ),
                                     onBackgroundImageError:
                                         (exception, stackTrace) {},
                                   ),
@@ -383,9 +384,10 @@ class PropertyDetailsScreen extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     radius: 14,
-                                    backgroundImage: const CachedNetworkImageProvider(
-                                      'https://i.pravatar.cc/100?img=3',
-                                    ),
+                                    backgroundImage:
+                                        const CachedNetworkImageProvider(
+                                          'https://i.pravatar.cc/100?img=3',
+                                        ),
                                     onBackgroundImageError:
                                         (exception, stackTrace) {},
                                   ),
@@ -432,7 +434,7 @@ class PropertyDetailsScreen extends StatelessWidget {
 
             // Map
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -458,10 +460,9 @@ class PropertyDetailsScreen extends StatelessWidget {
                             imageUrl:
                                 'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              color: Colors.grey.shade200,
-                            ),
-                            errorWidget: (context, url, error) => Container(
+                            placeholder: (context, url) =>
+                                Container(color: Colors.grey.shade200),
+                            errorWidget: (context, url, error) => ColoredBox(
                               color: Colors.grey.shade300,
                               child: const Center(
                                 child: Icon(Icons.map, color: Colors.grey),

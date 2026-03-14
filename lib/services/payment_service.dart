@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
-import '../data/api_client.dart';
-import '../data/models/models.dart';
+import 'package:shiftproof/data/api_client.dart';
+import 'package:shiftproof/data/models/models.dart';
 
 class PaymentService {
-  final ApiClient _apiClient;
-
   PaymentService({ApiClient? apiClient})
     : _apiClient = apiClient ?? ApiClient.instance;
+  final ApiClient _apiClient;
 
   Future<PaginatedResponse<Payment>> listPayments({
     int? page,
@@ -23,13 +22,13 @@ class PaymentService {
       'type': type,
     }..removeWhere((_, value) => value == null);
 
-    final response = await _apiClient.dio.get(
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
       '/api/v1/payments',
       queryParameters: queryParameters,
     );
     return PaginatedResponse<Payment>.fromJson(
-      response.data,
-      (json) => Payment.fromJson(json),
+      response.data!,
+      Payment.fromJson,
     );
   }
 
@@ -37,14 +36,14 @@ class PaymentService {
     CreatePaymentRequest request, {
     String? idempotencyKey,
   }) async {
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.dio.post<Map<String, dynamic>>(
       '/api/v1/payments',
       data: request.toJson(),
       options: idempotencyKey != null
           ? Options(headers: {'X-Idempotency-Key': idempotencyKey})
           : null,
     );
-    return Payment.fromJson(response.data);
+    return Payment.fromJson(response.data!);
   }
 
   Future<PaginatedResponse<Payment>> getCollections({
@@ -60,18 +59,20 @@ class PaymentService {
       'status': status,
     }..removeWhere((_, value) => value == null);
 
-    final response = await _apiClient.dio.get(
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
       '/api/v1/payments/collections',
       queryParameters: queryParameters,
     );
     return PaginatedResponse<Payment>.fromJson(
-      response.data,
-      (json) => Payment.fromJson(json),
+      response.data!,
+      Payment.fromJson,
     );
   }
 
   Future<PaymentSummary> getPaymentSummary() async {
-    final response = await _apiClient.dio.get('/api/v1/payments/summary');
-    return PaymentSummary.fromJson(response.data);
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
+      '/api/v1/payments/summary',
+    );
+    return PaymentSummary.fromJson(response.data!);
   }
 }

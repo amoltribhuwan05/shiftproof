@@ -1,13 +1,5 @@
 class PaginationMeta {
-  final int? page;
-  final int? total;
-  final int? totalPages;
-
-  const PaginationMeta({
-    this.page,
-    this.total,
-    this.totalPages,
-  });
+  const PaginationMeta({this.page, this.total, this.totalPages});
 
   factory PaginationMeta.fromJson(Map<String, dynamic> json) {
     return PaginationMeta(
@@ -16,6 +8,9 @@ class PaginationMeta {
       totalPages: json['totalPages'] as int?,
     );
   }
+  final int? page;
+  final int? total;
+  final int? totalPages;
 
   Map<String, dynamic> toJson() {
     return {
@@ -27,20 +22,15 @@ class PaginationMeta {
 }
 
 class PaginatedResponse<T> {
-  final List<T> data;
-  final PaginationMeta? meta;
-
-  const PaginatedResponse({
-    required this.data,
-    this.meta,
-  });
+  const PaginatedResponse({required this.data, this.meta});
 
   factory PaginatedResponse.fromJson(
     Map<String, dynamic> json,
     T Function(Map<String, dynamic>) fromJsonT,
   ) {
     return PaginatedResponse<T>(
-      data: (json['data'] as List<dynamic>?)
+      data:
+          (json['data'] as List<dynamic>?)
               ?.map((e) => fromJsonT(e as Map<String, dynamic>))
               .toList() ??
           [],
@@ -49,6 +39,8 @@ class PaginatedResponse<T> {
           : PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
   }
+  final List<T> data;
+  final PaginationMeta? meta;
 
   Map<String, dynamic> toJson(Map<String, dynamic> Function(T) toJsonT) {
     return {

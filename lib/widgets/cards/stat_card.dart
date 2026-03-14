@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
 class StatCard extends StatelessWidget {
+  const StatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.trendIcon,
+    required this.trendValue,
+    required this.isTrendPositive,
+    super.key,
+    this.onTap,
+  });
   final String title;
   final String value;
   final IconData icon;
@@ -8,17 +18,6 @@ class StatCard extends StatelessWidget {
   final String trendValue;
   final bool isTrendPositive;
   final VoidCallback? onTap;
-
-  const StatCard({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.trendIcon,
-    required this.trendValue,
-    required this.isTrendPositive,
-    this.onTap,
-  });
 
   @override
   Widget build(BuildContext context) {

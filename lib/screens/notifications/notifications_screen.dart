@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/cards/notification_card.dart';
-import '../../data/services/mock_api_service.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/cards/notification_card.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -30,13 +30,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   static DateTime _parseTimestamp(String ts) {
     final now = DateTime.now();
     if (ts.contains('m ago')) {
-      final mins = int.tryParse(ts.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      final mins = int.tryParse(ts.replaceAll(RegExp('[^0-9]'), '')) ?? 0;
       return now.subtract(Duration(minutes: mins));
     } else if (ts.contains('h ago')) {
-      final hrs = int.tryParse(ts.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      final hrs = int.tryParse(ts.replaceAll(RegExp('[^0-9]'), '')) ?? 0;
       return now.subtract(Duration(hours: hrs));
     } else if (ts.contains('d ago')) {
-      final days = int.tryParse(ts.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      final days = int.tryParse(ts.replaceAll(RegExp('[^0-9]'), '')) ?? 0;
       return now.subtract(Duration(days: days));
     }
     return now;

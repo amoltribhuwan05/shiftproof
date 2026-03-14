@@ -1,14 +1,4 @@
 class AppUser {
-  final String id;
-  final String name;
-  final String email;
-  final String phone;
-  final String avatarUrl;
-  final String role; // 'owner', 'tenant'
-  /// ISO 8601 date string (e.g. "2023-01-15"). Use DateTime.parse() for logic.
-  final String joinDate;
-  final String location;
-
   const AppUser({
     required this.id,
     required this.name,
@@ -32,9 +22,49 @@ class AppUser {
       location: json['location'] as String,
     );
   }
+  final String id;
+  final String name;
+  final String email;
+  final String phone;
+  final String avatarUrl;
+  final String role; // 'owner', 'tenant'
+  /// ISO 8601 date string (e.g. "2023-01-15"). Use DateTime.parse() for logic.
+  final String joinDate;
+  final String location;
 }
 
 class CurrentStay {
+  const CurrentStay({
+    required this.propertyName,
+    required this.roomNumber,
+    required this.address,
+    required this.rentAmount,
+    required this.dueDate,
+    required this.ownerName,
+    required this.ownerPhone,
+    required this.ownerAvatarUrl,
+    required this.leaseStart,
+    required this.leaseEnd,
+    required this.imageUrl,
+    required this.isRentDue,
+  });
+
+  factory CurrentStay.fromJson(Map<String, dynamic> json) {
+    return CurrentStay(
+      propertyName: json['propertyName'] as String,
+      roomNumber: json['roomNumber'] as String,
+      address: json['address'] as String,
+      rentAmount: (json['rentAmount'] as num).toInt(),
+      dueDate: json['dueDate'] as String,
+      ownerName: json['ownerName'] as String,
+      ownerPhone: json['ownerPhone'] as String,
+      ownerAvatarUrl: json['ownerAvatarUrl'] as String? ?? '',
+      leaseStart: json['leaseStart'] as String,
+      leaseEnd: json['leaseEnd'] as String,
+      imageUrl: json['imageUrl'] as String,
+      isRentDue: json['isRentDue'] as bool,
+    );
+  }
   final String propertyName;
   final String roomNumber;
   final String address;
@@ -58,44 +88,12 @@ class CurrentStay {
   /// True if rent for the current period is unpaid.
   final bool isRentDue;
 
-  const CurrentStay({
-    required this.propertyName,
-    required this.roomNumber,
-    required this.address,
-    required this.rentAmount,
-    required this.dueDate,
-    required this.ownerName,
-    required this.ownerPhone,
-    required this.ownerAvatarUrl,
-    required this.leaseStart,
-    required this.leaseEnd,
-    required this.imageUrl,
-    required this.isRentDue,
-  });
-
   /// Convenience getter — parses leaseEnd to compute remaining days.
   int get daysUntilLeaseExpiry {
     try {
       return DateTime.parse(leaseEnd).difference(DateTime.now()).inDays;
-    } catch (_) {
+    } on Exception catch (_) {
       return -1;
     }
-  }
-
-  factory CurrentStay.fromJson(Map<String, dynamic> json) {
-    return CurrentStay(
-      propertyName: json['propertyName'] as String,
-      roomNumber: json['roomNumber'] as String,
-      address: json['address'] as String,
-      rentAmount: (json['rentAmount'] as num).toInt(),
-      dueDate: json['dueDate'] as String,
-      ownerName: json['ownerName'] as String,
-      ownerPhone: json['ownerPhone'] as String,
-      ownerAvatarUrl: json['ownerAvatarUrl'] as String? ?? '',
-      leaseStart: json['leaseStart'] as String,
-      leaseEnd: json['leaseEnd'] as String,
-      imageUrl: json['imageUrl'] as String,
-      isRentDue: json['isRentDue'] as bool,
-    );
   }
 }

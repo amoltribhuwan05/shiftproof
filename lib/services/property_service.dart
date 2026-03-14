@@ -1,11 +1,10 @@
-import '../data/api_client.dart';
-import '../data/models/models.dart';
+import 'package:shiftproof/data/api_client.dart';
+import 'package:shiftproof/data/models/models.dart';
 
 class PropertyService {
-  final ApiClient _apiClient;
-
   PropertyService({ApiClient? apiClient})
     : _apiClient = apiClient ?? ApiClient.instance;
+  final ApiClient _apiClient;
 
   Future<PaginatedResponse<Property>> listProperties({
     int? page,
@@ -14,41 +13,43 @@ class PropertyService {
     final queryParameters = <String, dynamic>{'page': page, 'limit': limit}
       ..removeWhere((_, value) => value == null);
 
-    final response = await _apiClient.dio.get(
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
       '/api/v1/properties',
       queryParameters: queryParameters,
     );
     return PaginatedResponse<Property>.fromJson(
-      response.data,
-      (json) => Property.fromJson(json),
+      response.data!,
+      Property.fromJson,
     );
   }
 
   Future<Property> createProperty(CreatePropertyRequest request) async {
-    final response = await _apiClient.dio.post(
+    final response = await _apiClient.dio.post<Map<String, dynamic>>(
       '/api/v1/properties',
       data: request.toJson(),
     );
-    return Property.fromJson(response.data);
+    return Property.fromJson(response.data!);
   }
 
   Future<Property> getProperty(String id) async {
-    final response = await _apiClient.dio.get('/api/v1/properties/$id');
-    return Property.fromJson(response.data);
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
+      '/api/v1/properties/$id',
+    );
+    return Property.fromJson(response.data!);
   }
 
   Future<Property> updateProperty(
     String id,
     CreatePropertyRequest request,
   ) async {
-    final response = await _apiClient.dio.put(
+    final response = await _apiClient.dio.put<Map<String, dynamic>>(
       '/api/v1/properties/$id',
       data: request.toJson(),
     );
-    return Property.fromJson(response.data);
+    return Property.fromJson(response.data!);
   }
 
   Future<void> deleteProperty(String id) async {
-    await _apiClient.dio.delete('/api/v1/properties/$id');
+    await _apiClient.dio.delete<Map<String, dynamic>>('/api/v1/properties/$id');
   }
 }

@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
-import 'core/theme/app_theme.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/auth/email_registration_screen.dart';
-import 'screens/tenant/tenant_main_screen.dart';
-import 'widgets/network/connection_wrapper.dart';
-
-import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shiftproof/core/theme/app_theme.dart';
+import 'package:shiftproof/firebase_options.dart';
+import 'package:shiftproof/screens/auth/email_registration_screen.dart';
+import 'package:shiftproof/screens/auth/login_screen.dart';
+import 'package:shiftproof/screens/tenant/tenant_main_screen.dart';
+import 'package:shiftproof/widgets/network/connection_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     debugPrint('Firebase Initialized Successfully.');
-  } catch (e, stack) {
+  } on Exception catch (e, stack) {
     debugPrint('Firebase init failed: $e');
     debugPrintStack(stackTrace: stack);
   }
@@ -27,11 +27,11 @@ void main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-  } catch (e) {
+  } on Exception catch (e) {
     debugPrint('Failed to set orientation: $e');
   }
 
-  runApp(const ShiftproofApp());
+  runApp(const ProviderScope(child: ShiftproofApp()));
 }
 
 class ShiftproofApp extends StatelessWidget {
@@ -44,7 +44,6 @@ class ShiftproofApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Dynamically switches based on OS setting
       routes: {
         '/home': (context) => const TenantMainScreen(),
         '/signup': (context) => const EmailRegistrationScreen(),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../data/services/mock_api_service.dart';
-import '../../widgets/buttons/filter_chip_widget.dart';
-import '../../widgets/cards/progress_row_widget.dart';
-import '../../widgets/cards/tenant_payment_row.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/buttons/filter_chip_widget.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/progress_row_widget.dart';
+import 'package:shiftproof/widgets/cards/tenant_payment_row.dart';
 
 class CollectionsScreen extends StatelessWidget {
   const CollectionsScreen({super.key});
@@ -59,13 +59,13 @@ class CollectionsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter Chips
-            SingleChildScrollView(
+            const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
                   FilterChipWidget(label: 'Select Month'),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   FilterChipWidget(label: 'Select Property'),
                 ],
               ),

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class FacilityItem extends StatelessWidget {
-  final String title;
-  final IconData? icon;
-  final bool isMore;
-
   const FacilityItem({
-    super.key,
     required this.title,
+    super.key,
     this.icon,
     this.isMore = false,
   });
+  final String title;
+  final IconData? icon;
+  final bool isMore;
 
   @override
   Widget build(BuildContext context) {

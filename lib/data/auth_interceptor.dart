@@ -15,7 +15,7 @@ class AuthInterceptor extends Interceptor {
           options.headers['Authorization'] = 'Bearer $token';
         }
       }
-    } catch (e) {
+    } on Exception catch (_) {
       // Ignore auth errors here, backend will reject if token is missing
     }
     super.onRequest(options, handler);

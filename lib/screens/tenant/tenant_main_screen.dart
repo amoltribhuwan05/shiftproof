@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../dashboard/tenant_dashboard_screen.dart';
-import '../tenant/find_pg_screen.dart';
-import '../payments/payment_history_screen.dart';
-import '../profile/profile_screen.dart';
-import '../../widgets/nav/app_bottom_nav.dart';
-import '../../services/user_service.dart';
-import '../../data/models/models.dart';
+import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/screens/dashboard/tenant_dashboard_screen.dart';
+import 'package:shiftproof/screens/payments/payment_history_screen.dart';
+import 'package:shiftproof/screens/profile/profile_screen.dart';
+import 'package:shiftproof/screens/tenant/find_pg_screen.dart';
+import 'package:shiftproof/services/user_service.dart';
+import 'package:shiftproof/widgets/nav/app_bottom_nav.dart';
 
 class TenantMainScreen extends StatefulWidget {
   const TenantMainScreen({super.key});
@@ -40,7 +40,7 @@ class _TenantMainScreenState extends State<TenantMainScreen> {
           _user = user;
         });
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error loading user for bottom nav: $e');
     }
   }
@@ -52,7 +52,9 @@ class _TenantMainScreenState extends State<TenantMainScreen> {
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         userImageUrl: _user?.avatarUrl,
-        userInitial: _user?.name?.isNotEmpty == true ? _user!.name![0].toUpperCase() : null,
+        userInitial: _user?.name?.isNotEmpty ?? false
+            ? _user!.name![0].toUpperCase()
+            : null,
         onTap: (index) {
           setState(() {
             _currentIndex = index;

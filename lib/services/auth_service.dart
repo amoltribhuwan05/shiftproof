@@ -1,15 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shiftproof/data/api_client.dart';
+import 'package:shiftproof/data/models/models.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../data/api_client.dart';
-import '../data/models/models.dart';
-
 class AuthException implements Exception {
-  final String code;
-  final String message;
-
   const AuthException({required this.code, required this.message});
 
   factory AuthException.fromFirebase(FirebaseAuthException e) {
@@ -29,12 +25,21 @@ class AuthException implements Exception {
 
     return AuthException(code: e.code, message: message);
   }
+  final String code;
+  final String message;
 
   @override
   String toString() => 'AuthException(code: $code, message: $message)';
 }
 
 class AuthService {
+  AuthService({
+    ApiClient? apiClient,
+    FirebaseAuth? firebaseAuth,
+    GoogleSignIn? googleSignIn,
+  }) : _apiClient = apiClient ?? ApiClient.instance,
+       _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+       _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
   static const String _googleServerClientId = String.fromEnvironment(
     'GOOGLE_SERVER_CLIENT_ID',
     defaultValue:
@@ -46,25 +51,13 @@ class AuthService {
   final GoogleSignIn _googleSignIn;
   Future<void>? _googleInitFuture;
 
-  AuthService({
-    ApiClient? apiClient,
-    FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn,
-  }) : _apiClient = apiClient ?? ApiClient.instance,
-       _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-       _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
-
   Future<void> _ensureGoogleInitialized() {
     return _googleInitFuture ??= _googleSignIn.initialize(
       serverClientId: _googleServerClientId,
     );
   }
 
-
-
   AuthException _mapGoogleSignInException(GoogleSignInException e) {
-
-
     return switch (e.code) {
       GoogleSignInExceptionCode.canceled => const AuthException(
         code: 'popup-closed-by-user',
@@ -124,7 +117,7 @@ class AuthService {
       throw AuthException.fromFirebase(e);
     } on GoogleSignInException catch (e) {
       throw _mapGoogleSignInException(e);
-    } catch (_) {
+    } on Exception catch (_) {
       throw const AuthException(
         code: 'google-sign-in-failed',
         message: 'Google sign-in failed. Please try again.',
@@ -135,9 +128,9 @@ class AuthService {
   Future<User?> signInWithApple() async {
     try {
       if (kIsWeb) {
-        final provider = OAuthProvider('apple.com');
-        provider.addScope('email');
-        provider.addScope('name');
+        final provider = OAuthProvider('apple.com')
+          ..addScope('email')
+          ..addScope('name');
         final credential = await _firebaseAuth.signInWithPopup(provider);
         return credential.user;
       }
@@ -183,7 +176,7 @@ class AuthService {
       throw AuthException(code: e.code.name, message: e.message);
     } on AuthException {
       rethrow;
-    } catch (_) {
+    } on Exception catch (_) {
       throw const AuthException(
         code: 'apple-sign-in-failed',
         message: 'Apple sign-in failed. Please try again.',
@@ -229,38 +222,42 @@ class AuthService {
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
-    } catch (_) {
+    } on Exception catch (_) {
       // Ignore provider-specific sign-out failures and continue.
     }
     await _firebaseAuth.signOut();
     try {
       await logout();
-    } catch (_) {
+    } on Exception catch (_) {
       // Backend logout is best-effort if there is no active API session yet.
     }
   }
 
   Future<void> registerDeviceToken(String token) async {
-    await _apiClient.dio.post(
+    await _apiClient.dio.post<Map<String, dynamic>>(
       '/api/v1/auth/device-token',
       data: {'token': token},
     );
   }
 
   Future<void> logout() async {
-    await _apiClient.dio.post('/api/v1/auth/logout');
+    await _apiClient.dio.post<Map<String, dynamic>>('/api/v1/auth/logout');
   }
 
   Future<AppUser> getMe() async {
-    final response = await _apiClient.dio.get('/api/v1/auth/me');
-    return AppUser.fromJson(response.data);
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
+      '/api/v1/auth/me',
+    );
+    return AppUser.fromJson(response.data!);
   }
 
   Future<CurrentStay?> getCurrentStay() async {
-    final response = await _apiClient.dio.get('/api/v1/auth/me/current-stay');
+    final response = await _apiClient.dio.get<Map<String, dynamic>>(
+      '/api/v1/auth/me/current-stay',
+    );
     if (response.statusCode == 204 || response.data == null) {
       return null;
     }
-    return CurrentStay.fromJson(response.data);
+    return CurrentStay.fromJson(response.data!);
   }
 }

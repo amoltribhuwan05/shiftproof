@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../core/utils/currency_formatter.dart';
-import '../../data/services/mock_api_service.dart';
-import '../../widgets/cards/quick_action_card.dart';
+import 'package:flutter/material.dart';
+import 'package:shiftproof/core/utils/currency_formatter.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/quick_action_card.dart';
 
 class TenantDashboardScreen extends StatelessWidget {
   const TenantDashboardScreen({super.key});
@@ -27,7 +27,7 @@ class TenantDashboardScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [const NotificationBellButton(hasUnread: true)],
+        actions: const [NotificationBellButton()],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -35,14 +35,14 @@ class TenantDashboardScreen extends StatelessWidget {
           children: [
             // Hero Card
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Container(
                 height: 250,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: DecorationImage(
-                  image: CachedNetworkImageProvider(stay.imageUrl),
-                  fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(stay.imageUrl),
+                    fit: BoxFit.cover,
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -163,7 +163,7 @@ class TenantDashboardScreen extends StatelessWidget {
 
             // Quick Actions Grid
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Quick Actions',
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -173,7 +173,7 @@ class TenantDashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GridView.count(
                 crossAxisCount: MediaQuery.of(context).size.width > 900
                     ? 4
@@ -219,7 +219,7 @@ class TenantDashboardScreen extends StatelessWidget {
             // Property Owner Section
             const SizedBox(height: 24),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Property Owner',
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -229,7 +229,7 @@ class TenantDashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

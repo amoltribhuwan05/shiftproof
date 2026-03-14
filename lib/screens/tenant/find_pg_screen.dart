@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../properties/property_details_screen.dart';
-import '../../widgets/buttons/notification_bell_button.dart';
-import '../../widgets/cards/property_card.dart';
-import '../../data/services/mock_api_service.dart';
+import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/screens/properties/property_details_screen.dart';
+import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
+import 'package:shiftproof/widgets/cards/property_card.dart';
 
 class FindPgScreen extends StatelessWidget {
   const FindPgScreen({super.key});
@@ -17,7 +17,7 @@ class FindPgScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
               color: colorScheme.primary.withValues(alpha: 0.1),
@@ -47,7 +47,7 @@ class FindPgScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: const [NotificationBellButton(hasUnread: true)],
+        actions: const [NotificationBellButton()],
       ),
       body: Column(
         children: [
@@ -137,7 +137,7 @@ class FindPgScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          MaterialPageRoute<void>(
                             builder: (_) =>
                                 PropertyDetailsScreen(property: property),
                           ),

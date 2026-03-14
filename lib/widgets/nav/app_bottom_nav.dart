@@ -1,19 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 
 class AppBottomNav extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-  final String? userImageUrl;
-  final String? userInitial;
-
   const AppBottomNav({
-    super.key,
     required this.currentIndex,
     required this.onTap,
+    super.key,
     this.userImageUrl,
     this.userInitial,
   });
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+  final String? userImageUrl;
+  final String? userInitial;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +66,8 @@ class AppBottomNav extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
-    final bool hasImage = userImageUrl != null && userImageUrl!.isNotEmpty;
-    final bool hasInitial = userInitial != null && userInitial!.isNotEmpty;
+    final hasImage = userImageUrl != null && userImageUrl!.isNotEmpty;
+    final hasInitial = userInitial != null && userInitial!.isNotEmpty;
 
     return Container(
       width: 24,
@@ -76,8 +75,8 @@ class AppBottomNav extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: isActive 
-              ? colorScheme.primary 
+          color: isActive
+              ? colorScheme.primary
               : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
           width: isActive ? 1.5 : 1,
         ),
@@ -90,15 +89,20 @@ class AppBottomNav extends StatelessWidget {
                 placeholder: (context, url) => Container(
                   color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 ),
-                errorWidget: (context, url, error) => _buildInitialFallback(theme),
+                errorWidget: (context, url, error) =>
+                    _buildInitialFallback(theme),
               )
-            : (hasInitial ? _buildInitialFallback(theme) : Icon(
-                isActive ? Icons.person : Icons.person_outline,
-                size: 18,
-                color: isActive 
-                    ? colorScheme.primary 
-                    : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
-              )),
+            : (hasInitial
+                  ? _buildInitialFallback(theme)
+                  : Icon(
+                      isActive ? Icons.person : Icons.person_outline,
+                      size: 18,
+                      color: isActive
+                          ? colorScheme.primary
+                          : (isDark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade400),
+                    )),
       ),
     );
   }

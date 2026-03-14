@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
+import 'package:shiftproof/core/constants/colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -9,12 +9,8 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.lightBackground,
       colorScheme: const ColorScheme.light(
         primary: AppColors.lightPrimary,
-        surface: AppColors
-            .lightBackground, // Map surface to background explicitly for pure white
         error: AppColors.error,
-        onPrimary: Colors.white,
         onSurface: AppColors.lightTextPrimary,
-        onError: Colors.white,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
@@ -66,7 +62,6 @@ class AppTheme {
         surface: AppColors.darkSurface,
         error: AppColors.error,
         onPrimary: Colors.white,
-        onSurface: AppColors.darkTextPrimary,
         onError: Colors.white,
       ),
       appBarTheme: const AppBarTheme(

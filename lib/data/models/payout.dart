@@ -1,12 +1,4 @@
 class Payout {
-  final String? id;
-  final int? amount;
-  final String? bankLast4;
-  final String? date;
-  final String? description;
-  final String? propertyTitle;
-  final String? status;
-
   const Payout({
     this.id,
     this.amount,
@@ -28,6 +20,13 @@ class Payout {
       status: json['status'] as String?,
     );
   }
+  final String? id;
+  final int? amount;
+  final String? bankLast4;
+  final String? date;
+  final String? description;
+  final String? propertyTitle;
+  final String? status;
 
   Map<String, dynamic> toJson() {
     return {

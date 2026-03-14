@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
 class ProgressRowWidget extends StatelessWidget {
-  final String label;
-  final String valueLabel;
-  final double value;
-  final Color color;
-
   const ProgressRowWidget({
-    super.key,
     required this.label,
     required this.valueLabel,
     required this.value,
     required this.color,
+    super.key,
   });
+  final String label;
+  final String valueLabel;
+  final double value;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
