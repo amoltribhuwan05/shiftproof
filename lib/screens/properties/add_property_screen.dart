@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 
@@ -221,7 +222,7 @@ class AddPropertyScreen extends StatelessWidget {
                   color: colorScheme.primary.withValues(alpha: 0.1),
                 ),
                 image: const DecorationImage(
-                  image: NetworkImage(
+                  image: CachedNetworkImageProvider(
                     'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
                   ),
                   fit: BoxFit.cover,

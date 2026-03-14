@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/models/tenant_model.dart';
 
@@ -49,7 +50,7 @@ class TenantCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundImage: NetworkImage(tenant.avatarUrl),
+                    backgroundImage: CachedNetworkImageProvider(tenant.avatarUrl),
                     onBackgroundImageError: (_, _) {},
                     child: Icon(
                       Icons.person,

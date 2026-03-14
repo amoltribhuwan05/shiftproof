@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AppBottomNav extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final String? userImageUrl;
+  final String? userInitial;
 
   const AppBottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.userImageUrl,
+    this.userInitial,
   });
 
   @override
@@ -32,28 +37,84 @@ class AppBottomNav extends StatelessWidget {
         fontWeight: FontWeight.w500,
       ),
       elevation: 8,
-      items: const [
-        BottomNavigationBarItem(
+      items: [
+        const BottomNavigationBarItem(
           icon: Icon(Icons.search),
           activeIcon: Icon(Icons.saved_search),
           label: 'Explore',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
           activeIcon: Icon(Icons.home),
           label: 'My Stay',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.favorite_outline),
           activeIcon: Icon(Icons.favorite),
           label: 'Saved',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          activeIcon: Icon(Icons.person),
+          icon: _buildProfileIcon(context, false),
+          activeIcon: _buildProfileIcon(context, true),
           label: 'Profile',
         ),
       ],
+    );
+  }
+
+  Widget _buildProfileIcon(BuildContext context, bool isActive) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    final bool hasImage = userImageUrl != null && userImageUrl!.isNotEmpty;
+    final bool hasInitial = userInitial != null && userInitial!.isNotEmpty;
+
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: isActive 
+              ? colorScheme.primary 
+              : (isDark ? Colors.grey.shade700 : Colors.grey.shade300),
+          width: isActive ? 1.5 : 1,
+        ),
+      ),
+      child: ClipOval(
+        child: hasImage
+            ? CachedNetworkImage(
+                imageUrl: userImageUrl!,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
+                errorWidget: (context, url, error) => _buildInitialFallback(theme),
+              )
+            : (hasInitial ? _buildInitialFallback(theme) : Icon(
+                isActive ? Icons.person : Icons.person_outline,
+                size: 18,
+                color: isActive 
+                    ? colorScheme.primary 
+                    : (isDark ? Colors.grey.shade500 : Colors.grey.shade400),
+              )),
+      ),
+    );
+  }
+
+  Widget _buildInitialFallback(ThemeData theme) {
+    return Container(
+      color: theme.colorScheme.primary.withValues(alpha: 0.1),
+      alignment: Alignment.center,
+      child: Text(
+        userInitial ?? 'U',
+        style: TextStyle(
+          color: theme.colorScheme.primary,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

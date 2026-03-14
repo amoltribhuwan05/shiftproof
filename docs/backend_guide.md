@@ -106,12 +106,14 @@ Content-Type: application/json
   "phone": "+91 98765 43210",
   "avatarUrl": "https://...",
   "role": "owner",
+  "isOwner": true,
   "joinDate": "2023-01-15",
   "location": "Bangalore, Karnataka"
 }
 ```
 
 > `role`: `"owner"` | `"tenant"`  
+> `isOwner`: `boolean` flag to unlock owner features (all users are tenants by default)  
 > `joinDate`: ISO date string `"YYYY-MM-DD"`
 
 **CurrentStay schema (tenant only):**

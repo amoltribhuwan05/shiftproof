@@ -7,6 +7,7 @@ class AppUser {
   final String? name;
   final String? phone;
   final String? role;
+  final bool isOwner;
 
   const AppUser({
     required this.id,
@@ -17,6 +18,7 @@ class AppUser {
     this.name,
     this.phone,
     this.role,
+    this.isOwner = false,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class AppUser {
       name: json['name'] as String?,
       phone: json['phone'] as String?,
       role: json['role'] as String?,
+      isOwner: json['isOwner'] as bool? ?? false,
     );
   }
 
@@ -42,6 +45,7 @@ class AppUser {
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
       if (role != null) 'role': role,
+      'isOwner': isOwner,
     };
   }
 }

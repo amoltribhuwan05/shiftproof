@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../data/services/mock_api_service.dart';
 
@@ -55,7 +56,7 @@ class PropertyDashboardScreen extends StatelessWidget {
             child: CircleAvatar(
               radius: 16,
               backgroundColor: colorScheme.primary,
-              backgroundImage: const NetworkImage(
+              backgroundImage: const CachedNetworkImageProvider(
                 'https://i.pravatar.cc/150?img=11',
               ),
             ),

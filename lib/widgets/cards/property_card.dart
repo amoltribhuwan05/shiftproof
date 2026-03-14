@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PropertyCard extends StatelessWidget {
   final String title;
@@ -55,18 +56,21 @@ class PropertyCard extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    imageUrl,
+                  CachedNetworkImage(
+                    imageUrl: imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    placeholder: (context, url) => Container(
+                      color: isDark
+                          ? theme.colorScheme.surface
+                          : Colors.grey.shade200,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
                       color: isDark
                           ? theme.colorScheme.surface
                           : Colors.grey.shade200,
                       child: const Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: Colors.grey,
-                        ),
+                        child: Icon(Icons.image_not_supported, color: Colors.grey),
                       ),
                     ),
                   ),

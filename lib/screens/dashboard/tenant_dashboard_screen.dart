@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../data/services/mock_api_service.dart';
@@ -40,8 +41,8 @@ class TenantDashboardScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   image: DecorationImage(
-                    image: NetworkImage(stay.imageUrl),
-                    fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(stay.imageUrl),
+                  fit: BoxFit.cover,
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -250,7 +251,7 @@ class TenantDashboardScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: NetworkImage(
+                          image: CachedNetworkImageProvider(
                             stay.ownerAvatarUrl.isEmpty
                                 ? 'https://i.pravatar.cc/150?img=11'
                                 : stay.ownerAvatarUrl,

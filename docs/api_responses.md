@@ -56,6 +56,7 @@ Content-Type:   application/json
     "phone": "+91 98765 43210",
     "avatarUrl": "https://i.pravatar.cc/150?img=11",
     "role": "owner",
+    "isOwner": true,
     "joinDate": "2023-01-15",
     "location": "Bangalore, Karnataka"
   }
@@ -67,6 +68,7 @@ Content-Type:   application/json
 |---|---|---|
 | `id` | string | |
 | `role` | string | `"owner"` \| `"tenant"` |
+| `isOwner` | boolean | Unlocks owner settings in UI |
 | `joinDate` | string (ISO date) | `"YYYY-MM-DD"` |
 | `avatarUrl` | string (URL) | |
 

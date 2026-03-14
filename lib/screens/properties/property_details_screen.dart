@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/buttons/primary_button.dart';
 import '../../data/models/property_model.dart';
@@ -71,10 +72,14 @@ class PropertyDetailsScreen extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    heroImage,
+                  CachedNetworkImage(
+                    imageUrl: heroImage,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey.shade200,
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
                       color: Colors.grey.shade300,
                       child: const Center(
                         child: Icon(
@@ -349,7 +354,7 @@ class PropertyDetailsScreen extends StatelessWidget {
                                 left: 0,
                                 child: CircleAvatar(
                                   radius: 16,
-                                  backgroundImage: const NetworkImage(
+                                  backgroundImage: const CachedNetworkImageProvider(
                                     'https://i.pravatar.cc/100?img=1',
                                   ),
                                   onBackgroundImageError:
@@ -363,7 +368,7 @@ class PropertyDetailsScreen extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     radius: 14,
-                                    backgroundImage: const NetworkImage(
+                                    backgroundImage: const CachedNetworkImageProvider(
                                       'https://i.pravatar.cc/100?img=2',
                                     ),
                                     onBackgroundImageError:
@@ -378,7 +383,7 @@ class PropertyDetailsScreen extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     radius: 14,
-                                    backgroundImage: const NetworkImage(
+                                    backgroundImage: const CachedNetworkImageProvider(
                                       'https://i.pravatar.cc/100?img=3',
                                     ),
                                     onBackgroundImageError:
@@ -449,16 +454,19 @@ class PropertyDetailsScreen extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop',
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                                  color: Colors.grey.shade300,
-                                  child: const Center(
-                                    child: Icon(Icons.map, color: Colors.grey),
-                                  ),
-                                ),
+                            placeholder: (context, url) => Container(
+                              color: Colors.grey.shade200,
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey.shade300,
+                              child: const Center(
+                                child: Icon(Icons.map, color: Colors.grey),
+                              ),
+                            ),
                           ),
                         ),
                         Center(

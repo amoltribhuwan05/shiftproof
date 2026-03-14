@@ -5,6 +5,7 @@ import '../../widgets/buttons/notification_bell_button.dart';
 import '../../widgets/cards/profile_menu_card.dart';
 import '../tenant/tenant_main_screen.dart';
 import 'settings_screen.dart';
+import '../../widgets/cards/owner_onboarding_card.dart';
 import '../../services/user_service.dart';
 import '../../data/models/models.dart';
 
@@ -20,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   AppUser? _user;
   bool _isLoading = true;
   String? _error;
+  bool _isManagementMode = false;
 
   @override
   void initState() {
@@ -38,6 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           _user = user;
           _isLoading = false;
+          // Set management mode if owner, but keep tenant as default view
+          // unless you want to default to management if they are an owner.
+          // Based on brainstorming, tenant is default for everyone.
+          _isManagementMode = false; 
         });
       }
     } catch (e) {
@@ -53,7 +59,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,19 +74,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (Navigator.canPop(context)) Navigator.pop(context);
           },
         ),
-        actions: [
-          const NotificationBellButton(),
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              color: colorScheme.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: Icon(Icons.edit, color: colorScheme.primary, size: 20),
-              onPressed: () {},
-            ),
-          ),
+        actions: const [
+          NotificationBellButton(),
         ],
       ),
       body: RefreshIndicator(
@@ -97,93 +91,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildShimmerHeader(context)
                 else if (_error != null)
                   _buildErrorState(context)
-                else
+                else ...[
                   _buildProfileHeader(context, _user!),
+                  
+                  // Ownership Status / Onboarding / Mode Switcher
+                  const SizedBox(height: 32),
+                  if (_user!.isOwner)
+                    _buildModeSwitcher(context)
+                  else
+                    OwnerOnboardingCard(
+                      onActionPressed: () {
+                        // In a real app, navigate to ownership registration
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Onboarding flow coming soon!')),
+                        );
+                      },
+                    ),
+                ],
                 
-                const SizedBox(height: 32),
+                if (_user != null) ...[
+                  const SizedBox(height: 32),
 
-                // Tenant Services Section
-                _buildSectionHeader(context, 'TENANT SERVICES'),
-                ProfileMenuCard(
-                  items: [
-                    ProfileMenuItem(
-                      icon: Icons.vpn_key_outlined,
-                      title: 'My Stay',
-                      subtitle: 'View current lease and maintenance',
-                      onTap: () {},
+                  // Tenant Mode View
+                  if (!_isManagementMode) ...[
+                    _buildSectionHeader(context, 'TENANT SERVICES'),
+                    ProfileMenuCard(
+                      items: [
+                        ProfileMenuItem(
+                          icon: Icons.vpn_key_outlined,
+                          title: 'My Stay',
+                          subtitle: 'View current lease and maintenance',
+                          onTap: () {},
+                        ),
+                      ],
                     ),
                   ],
-                ),
-                const SizedBox(height: 24),
 
-                // Owner Dashboard Section
-                _buildSectionHeader(context, 'OWNER DASHBOARD'),
-                ProfileMenuCard(
-                  items: [
-                    ProfileMenuItem(
-                      icon: Icons.domain,
-                      title: 'Manage Properties',
-                      subtitle: _user?.role == 'owner' ? 'Manage your listings' : 'Switch to owner account',
-                      onTap: () {},
+                  // Management Mode View
+                  if (_isManagementMode && _user!.isOwner) ...[
+                    _buildSectionHeader(context, 'OWNER DASHBOARD'),
+                    ProfileMenuCard(
+                      items: [
+                        ProfileMenuItem(
+                          icon: Icons.domain,
+                          title: 'Manage Properties',
+                          subtitle: 'Manage your listings',
+                          onTap: () {},
+                        ),
+                        ProfileMenuItem(
+                          icon: Icons.analytics_outlined,
+                          title: 'Performance',
+                          subtitle: 'Monthly revenue and insights',
+                          onTap: () {},
+                        ),
+                      ],
                     ),
-                    ProfileMenuItem(
-                      icon: Icons.analytics_outlined,
-                      title: 'Performance',
-                      subtitle: 'Monthly revenue and insights',
-                      onTap: () {},
+                    const SizedBox(height: 24),
+
+                    _buildSectionHeader(context, 'ACCOUNT FINANCE'),
+                    ProfileMenuCard(
+                      items: [
+                        ProfileMenuItem(
+                          icon: Icons.payments_outlined,
+                          title: 'Subscription & Billing',
+                          subtitle: 'Manage your payments',
+                          onTap: () {},
+                        ),
+                      ],
                     ),
                   ],
-                ),
-                const SizedBox(height: 24),
 
-                // Account Finance
-                _buildSectionHeader(context, 'ACCOUNT FINANCE'),
-                ProfileMenuCard(
-                  items: [
-                    ProfileMenuItem(
-                      icon: Icons.payments_outlined,
-                      title: 'Subscription & Billing',
-                      subtitle: 'Manage your payments',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                // General Section
-                _buildSectionHeader(context, 'GENERAL'),
-                ProfileMenuCard(
-                  items: [
-                    ProfileMenuItem(
-                      icon: Icons.settings_outlined,
-                      title: 'Settings',
-                      subtitle: 'Privacy, notifications, and app preferences',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SettingsScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    ProfileMenuItem(
-                      icon: Icons.logout,
-                      title: 'Sign Out',
-                      isDestructive: true,
-                      onTap: () {
-                        // In a real app, sign out from AuthService here
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TenantMainScreen(),
-                          ),
-                          (route) => false,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                  // General Section - Always visible
+                  _buildSectionHeader(context, 'GENERAL'),
+                  ProfileMenuCard(
+                    items: [
+                      ProfileMenuItem(
+                        icon: Icons.settings_outlined,
+                        title: 'Settings',
+                        subtitle: 'Privacy, notifications, and app preferences',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SettingsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      ProfileMenuItem(
+                        icon: Icons.logout,
+                        title: 'Sign Out',
+                        isDestructive: true,
+                        onTap: () {
+                          // In a real app, sign out from AuthService here
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TenantMainScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
 
                 const SizedBox(height: 40),
 
@@ -234,14 +248,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               child: ClipOval(
-                child: user.avatarUrl != null
+                child: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
                     ? CachedNetworkImage(
                         imageUrl: user.avatarUrl!,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => _buildShimmerCircle(96),
-                        errorWidget: (context, url, error) => _buildDefaultAvatar(isDark, theme),
+                        errorWidget: (context, url, error) => _buildDefaultAvatar(user, isDark, theme),
                       )
-                    : _buildDefaultAvatar(isDark, theme),
+                    : _buildDefaultAvatar(user, isDark, theme),
               ),
             ),
             Positioned(
@@ -300,15 +314,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildDefaultAvatar(bool isDark, ThemeData theme) {
+  Widget _buildDefaultAvatar(AppUser user, bool isDark, ThemeData theme) {
+    final name = user.name ?? 'U';
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
+    
     return Container(
-      color: isDark
-          ? theme.colorScheme.onSurface.withValues(alpha: 0.1)
-          : theme.colorScheme.onSurface.withValues(alpha: 0.05),
-      child: const Icon(
-        Icons.person,
-        size: 48,
-        color: Colors.grey,
+      color: theme.colorScheme.primary.withValues(alpha: 0.1),
+      alignment: Alignment.center,
+      child: Text(
+        initial,
+        style: theme.textTheme.headlineMedium?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -397,6 +415,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Text('Retry'),
           ),
         ],
+      ),
+    );
+  }
+
+
+  Widget _buildModeSwitcher(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark
+            ? theme.cardColor
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildModeButton(
+              context,
+              title: 'Personal Stay',
+              isSelected: !_isManagementMode,
+              onTap: () => setState(() => _isManagementMode = false),
+            ),
+          ),
+          Expanded(
+            child: _buildModeButton(
+              context,
+              title: 'Management',
+              isSelected: _isManagementMode,
+              onTap: () => setState(() => _isManagementMode = true),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeButton(
+    BuildContext context, {
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? colorScheme.primary : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: colorScheme.primary.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  )
+                ]
+              : null,
+        ),
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isSelected ? colorScheme.onPrimary : theme.textTheme.bodyMedium?.color,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 13,
+          ),
+        ),
       ),
     );
   }
