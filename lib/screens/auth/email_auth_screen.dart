@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../services/auth_service.dart';
 import '../../../../widgets/auth/custom_text_field.dart';
 import '../../../../widgets/auth/primary_auth_button.dart';
@@ -42,7 +43,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Successfully Signed In')),
           );
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         }
       } on AuthException catch (e) {
         if (mounted) {
@@ -195,10 +196,11 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   provider: SocialProvider.google,
                   onPressed: () {}, // Optional Google Auth
                 ),
-                SocialLoginButton(
-                  provider: SocialProvider.apple,
-                  onPressed: () {}, // Optional Apple Auth
-                ),
+                if (defaultTargetPlatform == TargetPlatform.iOS)
+                  SocialLoginButton(
+                    provider: SocialProvider.apple,
+                    onPressed: () {}, // Optional Apple Auth
+                  ),
               ],
             ),
           ),

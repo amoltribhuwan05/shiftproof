@@ -72,7 +72,7 @@ Content-Type:   application/json
 
 ---
 
-### `GET /auth/logout`
+### `POST /auth/logout`
 
 ```json
 { "success": true }

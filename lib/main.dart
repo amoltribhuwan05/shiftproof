@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
+import 'screens/auth/email_registration_screen.dart';
+import 'screens/tenant/tenant_main_screen.dart';
 import 'widgets/network/connection_wrapper.dart';
 
 import 'package:flutter/services.dart';
@@ -9,22 +11,26 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  print('Attempting Firebase Init...');
+
+  debugPrint('Attempting Firebase Init...');
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Firebase Initialized Successfully!');
+    debugPrint('Firebase Initialized Successfully.');
   } catch (e, stack) {
-    print('FIREBASE INIT ERROR: $e');
-    print('STACKTRACE: $stack');
+    debugPrint('Firebase init failed: $e');
+    debugPrintStack(stackTrace: stack);
+  }
+  try {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  } catch (e) {
+    debugPrint('Failed to set orientation: $e');
   }
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
   runApp(const ShiftproofApp());
 }
 
@@ -39,6 +45,11 @@ class ShiftproofApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system, // Dynamically switches based on OS setting
+      routes: {
+        '/home': (context) => const TenantMainScreen(),
+        '/signup': (context) => const EmailRegistrationScreen(),
+        '/signin': (context) => const LoginScreen(),
+      },
       builder: (context, child) {
         return ConnectionWrapper(child: child!);
       },

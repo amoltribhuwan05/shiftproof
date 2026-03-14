@@ -1,0 +1,1401 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Engineering-grade backend for property management.",
+        "title": "ShiftProof API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "support@shiftproof.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/auth/device-token": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Update the user's Firebase Cloud Messaging token for push notifications.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register FCM token",
+                "operationId": "registerDeviceToken",
+                "parameters": [
+                    {
+                        "description": "FCM Token",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/auth/device-token",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Invalidate the session and add token to denylist.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/auth/logout",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/auth/me": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns the authenticated user's profile. Creates the user record on first sign-in (upsert).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get current user profile",
+                "operationId": "getMe",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppUser"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/auth/me",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/auth/me/current-stay": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns the tenant's active stay details.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get current lease details",
+                "operationId": "getCurrentStay",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CurrentStay"
+                        }
+                    },
+                    "204": {
+                        "description": "No active stay"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/auth/me/current-stay",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/notifications": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get a paginated list of user notifications.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "List notifications",
+                "operationId": "listNotifications",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse-model_Notification"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/notifications",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/notifications/mark-all-read": {
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Marks all notifications for the current user as read.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notifications as read",
+                "operationId": "markAllNotificationsRead",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/notifications/mark-all-read",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/notifications/{id}/read": {
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Marks a specific notification as read and returns the updated resource.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as read",
+                "operationId": "markNotificationRead",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notification ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Notification"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/notifications/{id}/read",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payments": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get a paginated list of payments for the current user. Owners see all payments for their properties, tenants see their own.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "List payments",
+                "operationId": "listPayments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by property ID",
+                        "name": "propertyId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by type",
+                        "name": "type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse-model_Payment"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Initiate a new payment. Usually called by tenants for rent or deposit.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Create payment",
+                "operationId": "createPayment",
+                "parameters": [
+                    {
+                        "description": "Payment details",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreatePaymentRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Idempotency key to prevent duplicate charges",
+                        "name": "X-Idempotency-Key",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Payment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payments/collections": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get a paginated list of rent-only payments. Shortcut for owners.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "List rent collections",
+                "operationId": "getCollections",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by property ID",
+                        "name": "propertyId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse-model_Payment"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments/collections",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payments/summary": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns financial summaries (total collected, pending, etc.) for the dashboard.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get payment stats",
+                "operationId": "getPaymentSummary",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaymentSummary"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments/summary",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payouts": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get a paginated list of bank settlements for an owner.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Plans"
+                ],
+                "summary": "List bank payouts",
+                "operationId": "listPayouts",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse-model_Payout"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payouts",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/plans": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns all available subscription plans and identifies which one the owner is currently on.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Plans"
+                ],
+                "summary": "List subscription plans",
+                "operationId": "listPlans",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Plan"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/plans",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/properties": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get a paginated list of properties",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "List properties",
+                "operationId": "listProperties",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse-model_Property"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Create a new property (Owner only)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Create property",
+                "operationId": "createProperty",
+                "parameters": [
+                    {
+                        "description": "Property details",
+                        "name": "property",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreatePropertyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Property"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/properties/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get details of a single property by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get property by ID",
+                "operationId": "getProperty",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Property"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Update property details by ID (Owner only).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Update property",
+                "operationId": "updateProperty",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Property details",
+                        "name": "property",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreatePropertyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Property"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Soft delete a property by ID (Owner only).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Delete property",
+                "operationId": "deleteProperty",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Get API liveness status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health check",
+                "operationId": "healthCheck",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/health",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AppUser": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "joinDate": {
+                    "description": "\"YYYY-MM-DD\" — never \"5 Mar 2026\"",
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "role": {
+                    "description": "\"owner\" | \"tenant\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.CurrentStay": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "isRentDue": {
+                    "description": "always bool, never \"true\"/\"false\"",
+                    "type": "boolean"
+                },
+                "leaseEnd": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "leaseStart": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "ownerAvatarUrl": {
+                    "type": "string"
+                },
+                "ownerName": {
+                    "type": "string"
+                },
+                "ownerPhone": {
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                },
+                "rentAmount": {
+                    "description": "rupees, always int64",
+                    "type": "integer"
+                },
+                "roomNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Notification": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isRead": {
+                    "description": "always bool",
+                    "type": "boolean"
+                },
+                "timestamp": {
+                    "description": "ISO 8601 \"2006-01-02T15:04:05Z\" — never \"2h ago\"",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "\"rentDue\"|\"message\"|\"maintenance\"|\"leaseRenewal\"|\"general\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaginatedResponse-model_Notification": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Notification"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationMeta"
+                }
+            }
+        },
+        "model.PaginatedResponse-model_Payment": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Payment"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationMeta"
+                }
+            }
+        },
+        "model.PaginatedResponse-model_Payout": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Payout"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationMeta"
+                }
+            }
+        },
+        "model.PaginatedResponse-model_Property": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Property"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationMeta"
+                }
+            }
+        },
+        "model.PaginationMeta": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Payment": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "date": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "propertyId": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"paid\"|\"pending\"|\"overdue\"",
+                    "type": "string"
+                },
+                "tenantName": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "\"rent\"|\"deposit\"|\"electricity\"|\"maintenance\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaymentSummary": {
+            "type": "object",
+            "properties": {
+                "overdueTenants": {
+                    "type": "integer"
+                },
+                "pendingAmount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "totalCollectedThisMonth": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "totalTenants": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Payout": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "bankLast4": {
+                    "type": "string"
+                },
+                "date": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "propertyTitle": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"completed\"|\"processing\"|\"failed\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Plan": {
+            "type": "object",
+            "properties": {
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCurrent": {
+                    "type": "boolean"
+                },
+                "isPopular": {
+                    "type": "boolean"
+                },
+                "maxProperties": {
+                    "type": "integer"
+                },
+                "maxTenants": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "rupees/month, int64",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Property": {
+            "type": "object",
+            "properties": {
+                "amenities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "deposit": {
+                    "description": "rupees, always int64",
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "occupiedRooms": {
+                    "description": "derived server-side, never accepted from client",
+                    "type": "integer"
+                },
+                "ownerAvatarUrl": {
+                    "type": "string"
+                },
+                "ownerName": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "rupees, always int64",
+                    "type": "integer"
+                },
+                "rating": {
+                    "description": "float — never int",
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "totalRooms": {
+                    "description": "always int, never float",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "\"PG\"|\"Flat\"|\"House\"",
+                    "type": "string"
+                }
+            }
+        },
+        "service.CreatePaymentRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "propertyId",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "idempotencyKey": {
+                    "description": "from X-Idempotency-Key header, not request body",
+                    "type": "string"
+                },
+                "propertyId": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "rent",
+                        "deposit",
+                        "electricity",
+                        "maintenance"
+                    ]
+                }
+            }
+        },
+        "service.CreatePropertyRequest": {
+            "type": "object",
+            "required": [
+                "location",
+                "price",
+                "title",
+                "type"
+            ],
+            "properties": {
+                "amenities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "deposit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "description": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "totalRooms": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "PG",
+                        "Flat",
+                        "House"
+                    ]
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "firebase": {
+            "type": "oauth2",
+            "flow": "implicit",
+            "authorizationUrl": "https://securetoken.google.com/${FIREBASE_PROJECT_ID}",
+            "scopes": {
+                "openid": " access to identity"
+            },
+            "x-google-audiences": "${FIREBASE_PROJECT_ID}",
+            "x-google-issuer": "https://securetoken.google.com/${FIREBASE_PROJECT_ID}",
+            "x-google-jwks_uri": "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+        }
+    },
+    "tags": [
+        {
+            "description": "Authentication and User Profile management",
+            "name": "Auth"
+        },
+        {
+            "description": "Property listing and management",
+            "name": "Properties"
+        },
+        {
+            "description": "Payment processing and billing",
+            "name": "Payments"
+        },
+        {
+            "description": "In-app notification system",
+            "name": "Notifications"
+        },
+        {
+            "description": "Subscription plans and payouts",
+            "name": "Plans"
+        },
+        {
+            "description": "API health and readiness probes",
+            "name": "Health"
+        }
+    ]
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../tenant/tenant_main_screen.dart';
 import '../../widgets/buttons/primary_button.dart';
@@ -23,15 +24,19 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithGoogle();
       if (user != null && mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }
-    } on AuthException catch (e) {
+    } on AuthException catch (e, stack) {
+      debugPrint('AuthException during Google SignIn: ${e.code} - ${e.message}');
+      debugPrintStack(stackTrace: stack);
       if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(e.message)));
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('Unexpected error during Google SignIn: $e');
+      debugPrintStack(stackTrace: stack);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('An unexpected error occurred.')),
@@ -49,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithApple();
       if (user != null && mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }
     } on AuthException catch (e) {
       if (mounted) {
@@ -149,23 +154,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.verified_user,
-                        color: theme.colorScheme.primary,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'No spam. No ads.',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.verified_user,
+                    color: theme.colorScheme.primary,
+                    size: 18,
                   ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'No spam. No ads.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ),
 
               const Spacer(flex: 2),
 
@@ -173,26 +178,22 @@ class _LoginScreenState extends State<LoginScreen> {
               SocialButton(
                 text: 'Continue with Google',
                 isLoading: _isGoogleLoading,
-                iconWidget: Image.network(
-                  'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
-                  width: 24,
-                  height: 24,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.g_mobiledata, size: 24),
-                ),
+                iconWidget: const Icon(Icons.g_mobiledata, size: 28),
                 onPressed: _isGoogleLoading || _isAppleLoading
                     ? null
                     : _handleGoogleSignIn,
               ),
-              const SizedBox(height: 16),
-              SocialButton(
-                text: 'Continue with Apple',
-                isLoading: _isAppleLoading,
-                iconWidget: const Icon(Icons.apple, size: 28),
-                onPressed: _isAppleLoading || _isGoogleLoading
-                    ? null
-                    : _handleAppleSignIn,
-              ),
+              if (defaultTargetPlatform == TargetPlatform.iOS) ...[
+                const SizedBox(height: 16),
+                SocialButton(
+                  text: 'Continue with Apple',
+                  isLoading: _isAppleLoading,
+                  iconWidget: const Icon(Icons.apple, size: 28),
+                  onPressed: _isAppleLoading || _isGoogleLoading
+                      ? null
+                      : _handleAppleSignIn,
+                ),
+              ],
               const SizedBox(height: 16),
               PrimaryButton(
                 text: 'Continue with Phone',

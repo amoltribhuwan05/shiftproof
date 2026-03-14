@@ -55,7 +55,7 @@ class _EmailRegistrationScreenState extends State<EmailRegistrationScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Account Created Successfully!')),
           );
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         }
       } on AuthException catch (e) {
         if (mounted) {
