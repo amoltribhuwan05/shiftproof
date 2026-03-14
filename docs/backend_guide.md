@@ -20,23 +20,34 @@ ShiftProof is a **property management and tenant portal** app targeting PG/hoste
 
 ## 2. Replacing the Mock Layer
 
-To connect a real backend, open `lib/data/services/mock_api_service.dart` and replace each method body with an HTTP call. The `fromJson` factories on every model are already written and will deserialize the API response directly.
+The application is transitioning from static mock services to instantiated service classes. 
 
-**Example swap:**
+- **Mock Services:** Located in `lib/data/services/mock_api_service.dart`. These provide static data for UI development.
+- **Real Services:** Located in `lib/services/`. These classes use `ApiClient.instance` to make real network requests.
+
+**Example: Creating a new service**
 
 ```dart
-// Current (mock):
-static List<Property> getProperties() =>
-    MockApi.properties.map(Property.fromJson).toList();
+import '../data/api_client.dart';
+import '../data/models/models.dart';
 
-// Real backend:
-static Future<List<Property>> getProperties() async {
-  final res = await http.get(Uri.parse('$baseUrl/properties'),
-      headers: {'Authorization': 'Bearer $token'});
-  final List data = jsonDecode(res.body);
-  return data.map((j) => Property.fromJson(j)).toList();
+class PropertyService {
+  final ApiClient _apiClient;
+
+  PropertyService({ApiClient? apiClient})
+    : _apiClient = apiClient ?? ApiClient.instance;
+
+  Future<List<Property>> getProperties() async {
+    final response = await _apiClient.dio.get('/api/v1/properties');
+    return (response.data as List).map((j) => Property.fromJson(j)).toList();
+  }
 }
 ```
+
+To migrate a feature from mock to real data:
+1. Create a corresponding service in `lib/services/`.
+2. Update the screen to be a `StatefulWidget` (or use a state management solution).
+3. Fetch data asynchronously using the new service and display appropriate loading/error states.
 
 ---
 

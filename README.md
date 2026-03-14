@@ -56,18 +56,13 @@ dart analyze lib/
 ```text
 lib/
 ├── core/            # App-wide theme and color constants
-├── data/            # Mock services and data models
+├── data/            # Data models and API client
+├── features/        # Feature-specific components
 ├── screens/         # UI Screens grouped by feature module
-│   ├── auth/        # Authentication screens
-│   ├── dashboard/   # Owner/Tenant main dashboards
-│   ├── notifications/# Notifications UI
-│   ├── payments/    # Collections, Payouts, Bills, Payment History
-│   ├── profile/     # Settings and user profile
-│   ├── properties/  # Property management (add, edit, view, rooms, tenants, exports)
-│   └── tenant/      # Tenant specific flows (join PG, find PG)
+├── services/        # Real Backend API services (e.g., UserService)
 └── widgets/         # Reusable atomic UI components
     ├── buttons/     # Standardized app buttons
-    ├── cards/       # Various reusable cards (stat, activity, property, action, room, etc.)
+    ├── cards/       # Various reusable cards
     ├── nav/         # Bottom navigation bars
     └── network/     # Network status and connection wrappers
 ```
@@ -83,5 +78,7 @@ lib/
 
 - **State Management:** Screens primarily rely on local `setState` combined with stateless presentation widgets.
 - **Routing:** Current routing utilizes `Navigator.push` and `Navigator.pushReplacement` with `MaterialPageRoute`.
-- **Mock Services:** The app utilizes `MockApiService` to inject mock data into the UI without a backend attached. Replace these mock definitions with actual REST/GraphQL API endpoints in production.
+- **Services Architecture:** 
+  - **Mock Services:** Located in `lib/data/services/mock_api_service.dart`. Used for UI prototyping.
+  - **Real Services:** Located in `lib/services/`. These interact with the real backend via `ApiClient`. (e.g., `UserService` for profile management).
 - **UI Performance/Layout:** Ensure heavily scrolling lists utilizing `ListView.builder` or `SliverList` bounds remain wrapped properly to avoid render overflows on smaller screens. Explicit padding/spacing strictly adheres to an 8-point grid paradigm.

@@ -79,8 +79,27 @@ Content-Type:   application/json
 ```
 
 ---
-
-### `GET /auth/me/current-stay` _(tenant only)_
+ 
+ ### `GET /auth/me`
+ 
+ **Response:**
+ 
+ ```json
+ {
+   "id": "usr_001",
+   "name": "Amol Sharma",
+   "email": "amol.sharma@example.com",
+   "phone": "+91 98765 43210",
+   "avatarUrl": "https://i.pravatar.cc/150?img=11",
+   "role": "owner",
+   "joinDate": "2023-01-15",
+   "location": "Bangalore, Karnataka"
+ }
+ ```
+ 
+ ---
+ 
+ ### `GET /auth/me/current-stay` _(tenant only)_
 
 ```json
 {
