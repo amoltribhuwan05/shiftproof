@@ -55,6 +55,8 @@ class _TenantMainScreenState extends State<TenantMainScreen> {
         userInitial: _user?.name?.isNotEmpty ?? false
             ? _user!.name![0].toUpperCase()
             : null,
+        userId: _user?.id,
+        userGender: _user?.gender,
         onTap: (index) {
           setState(() {
             _currentIndex = index;

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dice_bear/dice_bear.dart';
 import 'package:flutter/material.dart';
 
 class AppBottomNav extends StatelessWidget {
@@ -8,11 +9,15 @@ class AppBottomNav extends StatelessWidget {
     super.key,
     this.userImageUrl,
     this.userInitial,
+    this.userId,
+    this.userGender,
   });
   final int currentIndex;
   final ValueChanged<int> onTap;
   final String? userImageUrl;
   final String? userInitial;
+  final String? userId;
+  final String? userGender;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,6 @@ class AppBottomNav extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final hasImage = userImageUrl != null && userImageUrl!.isNotEmpty;
-    final hasInitial = userInitial != null && userInitial!.isNotEmpty;
 
     return Container(
       width: 24,
@@ -90,20 +94,35 @@ class AppBottomNav extends StatelessWidget {
                   color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
                 ),
                 errorWidget: (context, url, error) =>
-                    _buildInitialFallback(theme),
+                    _buildPersonalizedAvatar(theme),
               )
-            : (hasInitial
-                  ? _buildInitialFallback(theme)
-                  : Icon(
-                      isActive ? Icons.person : Icons.person_outline,
-                      size: 18,
-                      color: isActive
-                          ? colorScheme.primary
-                          : (isDark
-                                ? Colors.grey.shade500
-                                : Colors.grey.shade400),
-                    )),
+            : _buildPersonalizedAvatar(theme),
       ),
+    );
+  }
+
+  Widget _buildPersonalizedAvatar(ThemeData theme) {
+    final seed = userId ?? 'guest';
+    var sprite = DiceBearSprite.personas;
+    
+    if (userGender != null) {
+      final gender = userGender!.toLowerCase();
+      if (gender == 'male') {
+        sprite = DiceBearSprite.avataaars;
+      } else if (gender == 'female') {
+        sprite = DiceBearSprite.lorelei;
+      }
+    }
+
+    final avatar = DiceBearBuilder(
+      seed: seed,
+      sprite: sprite,
+      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+    ).build();
+
+    return avatar.toImage(
+      fit: BoxFit.cover,
+      placeholderBuilder: (context) => _buildInitialFallback(theme),
     );
   }
 

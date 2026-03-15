@@ -8,6 +8,7 @@ class AppUser {
     this.name,
     this.phone,
     this.role,
+    this.gender,
     this.isOwner = false,
   });
 
@@ -21,6 +22,7 @@ class AppUser {
       name: json['name'] as String?,
       phone: json['phone'] as String?,
       role: json['role'] as String?,
+      gender: json['gender'] as String?,
       isOwner: json['isOwner'] as bool? ?? false,
     );
   }
@@ -32,6 +34,7 @@ class AppUser {
   final String? name;
   final String? phone;
   final String? role;
+  final String? gender;
   final bool isOwner;
 
   Map<String, dynamic> toJson() {
@@ -44,6 +47,7 @@ class AppUser {
       if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
       if (role != null) 'role': role,
+      if (gender != null) 'gender': gender,
       'isOwner': isOwner,
     };
   }

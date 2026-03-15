@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dice_bear/dice_bear.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shiftproof/data/models/models.dart';
 import 'package:shiftproof/screens/profile/settings_screen.dart';
-import 'package:shiftproof/screens/tenant/tenant_main_screen.dart';
+import 'package:shiftproof/services/auth_service.dart';
 import 'package:shiftproof/services/user_service.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/cards/owner_onboarding_card.dart';
@@ -18,7 +21,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final UserService _userService = UserService();
+  final AuthService _authService = AuthService();
   AppUser? _user;
+  bool _isUnauthorized = false;
   bool _isLoading = true;
   String? _error;
   bool _isManagementMode = false;
@@ -31,27 +36,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _fetchProfile() async {
     try {
-      setState(() {
-        _isLoading = true;
-        _error = null;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+          _error = null;
+          _isUnauthorized = false;
+        });
+      }
       final user = await _userService.getMe();
       if (mounted) {
         setState(() {
           _user = user;
           _isLoading = false;
-          // Set management mode if owner, but keep tenant as default view
-          // unless you want to default to management if they are an owner.
-          // Based on brainstorming, tenant is default for everyone.
           _isManagementMode = false;
         });
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        if (e.response?.statusCode == 401) {
+          setState(() {
+            _isUnauthorized = true;
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _error = 'Failed to load profile. Please check your connection.';
+            _isLoading = false;
+          });
+        }
       }
     } on Exception catch (_) {
       if (mounted) {
         setState(() {
-          _error = 'Failed to load profile. Please try again.';
+          _error = 'An unexpected error occurred. Please try again.';
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _handleSignOut() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      try {
+        if (mounted) {
+          setState(() => _isLoading = true);
+        }
+        await _authService.signOut();
+        if (mounted) {
+          // Redirect to login on explicit sign out
+          unawaited(
+            Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false),
+          );
+        }
+      } on Exception catch (e) {
+        if (mounted) {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign out failed: $e')),
+          );
+        }
       }
     }
   }
@@ -87,16 +151,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 24),
                 if (_isLoading)
                   _buildShimmerHeader(context)
+                else if (_isUnauthorized)
+                  _buildGuestMode(context)
                 else if (_error != null)
                   _buildErrorState(context)
                 else ...[
-                  _buildProfileHeader(context, _user!),
+                  if (_user != null) _buildProfileHeader(context, _user!),
 
                   // Ownership Status / Onboarding / Mode Switcher
                   const SizedBox(height: 32),
-                  if (_user!.isOwner)
+                  if (_user != null && _user!.isOwner)
                     _buildModeSwitcher(context)
-                  else
+                  else if (_user != null)
                     OwnerOnboardingCard(
                       onActionPressed: () {
                         // In a real app, navigate to ownership registration
@@ -109,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                 ],
 
-                if (_user != null) ...[
+                if (_user != null && !_isUnauthorized) ...[
                   const SizedBox(height: 32),
 
                   // Tenant Mode View
@@ -184,16 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         icon: Icons.logout,
                         title: 'Sign Out',
                         isDestructive: true,
-                        onTap: () {
-                          // In a real app, sign out from AuthService here
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => const TenantMainScreen(),
-                            ),
-                            (route) => false,
-                          );
-                        },
+                        onTap: _handleSignOut,
                       ),
                     ],
                   ),
@@ -313,17 +370,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildDefaultAvatar(AppUser user, bool isDark, ThemeData theme) {
-    final name = user.name ?? 'U';
-    final initial = name.isNotEmpty ? name[0].toUpperCase() : 'U';
+    // Determine sprite based on gender
+    var sprite = DiceBearSprite.personas;
+    if (user.gender != null) {
+      final gender = user.gender!.toLowerCase();
+      if (gender == 'male') {
+        sprite = DiceBearSprite.avataaars;
+      } else if (gender == 'female') {
+        sprite = DiceBearSprite.lorelei;
+      }
+    }
 
-    return Container(
-      color: theme.colorScheme.primary.withValues(alpha: 0.1),
-      alignment: Alignment.center,
-      child: Text(
-        initial,
-        style: theme.textTheme.headlineMedium?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.bold,
+    final avatar = DiceBearBuilder(
+      seed: user.id,
+      sprite: sprite,
+      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+    ).build();
+
+    return avatar.toImage(
+      width: 96,
+      height: 96,
+      fit: BoxFit.cover,
+      placeholderBuilder: (context) => Container(
+        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+        alignment: Alignment.center,
+        child: Text(
+          user.name?.isNotEmpty ?? false ? user.name![0].toUpperCase() : 'U',
+          style: theme.textTheme.headlineMedium?.copyWith(
+            color: theme.colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -486,6 +562,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontSize: 13,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGuestMode(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: ClipOval(
+              child: DiceBearBuilder(
+                seed: 'guest',
+                sprite: DiceBearSprite.personas,
+                backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+              ).build().toImage(
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Experience ShiftProof',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Sign in to manage your bookings, properties, and payments with ease.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 48),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/signin'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'Sign In',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pushNamed(context, '/signup'),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                side: BorderSide(color: colorScheme.primary, width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Create Account',
+                style: TextStyle(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
