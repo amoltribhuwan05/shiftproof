@@ -1,31 +1,95 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/services/auth_service.dart';
+import 'package:shiftproof/utils/auth_redirect_mixin.dart';
 import 'package:shiftproof/widgets/auth/custom_text_field.dart';
 import 'package:shiftproof/widgets/auth/primary_auth_button.dart';
 import 'package:shiftproof/widgets/auth/social_login_button.dart';
 
-class EmailAuthScreen extends StatefulWidget {
+class EmailAuthScreen extends ConsumerStatefulWidget {
   const EmailAuthScreen({super.key});
 
   @override
-  State<EmailAuthScreen> createState() => _EmailAuthScreenState();
+  ConsumerState<EmailAuthScreen> createState() => _EmailAuthScreenState();
 }
 
-class _EmailAuthScreenState extends State<EmailAuthScreen> {
+class _EmailAuthScreenState extends ConsumerState<EmailAuthScreen> with AuthRedirectMixin<EmailAuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
+  final _authService = AuthService.instance;
 
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => _isGoogleLoading = true);
+    try {
+      final user = await _authService.signInWithGoogle();
+      if (user != null && mounted) {
+        await checkOnboardingAndRedirect();
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } on Exception catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('An unexpected error occurred.'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isGoogleLoading = false);
+    }
+  }
+
+  Future<void> _handleAppleSignIn() async {
+    setState(() => _isAppleLoading = true);
+    try {
+      final user = await _authService.signInWithApple();
+      if (user != null && mounted) {
+        await checkOnboardingAndRedirect();
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } on Exception catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('An unexpected error occurred.'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isAppleLoading = false);
+    }
   }
 
   Future<void> _handleSignIn() async {
@@ -35,22 +99,12 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
       }
 
       try {
-        await _authService.signInWithEmailAndPassword(
+        final user = await _authService.signInWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
-        // On success, auth stream/router should pick this up or we can push
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Successfully Signed In')),
-          );
-          unawaited(
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (route) => false,
-            ),
-          );
+        if (user != null && mounted) {
+          await checkOnboardingAndRedirect();
         }
       } on AuthException catch (e) {
         if (mounted) {
@@ -96,6 +150,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -109,8 +164,9 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                 const SizedBox(height: 48),
                 Text(
                   'Welcome Back!',
-                  style: theme.textTheme.displayLarge?.copyWith(
-                    color: theme.primaryColor,
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -118,9 +174,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   'Sign in to your Shiftproof account',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.normal,
-                    color: theme.colorScheme.onSurface.withAlpha(
-                      153,
-                    ), // 0.6 opacity
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -130,6 +184,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   hint: 'Enter your email address',
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  prefixIcon: Icons.email_outlined,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email.';
@@ -144,6 +199,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   hint: 'Enter your password',
                   controller: _passwordController,
                   isPassword: true,
+                  prefixIcon: Icons.lock_outline_rounded,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password.';
@@ -156,10 +212,10 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Forgot Password flow
+                      Navigator.pushNamed(context, '/forgot-password');
                     },
                     style: TextButton.styleFrom(
-                      foregroundColor: theme.primaryColor,
+                      foregroundColor: colorScheme.primary,
                     ),
                     child: const Text('Forgot Password?'),
                   ),
@@ -179,7 +235,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: theme.colorScheme.onSurface.withAlpha(51),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                       ),
                     ),
                     Padding(
@@ -187,13 +243,13 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
                       child: Text(
                         'OR',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withAlpha(128),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
                     Expanded(
                       child: Divider(
-                        color: theme.colorScheme.onSurface.withAlpha(51),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.2),
                       ),
                     ),
                   ],
@@ -203,13 +259,45 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
 
                 SocialLoginButton(
                   provider: SocialProvider.google,
-                  onPressed: () {}, // Optional Google Auth
+                  onPressed: _isLoading || _isGoogleLoading || _isAppleLoading
+                      ? () {}
+                      : _handleGoogleSignIn,
+                  isLoading: _isGoogleLoading,
                 ),
                 if (defaultTargetPlatform == TargetPlatform.iOS)
                   SocialLoginButton(
                     provider: SocialProvider.apple,
-                    onPressed: () {}, // Optional Apple Auth
+                    onPressed: _isLoading || _isGoogleLoading || _isAppleLoading
+                        ? () {}
+                        : _handleAppleSignIn,
+                    isLoading: _isAppleLoading,
                   ),
+
+                const SizedBox(height: 24),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account?",
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: colorScheme.primary,
+                      ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

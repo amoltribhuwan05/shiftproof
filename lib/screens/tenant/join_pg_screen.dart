@@ -1,10 +1,62 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shiftproof/providers/service_providers.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
-import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
-class JoinPgScreen extends StatelessWidget {
+class JoinPgScreen extends ConsumerStatefulWidget {
   const JoinPgScreen({super.key});
+
+  @override
+  ConsumerState<JoinPgScreen> createState() => _JoinPgScreenState();
+}
+
+class _JoinPgScreenState extends ConsumerState<JoinPgScreen> {
+  final _codeController = TextEditingController();
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleJoin() async {
+    final code = _codeController.text.trim().toUpperCase();
+    if (code.length < 4) {
+      setState(() => _errorMessage = 'Please enter a valid property code.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await ref.read(tenantServiceProvider).joinProperty(code);
+      // Invalidate current stay so it reloads on the dashboard
+      ref.invalidate(currentStayProvider);
+      if (mounted) {
+        unawaited(
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/home',
+            (route) => false,
+          ),
+        );
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString().replaceFirst('Exception: ', '');
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +133,7 @@ class JoinPgScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'To join an existing PG or rental, ask the owner or current roommate for the 6-digit property code.',
+                        'To join an existing PG or rental, ask the owner or current roommate for the property code.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -113,10 +165,13 @@ class JoinPgScreen extends StatelessWidget {
                               color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: theme.colorScheme.outlineVariant,
+                                color: _errorMessage != null
+                                    ? const Color(0xFFEF4444)
+                                    : theme.colorScheme.outlineVariant,
                               ),
                             ),
                             child: TextField(
+                              controller: _codeController,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
@@ -124,26 +179,39 @@ class JoinPgScreen extends StatelessWidget {
                                 letterSpacing: 2,
                               ),
                               textCapitalization: TextCapitalization.characters,
+                              onChanged: (_) {
+                                if (_errorMessage != null) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              },
                               decoration: InputDecoration(
                                 hintText: 'ENTER CODE',
                                 hintStyle: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 2,
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.5,
-                                  ),
+                                  color: theme.colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
                                 ),
                                 border: InputBorder.none,
                                 suffixIcon: Icon(
                                   Icons.vpn_key,
-                                  color: theme.colorScheme.onSurface.withValues(
-                                    alpha: 0.5,
-                                  ),
+                                  color: theme.colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
                                 ),
                               ),
                             ),
                           ),
+                          if (_errorMessage != null) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              _errorMessage!,
+                              style: const TextStyle(
+                                color: Color(0xFFEF4444),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
 
@@ -156,15 +224,15 @@ class JoinPgScreen extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
                               'OR',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.5,
-                                ),
+                                color: theme.colorScheme.onSurface
+                                    .withValues(alpha: 0.5),
                               ),
                             ),
                           ),
@@ -216,9 +284,33 @@ class JoinPgScreen extends StatelessWidget {
                     SizedBox(
                       height: 56,
                       width: double.infinity,
-                      child: PrimaryButton(
-                        text: 'Request to Join',
-                        onPressed: () {},
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                          elevation: 2,
+                        ),
+                        onPressed: _isLoading ? null : _handleJoin,
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Request to Join',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 16),

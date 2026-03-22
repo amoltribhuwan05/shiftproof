@@ -7,3 +7,5 @@ export 'payment.dart';
 export 'payout.dart';
 export 'plan.dart';
 export 'property.dart';
+export 'room.dart';
+export 'tenant_model.dart';

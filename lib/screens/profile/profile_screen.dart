@@ -1,79 +1,27 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dice_bear/dice_bear.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/providers/service_providers.dart';
+import 'package:shiftproof/providers/user_provider.dart';
 import 'package:shiftproof/screens/profile/settings_screen.dart';
 import 'package:shiftproof/services/auth_service.dart';
-import 'package:shiftproof/services/user_service.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/cards/owner_onboarding_card.dart';
 import 'package:shiftproof/widgets/cards/profile_menu_card.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  final UserService _userService = UserService();
-  final AuthService _authService = AuthService();
-  AppUser? _user;
-  bool _isUnauthorized = false;
-  bool _isLoading = true;
-  String? _error;
-  bool _isManagementMode = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchProfile();
-  }
-
-  Future<void> _fetchProfile() async {
-    try {
-      if (mounted) {
-        setState(() {
-          _isLoading = true;
-          _error = null;
-          _isUnauthorized = false;
-        });
-      }
-      final user = await _userService.getMe();
-      if (mounted) {
-        setState(() {
-          _user = user;
-          _isLoading = false;
-          _isManagementMode = false;
-        });
-      }
-    } on DioException catch (e) {
-      if (mounted) {
-        if (e.response?.statusCode == 401) {
-          setState(() {
-            _isUnauthorized = true;
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _error = 'Failed to load profile. Please check your connection.';
-            _isLoading = false;
-          });
-        }
-      }
-    } on Exception catch (_) {
-      if (mounted) {
-        setState(() {
-          _error = 'An unexpected error occurred. Please try again.';
-          _isLoading = false;
-        });
-      }
-    }
-  }
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  final AuthService _authService = AuthService.instance;
 
   Future<void> _handleSignOut() async {
     final confirmed = await showDialog<bool>(
@@ -99,19 +47,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirmed ?? false) {
       try {
-        if (mounted) {
-          setState(() => _isLoading = true);
-        }
         await _authService.signOut();
         if (mounted) {
-          // Redirect to login on explicit sign out
-          unawaited(
-            Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false),
-          );
+          ref.read(userNotifierProvider.notifier).clearUser();
+          unawaited(Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/signin',
+            (route) => false,
+          ));
         }
       } on Exception catch (e) {
         if (mounted) {
-          setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Sign out failed: $e')),
           );
@@ -123,7 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final userState = ref.watch(userNotifierProvider);
+    final userNotifier = ref.read(userNotifierProvider.notifier);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -140,146 +88,159 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: const [NotificationBellButton()],
       ),
-      body: RefreshIndicator(
-        onRefresh: _fetchProfile,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                if (_isLoading)
-                  _buildShimmerHeader(context)
-                else if (_isUnauthorized)
-                  _buildGuestMode(context)
-                else if (_error != null)
-                  _buildErrorState(context)
-                else ...[
-                  if (_user != null) _buildProfileHeader(context, _user!),
+      body: userState.when(
+        data: (user) {
+          if (user == null) return const Center(child: Text('No user data'));
+          
+          final isOwnerContext = userNotifier.isOwnerContext;
 
-                  // Ownership Status / Onboarding / Mode Switcher
-                  const SizedBox(height: 32),
-                  if (_user != null && _user!.isOwner)
-                    _buildModeSwitcher(context)
-                  else if (_user != null)
-                    OwnerOnboardingCard(
-                      onActionPressed: () {
-                        // In a real app, navigate to ownership registration
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Onboarding flow coming soon!'),
-                          ),
-                        );
-                      },
-                    ),
-                ],
-
-                if (_user != null && !_isUnauthorized) ...[
-                  const SizedBox(height: 32),
-
-                  // Tenant Mode View
-                  if (!_isManagementMode) ...[
-                    _buildSectionHeader(context, 'TENANT SERVICES'),
-                    ProfileMenuCard(
-                      items: [
-                        ProfileMenuItem(
-                          icon: Icons.vpn_key_outlined,
-                          title: 'My Stay',
-                          subtitle: 'View current lease and maintenance',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-
-                  // Management Mode View
-                  if (_isManagementMode && _user!.isOwner) ...[
-                    _buildSectionHeader(context, 'OWNER DASHBOARD'),
-                    ProfileMenuCard(
-                      items: [
-                        ProfileMenuItem(
-                          icon: Icons.domain,
-                          title: 'Manage Properties',
-                          subtitle: 'Manage your listings',
-                          onTap: () {},
-                        ),
-                        ProfileMenuItem(
-                          icon: Icons.analytics_outlined,
-                          title: 'Performance',
-                          subtitle: 'Monthly revenue and insights',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
+          return RefreshIndicator(
+            onRefresh: userNotifier.refreshUser,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
                     const SizedBox(height: 24),
+                    _buildProfileHeader(context, user),
 
-                    _buildSectionHeader(context, 'ACCOUNT FINANCE'),
-                    ProfileMenuCard(
-                      items: [
-                        ProfileMenuItem(
-                          icon: Icons.payments_outlined,
-                          title: 'Subscription & Billing',
-                          subtitle: 'Manage your payments',
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-
-                  const SizedBox(height: 24),
-
-                  // General Section - Always visible
-                  _buildSectionHeader(context, 'GENERAL'),
-                  ProfileMenuCard(
-                    items: [
-                      ProfileMenuItem(
-                        icon: Icons.settings_outlined,
-                        title: 'Settings',
-                        subtitle: 'Privacy, notifications, and app preferences',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => const SettingsScreen(),
+                    const SizedBox(height: 32),
+                    if (user.isOwner && user.isTenant)
+                      _buildModeSwitcher(context, isOwnerContext, userNotifier)
+                    else if (!user.isOwner)
+                      OwnerOnboardingCard(
+                        onActionPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Onboarding flow coming soon!'),
                             ),
                           );
                         },
                       ),
-                      ProfileMenuItem(
-                        icon: Icons.logout,
-                        title: 'Sign Out',
-                        isDestructive: true,
-                        onTap: _handleSignOut,
+
+                    const SizedBox(height: 32),
+
+                    // Tenant mode view or shared sections
+                    if (!isOwnerContext) ...[
+                      _buildSectionHeader(context, 'TENANT SERVICES'),
+                      ProfileMenuCard(
+                        items: [
+                          ProfileMenuItem(
+                            icon: Icons.vpn_key_outlined,
+                            title: 'My Stay',
+                            subtitle: 'View current lease and maintenance',
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Coming soon!')),
+                            ),
+                          ),
+                          ProfileMenuItem(
+                            icon: Icons.payments_outlined,
+                            title: 'Payments',
+                            subtitle: 'Rent and utility bills',
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Coming soon!')),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
 
-                const SizedBox(height: 40),
+                    // Management Mode View
+                    if (isOwnerContext && user.isOwner) ...[
+                      _buildSectionHeader(context, 'OWNER DASHBOARD'),
+                      ProfileMenuCard(
+                        items: [
+                          ProfileMenuItem(
+                            icon: Icons.domain,
+                            title: 'Manage Properties',
+                            subtitle: 'Manage your listings',
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Coming soon!')),
+                            ),
+                          ),
+                          ProfileMenuItem(
+                            icon: Icons.analytics_outlined,
+                            title: 'Reports & Revenue',
+                            subtitle: 'Insights and performance',
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Coming soon!')),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
 
-                Text(
-                  'ONE ACCOUNT. MULTIPLE ROLES.',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
+                      _buildSectionHeader(context, 'ACCOUNT FINANCE'),
+                      ProfileMenuCard(
+                        items: [
+                          ProfileMenuItem(
+                            icon: Icons.subscriptions_outlined,
+                            title: 'Subscription Plan',
+                            subtitle: 'Manage owner plan',
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Coming soon!')),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+
+                    const SizedBox(height: 24),
+
+                    _buildSectionHeader(context, 'GENERAL'),
+                    ProfileMenuCard(
+                      items: [
+                        ProfileMenuItem(
+                          icon: Icons.settings_outlined,
+                          title: 'Settings',
+                          subtitle: 'Privacy, notifications, and app preferences',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) => const SettingsScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                        ProfileMenuItem(
+                          icon: Icons.logout,
+                          title: 'Sign Out',
+                          isDestructive: true,
+                          onTap: _handleSignOut,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    const Text(
+                      'ONE ACCOUNT. MULTIPLE ROLES.',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'v1.0.0 • ShiftProof Real Estate',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'v1.0.0 • ShiftProof Real Estate',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
+        loading: () => _buildShimmerBody(context),
+        error: (e, s) => _buildErrorState(context, userNotifier.refreshUser),
       ),
     );
   }
@@ -316,26 +277,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : _buildDefaultAvatar(user, isDark, theme),
               ),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: theme.scaffoldBackgroundColor,
-                    width: 2,
+            if (user.profileCompleted)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: theme.scaffoldBackgroundColor,
+                      width: 2,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.verified_user,
+                    color: theme.colorScheme.onPrimary,
+                    size: 14,
                   ),
                 ),
-                child: Icon(
-                  Icons.verified_user,
-                  color: theme.colorScheme.onPrimary,
-                  size: 14,
-                ),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -347,30 +309,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 4),
-        Text(user.email ?? 'No Email', style: theme.textTheme.bodyMedium),
+        Text(user.email ?? user.phoneNumber ?? 'No Identifier',
+            style: theme.textTheme.bodyMedium),
         const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(16),
+        Wrap(
+          spacing: 8,
+          children:
+              user.roles.map((role) => _buildRoleBadge(context, role)).toList(),
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: colorScheme.primary,
+            side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.4)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           ),
-          child: Text(
-            user.role?.toUpperCase() ?? 'MEMBER',
-            style: TextStyle(
-              color: colorScheme.primary,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
+          icon: const Icon(Icons.edit_outlined, size: 16),
+          label: const Text(
+            'Edit Profile',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
           ),
+          onPressed: () {
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (_) => _EditProfileSheet(
+                user: user,
+                onSaved: () =>
+                    ref.read(userNotifierProvider.notifier).refreshUser(),
+              ),
+            );
+          },
         ),
       ],
     );
   }
 
+  Widget _buildRoleBadge(BuildContext context, String role) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        role.toUpperCase(),
+        style: TextStyle(
+          color: colorScheme.primary,
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+        ),
+      ),
+    );
+  }
+
   Widget _buildDefaultAvatar(AppUser user, bool isDark, ThemeData theme) {
-    // Determine sprite based on gender
     var sprite = DiceBearSprite.personas;
     if (user.gender != null) {
       final gender = user.gender!.toLowerCase();
@@ -401,6 +405,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerBody(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          _buildShimmerHeader(context),
+          const SizedBox(height: 40),
+          _buildShimmerCard(context),
+          const SizedBox(height: 24),
+          _buildShimmerCard(context),
+        ],
       ),
     );
   }
@@ -441,16 +461,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(4),
             ),
           ),
-          const SizedBox(height: 12),
-          Container(
-            width: 80,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerCard(BuildContext context) {
+    return Container(
+      height: 100,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.grey[300]!.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
@@ -470,27 +492,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildErrorState(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        children: [
-          const Icon(Icons.error_outline, color: Colors.red, size: 48),
-          const SizedBox(height: 16),
-          Text(
-            _error ?? 'An error occurred',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.red),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(onPressed: _fetchProfile, child: const Text('Retry')),
-        ],
+  Widget _buildErrorState(BuildContext context, VoidCallback onRetry) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+            const SizedBox(height: 16),
+            const Text('An error occurred loading profile'),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildModeSwitcher(BuildContext context) {
+  Widget _buildModeSwitcher(BuildContext context, bool isOwnerContext, UserNotifier notifier) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -508,16 +528,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: _buildModeButton(
               context,
               title: 'Personal Stay',
-              isSelected: !_isManagementMode,
-              onTap: () => setState(() => _isManagementMode = false),
+              isSelected: !isOwnerContext,
+              onTap: () => notifier.setContext(UserContext.tenant),
             ),
           ),
           Expanded(
             child: _buildModeButton(
               context,
               title: 'Management',
-              isSelected: _isManagementMode,
-              onTap: () => setState(() => _isManagementMode = true),
+              isSelected: isOwnerContext,
+              onTap: () => notifier.setContext(UserContext.owner),
             ),
           ),
         ],
@@ -566,96 +586,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildGuestMode(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 16),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: colorScheme.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: ClipOval(
-              child: DiceBearBuilder(
-                seed: 'guest',
-                sprite: DiceBearSprite.personas,
-                backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
-              ).build().toImage(
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.cover,
-                  ),
-            ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            'Experience ShiftProof',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Sign in to manage your bookings, properties, and payments with ease.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-          const SizedBox(height: 48),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/signin'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Sign In',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () => Navigator.pushNamed(context, '/signup'),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: BorderSide(color: colorScheme.primary, width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                'Create Account',
-                style: TextStyle(
-                  color: colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 8, bottom: 8, top: 16),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
@@ -670,4 +603,223 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+}
+
+// ─── Edit Profile Bottom Sheet ────────────────────────────────────────────────
+
+class _EditProfileSheet extends ConsumerStatefulWidget {
+  const _EditProfileSheet({required this.user, required this.onSaved});
+  final AppUser user;
+  final VoidCallback onSaved;
+
+  @override
+  ConsumerState<_EditProfileSheet> createState() => _EditProfileSheetState();
+}
+
+class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _cityController;
+  late final TextEditingController _areaController;
+  String? _selectedGender;
+  bool _isLoading = false;
+
+  static const _genders = ['Male', 'Female', 'Other'];
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController =
+        TextEditingController(text: widget.user.name ?? '');
+    _phoneController =
+        TextEditingController(text: widget.user.phoneNumber ?? '');
+    _cityController =
+        TextEditingController(text: widget.user.city ?? '');
+    _areaController =
+        TextEditingController(text: widget.user.area ?? '');
+    final gender = widget.user.gender;
+    if (gender != null) {
+      _selectedGender = _genders.firstWhere(
+        (g) => g.toLowerCase() == gender.toLowerCase(),
+        orElse: () => gender,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _cityController.dispose();
+    _areaController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Name cannot be empty.')),
+      );
+      return;
+    }
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(profileServiceProvider).updateProfile(
+            name: _nameController.text.trim(),
+            gender: _selectedGender?.toLowerCase(),
+            phoneNumber: _phoneController.text.trim().isEmpty
+                ? null
+                : _phoneController.text.trim(),
+            city: _cityController.text.trim().isEmpty
+                ? null
+                : _cityController.text.trim(),
+            area: _areaController.text.trim().isEmpty
+                ? null
+                : _areaController.text.trim(),
+          );
+      widget.onSaved();
+      if (mounted) Navigator.pop(context);
+    } on Exception catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst('Exception: ', '')),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Edit Profile',
+                  style: theme.textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            _label('Full Name'),
+            _field(controller: _nameController, hint: 'Your name'),
+            const SizedBox(height: 14),
+
+            _label('Gender'),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedGender,
+              hint: const Text('Select gender'),
+              decoration: _inputDecoration(colorScheme),
+              items: _genders
+                  .map((g) =>
+                      DropdownMenuItem(value: g, child: Text(g)))
+                  .toList(),
+              onChanged: (v) => setState(() => _selectedGender = v),
+            ),
+            const SizedBox(height: 14),
+
+            _label('Phone Number'),
+            _field(
+              controller: _phoneController,
+              hint: '+91 9000000000',
+              keyboard: TextInputType.phone,
+            ),
+            const SizedBox(height: 14),
+
+            _label('City'),
+            _field(controller: _cityController, hint: 'e.g. Bangalore'),
+            const SizedBox(height: 14),
+
+            _label('Area / Locality'),
+            _field(
+                controller: _areaController,
+                hint: 'e.g. Koramangala'),
+            const SizedBox(height: 24),
+
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: _isLoading ? null : _handleSave,
+                icon: _isLoading
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.check),
+                label: Text(
+                  _isLoading ? 'Saving...' : 'Save Changes',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _label(String text) => Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+      );
+
+  Widget _field({
+    required TextEditingController controller,
+    required String hint,
+    TextInputType keyboard = TextInputType.text,
+  }) =>
+      TextField(
+        controller: controller,
+        keyboardType: keyboard,
+        decoration: _inputDecoration(Theme.of(context).colorScheme)
+            .copyWith(hintText: hint),
+      );
+
+  InputDecoration _inputDecoration(ColorScheme cs) => InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: cs.outline.withValues(alpha: 0.5)),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      );
 }

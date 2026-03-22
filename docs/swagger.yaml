@@ -1,24 +1,94 @@
-basePath: /
+xbasePath: /
 definitions:
+  handler.AddOrgMemberRequest:
+    properties:
+      role:
+        enum:
+        - owner
+        - member
+        type: string
+      userId:
+        type: string
+    required:
+    - role
+    - userId
+    type: object
+  handler.CreateOrgRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  handler.CreateSubscriptionRequest:
+    properties:
+      planId:
+        type: string
+    required:
+    - planId
+    type: object
+  handler.UpdateSubscriptionRequest:
+    properties:
+      planId:
+        type: string
+    required:
+    - planId
+    type: object
+  handler.payPaymentRequest:
+    properties:
+      paymentMethod:
+        type: string
+      transactionRef:
+        type: string
+    required:
+    - paymentMethod
+    - transactionRef
+    type: object
   model.AppUser:
     properties:
+      area:
+        type: string
+      authIdentifier:
+        description: Firebase UID
+        type: string
       avatarUrl:
+        type: string
+      city:
+        type: string
+      createdAt:
+        description: '"YYYY-MM-DD"'
         type: string
       email:
         type: string
+      gender:
+        description: MALE, FEMALE, CO_LIVING
+        type: string
       id:
-        type: string
-      joinDate:
-        description: '"YYYY-MM-DD" — never "5 Mar 2026"'
-        type: string
-      location:
         type: string
       name:
         type: string
-      phone:
+      phoneNumber:
         type: string
-      role:
-        description: '"owner" | "tenant"'
+      profileCompleted:
+        type: boolean
+      providers:
+        description: '["google", "phone"] — active providers only'
+        items:
+          type: string
+        type: array
+      roles:
+        description: '"OWNER", "TENANT"'
+        items:
+          type: string
+        type: array
+    type: object
+  model.AvatarUploadRequest:
+    properties:
+      contentType:
+        description: image/jpeg, image/png, or image/webp
+        type: string
+      data:
+        description: base64-encoded image bytes
         type: string
     type: object
   model.CurrentStay:
@@ -60,6 +130,15 @@ definitions:
       error:
         type: string
     type: object
+  model.ImageUploadRequest:
+    properties:
+      contentType:
+        description: image/jpeg, image/png, or image/webp
+        type: string
+      data:
+        description: base64-encoded image bytes
+        type: string
+    type: object
   model.Notification:
     properties:
       description:
@@ -78,7 +157,52 @@ definitions:
         description: '"rentDue"|"message"|"maintenance"|"leaseRenewal"|"general"'
         type: string
     type: object
-  model.PaginatedResponse-model_Notification:
+  model.OnboardingRequest:
+    properties:
+      area:
+        type: string
+      city:
+        type: string
+      gender:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  model.OrgMember:
+    properties:
+      avatarUrl:
+        type: string
+      email:
+        type: string
+      joinedAt:
+        description: '"YYYY-MM-DD"'
+        type: string
+      name:
+        type: string
+      role:
+        description: '"owner" | "member"'
+        type: string
+      userId:
+        type: string
+    type: object
+  model.Organization:
+    properties:
+      billingOwnerId:
+        type: string
+      createdAt:
+        description: '"YYYY-MM-DD"'
+        type: string
+      id:
+        type: string
+      logoUrl:
+        description: '"" when no logo uploaded'
+        type: string
+      name:
+        type: string
+    type: object
+  model.PaginatedNotificationResponse:
     properties:
       data:
         items:
@@ -87,7 +211,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationMeta'
     type: object
-  model.PaginatedResponse-model_Payment:
+  model.PaginatedPaymentResponse:
     properties:
       data:
         items:
@@ -96,7 +220,7 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationMeta'
     type: object
-  model.PaginatedResponse-model_Payout:
+  model.PaginatedPayoutResponse:
     properties:
       data:
         items:
@@ -105,11 +229,20 @@ definitions:
       meta:
         $ref: '#/definitions/model.PaginationMeta'
     type: object
-  model.PaginatedResponse-model_Property:
+  model.PaginatedPropertyResponse:
     properties:
       data:
         items:
           $ref: '#/definitions/model.Property'
+        type: array
+      meta:
+        $ref: '#/definitions/model.PaginationMeta'
+    type: object
+  model.PaginatedTenantResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Tenant'
         type: array
       meta:
         $ref: '#/definitions/model.PaginationMeta'
@@ -217,7 +350,13 @@ definitions:
       id:
         type: string
       imageUrl:
+        description: cover image URL (denormalized for fast list queries)
         type: string
+      images:
+        description: all images; populated only on GetProperty, empty slice on list
+        items:
+          $ref: '#/definitions/model.PropertyImage'
+        type: array
       location:
         type: string
       occupiedRooms:
@@ -240,6 +379,147 @@ definitions:
         type: integer
       type:
         description: '"PG"|"Flat"|"House"'
+        type: string
+    type: object
+  model.PropertyImage:
+    properties:
+      id:
+        type: string
+      isCover:
+        type: boolean
+      position:
+        type: integer
+      url:
+        type: string
+    type: object
+  model.PropertyMember:
+    properties:
+      avatarUrl:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      userId:
+        type: string
+    type: object
+  model.PropertyReport:
+    properties:
+      occupancyRate:
+        description: 0.0–1.0
+        type: number
+      overdueCount:
+        type: integer
+      payments:
+        items:
+          $ref: '#/definitions/model.Payment'
+        type: array
+      totalCollected:
+        description: rupees, int64
+        type: integer
+      totalPending:
+        type: integer
+    type: object
+  model.Room:
+    properties:
+      capacity:
+        description: total beds
+        type: integer
+      deposit:
+        description: rupees, int64
+        type: integer
+      id:
+        type: string
+      isAvailable:
+        description: capacity > occupiedBeds
+        type: boolean
+      occupiedBeds:
+        description: derived
+        type: integer
+      propertyId:
+        type: string
+      rentAmount:
+        description: rupees, int64
+        type: integer
+      roomNumber:
+        type: string
+      type:
+        description: '"single"|"double"|"triple"'
+        type: string
+    type: object
+  model.Subscription:
+    properties:
+      endDate:
+        description: '"YYYY-MM-DD" or ""'
+        type: string
+      id:
+        type: string
+      planId:
+        type: string
+      planName:
+        type: string
+      price:
+        description: rupees, int64
+        type: integer
+      startDate:
+        description: '"YYYY-MM-DD"'
+        type: string
+      status:
+        description: '"active"|"cancelled"|"expired"'
+        type: string
+    type: object
+  model.Tenant:
+    properties:
+      avatarUrl:
+        type: string
+      dueDate:
+        description: '"YYYY-MM-DD"'
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      isPaid:
+        type: boolean
+      joinDate:
+        description: '"YYYY-MM-DD"'
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      propertyId:
+        type: string
+      rentAmount:
+        description: rupees, int64
+        type: integer
+      room:
+        type: string
+      status:
+        description: '"active"|"pending"|"overdue"'
+        type: string
+    type: object
+  model.TenantInviteResponse:
+    properties:
+      expiresAt:
+        description: ISO 8601
+        type: string
+      inviteCode:
+        type: string
+    type: object
+  model.UpdateProfileRequest:
+    properties:
+      area:
+        type: string
+      city:
+        type: string
+      gender:
+        type: string
+      name:
+        type: string
+      phoneNumber:
         type: string
     type: object
   service.CreatePaymentRequest:
@@ -299,6 +579,78 @@ definitions:
     - price
     - title
     - type
+    type: object
+  service.CreateRoomRequest:
+    properties:
+      capacity:
+        type: integer
+      deposit:
+        minimum: 0
+        type: integer
+      rentAmount:
+        type: integer
+      roomNumber:
+        type: string
+      type:
+        enum:
+        - single
+        - double
+        - triple
+        type: string
+    required:
+    - capacity
+    - rentAmount
+    - roomNumber
+    - type
+    type: object
+  service.InviteTenantRequest:
+    properties:
+      email:
+        type: string
+      leaseEnd:
+        type: string
+      leaseStart:
+        type: string
+      phoneNumber:
+        type: string
+      rentAmount:
+        type: integer
+      roomId:
+        type: string
+    required:
+    - leaseEnd
+    - leaseStart
+    - rentAmount
+    - roomId
+    type: object
+  service.JoinPropertyRequest:
+    properties:
+      inviteCode:
+        type: string
+    required:
+    - inviteCode
+    type: object
+  service.UpdateRoomRequest:
+    properties:
+      capacity:
+        type: integer
+      deposit:
+        type: integer
+      rentAmount:
+        type: integer
+      roomNumber:
+        type: string
+      type:
+        type: string
+    type: object
+  service.UpdateTenantRequest:
+    properties:
+      leaseEnd:
+        type: string
+      rentAmount:
+        type: integer
+      roomId:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -440,7 +792,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse-model_Notification'
+            $ref: '#/definitions/model.PaginatedNotificationResponse'
         "401":
           description: Unauthorized
           schema:
@@ -511,6 +863,182 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/api/v1/notifications/mark-all-read
         path_translation: CONSTANT_ADDRESS
+  /api/v1/orgs:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new org with the caller as billing owner. One org per
+        user.
+      operationId: createOrg
+      parameters:
+      - description: Org name
+        in: body
+        name: org
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateOrgRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Organization'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Create an organization
+      tags:
+      - Organizations
+  /api/v1/orgs/{id}/logo:
+    post:
+      consumes:
+      - application/json
+      description: Uploads a base64-encoded logo image (jpeg/png/webp, max 5 MB) to
+        GCS and updates the org's logoUrl. Caller must be the billing owner.
+      operationId: uploadOrgLogo
+      parameters:
+      - description: Org ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Base64-encoded image with content type
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ImageUploadRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Organization'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Upload org logo
+      tags:
+      - Organizations
+  /api/v1/orgs/{id}/members:
+    get:
+      description: Returns all users who are members of the org. Caller must be a
+        member.
+      operationId: listOrgMembers
+      parameters:
+      - description: Org ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.OrgMember'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: List org members
+      tags:
+      - Organizations
+    post:
+      consumes:
+      - application/json
+      description: Adds a user to the org. Caller must be the billing owner.
+      operationId: addOrgMember
+      parameters:
+      - description: Org ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Member details
+        in: body
+        name: member
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AddOrgMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Member added
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Add a member to an org
+      tags:
+      - Organizations
+  /api/v1/orgs/{id}/members/{userId}:
+    delete:
+      description: Removes a user from the org. Caller must be the billing owner.
+      operationId: removeOrgMember
+      parameters:
+      - description: Org ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID to remove
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Member removed
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Remove a member from an org
+      tags:
+      - Organizations
+  /api/v1/orgs/me:
+    get:
+      description: Returns the org where the caller is the billing owner.
+      operationId: getMyOrg
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Organization'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Get caller's organization
+      tags:
+      - Organizations
   /api/v1/payments:
     get:
       description: Get a paginated list of payments for the current user. Owners see
@@ -543,7 +1071,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse-model_Payment'
+            $ref: '#/definitions/model.PaginatedPaymentResponse'
         "401":
           description: Unauthorized
           schema:
@@ -595,6 +1123,49 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/api/v1/payments
         path_translation: CONSTANT_ADDRESS
+  /api/v1/payments/{id}/pay:
+    post:
+      consumes:
+      - application/json
+      description: Called by tenant after the payment gateway returns success. Marks
+        payment as paid.
+      operationId: payPayment
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Gateway confirmation
+        in: body
+        name: pay
+        required: true
+        schema:
+          $ref: '#/definitions/handler.payPaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Confirm payment after gateway success
+      tags:
+      - Payments
   /api/v1/payments/collections:
     get:
       description: Get a paginated list of rent-only payments. Shortcut for owners.
@@ -622,7 +1193,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse-model_Payment'
+            $ref: '#/definitions/model.PaginatedPaymentResponse'
         "401":
           description: Unauthorized
           schema:
@@ -678,7 +1249,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse-model_Payout'
+            $ref: '#/definitions/model.PaginatedPayoutResponse'
         "401":
           description: Unauthorized
           schema:
@@ -738,7 +1309,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse-model_Property'
+            $ref: '#/definitions/model.PaginatedPropertyResponse'
       security:
       - firebase: []
       summary: List properties
@@ -877,6 +1448,755 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/api/v1/properties/{id}
         path_translation: CONSTANT_ADDRESS
+  /api/v1/properties/{id}/images:
+    post:
+      consumes:
+      - application/json
+      description: Uploads a base64-encoded image (jpeg/png/webp, max 10 MB) to GCS.
+        The first image uploaded automatically becomes the cover.
+      operationId: uploadPropertyImage
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Base64-encoded image with content type
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ImageUploadRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.PropertyImage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Upload a property image
+      tags:
+      - Properties
+    get:
+      description: Returns all images for a property ordered by position.
+      operationId: listPropertyImages
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.PropertyImage'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: List property images
+      tags:
+      - Properties
+  /api/v1/properties/{id}/images/{imageId}:
+    delete:
+      description: Removes a property image. If the deleted image was the cover, the
+        next image becomes the cover automatically.
+      operationId: deletePropertyImage
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Image ID
+        in: path
+        name: imageId
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Delete a property image
+      tags:
+      - Properties
+  /api/v1/properties/{id}/members:
+    get:
+      description: Get all members and their roles for a property.
+      operationId: listMembers
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.PropertyMember'
+            type: array
+      security:
+      - firebase: []
+      summary: List property members
+      tags:
+      - Properties
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/properties/{id}/members
+        path_translation: CONSTANT_ADDRESS
+    post:
+      consumes:
+      - application/json
+      description: Assign a role to a user for this property.
+      operationId: addMember
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Member Data
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - firebase: []
+      summary: Add property member
+      tags:
+      - Properties
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/properties/{id}/members
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/properties/{id}/members/{userId}:
+    delete:
+      description: Remove a user's role assignment from this property.
+      operationId: removeMember
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+      security:
+      - firebase: []
+      summary: Remove property member
+      tags:
+      - Properties
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/properties/{id}/members/{userId}
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/properties/{id}/rooms:
+    get:
+      description: Get all rooms for a property
+      operationId: listRooms
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Room'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: List rooms for a property
+      tags:
+      - Rooms
+    post:
+      consumes:
+      - application/json
+      description: Add a new room to a property (requires property:update permission)
+      operationId: createRoom
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Room details
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/service.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Room'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Create a room in a property
+      tags:
+      - Rooms
+  /api/v1/properties/{id}/tenants:
+    get:
+      description: Get all active tenants for a property (owner/manager only)
+      operationId: listTenants
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedTenantResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: List tenants for a property
+      tags:
+      - Tenants
+  /api/v1/properties/{id}/tenants/invite:
+    post:
+      consumes:
+      - application/json
+      description: Create an invite code for a tenant (requires property:update permission)
+      operationId: inviteTenant
+      parameters:
+      - description: Property ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Invite details
+        in: body
+        name: invite
+        required: true
+        schema:
+          $ref: '#/definitions/service.InviteTenantRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.TenantInviteResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Invite a tenant to a property
+      tags:
+      - Tenants
+  /api/v1/reports/properties/{propertyId}:
+    get:
+      description: Returns aggregated payment stats and list of payments for a property
+        in a given month
+      operationId: getPropertyReport
+      parameters:
+      - description: Property ID
+        in: path
+        name: propertyId
+        required: true
+        type: string
+      - description: Month in YYYY-MM format (defaults to current month)
+        in: query
+        name: month
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PropertyReport'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Get monthly property report
+      tags:
+      - Reports
+  /api/v1/rooms/{id}:
+    delete:
+      description: Remove a room from a property (requires property:delete permission)
+      operationId: deleteRoom
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Delete a room
+      tags:
+      - Rooms
+    get:
+      description: Get details of a single room
+      operationId: getRoom
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Room'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Get room by ID
+      tags:
+      - Rooms
+    patch:
+      consumes:
+      - application/json
+      description: Patch room fields (requires property:update permission on parent
+        property)
+      operationId: updateRoom
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Partial room update
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Room'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Update room details
+      tags:
+      - Rooms
+  /api/v1/subscriptions:
+    post:
+      consumes:
+      - application/json
+      description: Create or replace the owner's active subscription
+      operationId: createSubscription
+      parameters:
+      - description: Plan ID
+        in: body
+        name: sub
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateSubscriptionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Subscription'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Subscribe to a plan
+      tags:
+      - Subscriptions
+  /api/v1/subscriptions/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Change the plan of an active subscription
+      operationId: updateSubscription
+      parameters:
+      - description: Subscription ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New plan ID
+        in: body
+        name: sub
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateSubscriptionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Subscription'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Upgrade or downgrade subscription plan
+      tags:
+      - Subscriptions
+  /api/v1/subscriptions/current:
+    get:
+      description: Get the owner's active subscription plan (returns 204 if none)
+      operationId: getCurrentSubscription
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Subscription'
+        "204":
+          description: No active subscription
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Get current subscription
+      tags:
+      - Subscriptions
+  /api/v1/tenants/{id}:
+    delete:
+      description: Deactivate a tenant's stay (soft delete)
+      operationId: removeTenant
+      parameters:
+      - description: Stay ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Remove a tenant
+      tags:
+      - Tenants
+    patch:
+      consumes:
+      - application/json
+      description: Update rent amount, room, or lease end date for a tenant stay
+      operationId: updateTenant
+      parameters:
+      - description: Stay ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Tenant update
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateTenantRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tenant'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Update tenant lease details
+      tags:
+      - Tenants
+  /api/v1/tenants/join:
+    post:
+      consumes:
+      - application/json
+      description: Redeem an invite code to become a tenant at a property
+      operationId: joinProperty
+      parameters:
+      - description: Invite code
+        in: body
+        name: join
+        required: true
+        schema:
+          $ref: '#/definitions/service.JoinPropertyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CurrentStay'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Join a property using an invite code
+      tags:
+      - Tenants
+  /api/v1/users/link-provider:
+    post:
+      consumes:
+      - application/json
+      description: Links a new authentication provider (google, phone) to the account.
+      operationId: linkProvider
+      parameters:
+      - description: Provider Name
+        in: body
+        name: provider
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AppUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Link auth provider
+      tags:
+      - Auth
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/users/link-provider
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/users/onboarding:
+    post:
+      consumes:
+      - application/json
+      description: Sets the user's profile on first-time onboarding. name and gender
+        are required.
+      operationId: onboarding
+      parameters:
+      - description: Onboarding Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.OnboardingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AppUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Complete onboarding
+      tags:
+      - Auth
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/users/onboarding
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/users/profile:
+    patch:
+      consumes:
+      - application/json
+      description: Updates the user's profile information.
+      operationId: updateProfile
+      parameters:
+      - description: Profile Update
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AppUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Update profile
+      tags:
+      - Auth
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/users/profile
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/users/profile/avatar:
+    post:
+      consumes:
+      - application/json
+      description: Uploads a base64-encoded profile image (jpeg/png/webp, max 5 MB)
+        to GCS and updates the user's avatarUrl.
+      operationId: uploadAvatar
+      parameters:
+      - description: Base64-encoded image with content type
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.AvatarUploadRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AppUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "503":
+          description: Storage not configured
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Upload profile avatar
+      tags:
+      - Auth
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/users/profile/avatar
+        path_translation: CONSTANT_ADDRESS
   /health:
     get:
       description: Get API liveness status
@@ -896,6 +2216,30 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/health
         path_translation: CONSTANT_ADDRESS
+  /ready:
+    get:
+      description: Returns readiness status with dependency checks for DB, Redis, and
+        Firebase. Returns 503 if any dependency is unhealthy.
+      operationId: readinessCheck
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "503":
+          description: Service Unavailable
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Readiness probe
+      tags:
+      - Health
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/ready
+        path_translation: CONSTANT_ADDRESS
 schemes:
 - http
 - https
@@ -904,7 +2248,7 @@ securityDefinitions:
     authorizationUrl: https://securetoken.google.com/${FIREBASE_PROJECT_ID}
     flow: implicit
     scopes:
-      openid: ' access to identity'
+      openid: access to identity
     type: oauth2
     x-google-audiences: ${FIREBASE_PROJECT_ID}
     x-google-issuer: https://securetoken.google.com/${FIREBASE_PROJECT_ID}
@@ -923,3 +2267,13 @@ tags:
   name: Plans
 - description: API health and readiness probes
   name: Health
+- description: Room management within properties
+  name: Rooms
+- description: Tenant lifecycle and lease management
+  name: Tenants
+- description: Subscription and plan management
+  name: Subscriptions
+- description: Monthly property reports
+  name: Reports
+- description: Organization management
+  name: Organizations

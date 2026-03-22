@@ -16,18 +16,18 @@ class Tenant {
 
   factory Tenant.fromJson(Map<String, dynamic> json) {
     return Tenant(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      room: json['room'] as String,
-      rentAmount: (json['rentAmount'] as num).toInt(),
-      dueDate: json['dueDate'] as String,
-      isPaid: json['isPaid'] as bool,
-      avatarUrl: json['avatarUrl'] as String,
-      phone: json['phone'] as String,
-      email: json['email'] as String,
-      joinDate: json['joinDate'] as String,
-      propertyId: json['propertyId'] as String,
-      status: json['status'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      room: json['room'] as String? ?? '',
+      rentAmount: (json['rentAmount'] as num?)?.toInt() ?? 0,
+      dueDate: json['dueDate'] as String? ?? '',
+      isPaid: json['isPaid'] as bool? ?? false,
+      avatarUrl: json['avatarUrl'] as String? ?? '',
+      phone: json['phone'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      joinDate: json['joinDate'] as String? ?? '',
+      propertyId: json['propertyId'] as String? ?? '',
+      status: json['status'] as String? ?? 'active',
     );
   }
   final String id;
@@ -65,4 +65,59 @@ class Tenant {
       return -1;
     }
   }
+}
+
+/// Request body for POST /api/v1/properties/{propertyId}/tenants/invite
+class InviteTenantRequest {
+  const InviteTenantRequest({
+    required this.roomId,
+    required this.leaseStart,
+    required this.leaseEnd,
+    required this.rentAmount,
+    this.email,
+    this.phoneNumber,
+  });
+
+  final String roomId;
+
+  /// ISO 8601 date string, e.g. "2026-04-01"
+  final String leaseStart;
+
+  /// ISO 8601 date string, e.g. "2027-03-31"
+  final String leaseEnd;
+
+  final int rentAmount;
+  final String? email;
+  final String? phoneNumber;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'roomId': roomId,
+      'leaseStart': leaseStart,
+      'leaseEnd': leaseEnd,
+      'rentAmount': rentAmount,
+      if (email != null) 'email': email,
+      if (phoneNumber != null) 'phoneNumber': phoneNumber,
+    };
+  }
+}
+
+/// Response from POST /api/v1/properties/{propertyId}/tenants/invite
+class TenantInviteResponse {
+  const TenantInviteResponse({
+    required this.inviteCode,
+    required this.expiresAt,
+  });
+
+  factory TenantInviteResponse.fromJson(Map<String, dynamic> json) {
+    return TenantInviteResponse(
+      inviteCode: json['inviteCode'] as String? ?? '',
+      expiresAt: json['expiresAt'] as String? ?? '',
+    );
+  }
+
+  final String inviteCode;
+
+  /// ISO 8601 datetime string
+  final String expiresAt;
 }

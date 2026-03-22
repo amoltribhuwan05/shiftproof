@@ -1,8 +1,6 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shiftproof/data/services/mock_api_service.dart';
-
-part 'dashboard_provider.g.dart';
-
+/// Dashboard statistics model used by PropertyDashboardScreen.
+/// The dashboardStatsProvider is defined in service_providers.dart,
+/// composed from paymentSummaryProvider and propertiesProvider.
 class DashboardStats {
   DashboardStats({
     required this.totalTenants,
@@ -10,18 +8,13 @@ class DashboardStats {
     required this.collected,
     required this.pending,
   });
+
   final int totalTenants;
   final int totalProperties;
-  final String collected;
-  final String pending;
-}
 
-@riverpod
-DashboardStats dashboardStats(DashboardStatsRef ref) {
-  return DashboardStats(
-    totalTenants: MockApiService.getTotalTenants(),
-    totalProperties: MockApiService.getProperties().length,
-    collected: MockApiService.getTotalCollectedThisMonth(),
-    pending: MockApiService.getPendingAmount(),
-  );
+  /// Formatted string, e.g. "₹1,20,000"
+  final String collected;
+
+  /// Formatted string, e.g. "₹30,000"
+  final String pending;
 }

@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shiftproof/screens/auth/email_auth_screen.dart';
-import 'package:shiftproof/screens/tenant/tenant_main_screen.dart';
+import 'package:shiftproof/screens/auth/phone_login_screen.dart';
 import 'package:shiftproof/services/auth_service.dart';
+import 'package:shiftproof/utils/auth_redirect_mixin.dart';
 import 'package:shiftproof/widgets/buttons/primary_button.dart';
 import 'package:shiftproof/widgets/buttons/social_button.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final AuthService _authService = AuthService();
+class _LoginScreenState extends ConsumerState<LoginScreen> with AuthRedirectMixin<LoginScreen> {
+  final AuthService _authService = AuthService.instance;
   bool _isGoogleLoading = false;
   bool _isAppleLoading = false;
 
@@ -25,9 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithGoogle();
       if (user != null && mounted) {
-        unawaited(
-          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
-        );
+        await checkOnboardingAndRedirect();
       }
     } on AuthException catch (e, stack) {
       debugPrint(
@@ -59,9 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final user = await _authService.signInWithApple();
       if (user != null && mounted) {
-        unawaited(
-          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
-        );
+        await checkOnboardingAndRedirect();
       }
     } on AuthException catch (e) {
       if (mounted) {
@@ -89,28 +87,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              // Header / Back button
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    if (Navigator.canPop(context)) Navigator.pop(context);
-                  },
-                ),
-              ),
-              const Spacer(),
-
+              const SizedBox(height: 40),
               // Hero / Branding Section
               Container(
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
+                  borderRadius: BorderRadius.circular(30),
                   gradient: LinearGradient(
                     colors: [
                       colorScheme.primary.withValues(alpha: 0.2),
@@ -119,133 +106,111 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.shadow.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/logo.svg',
-                    width: 64,
-                    height: 64,
-                    colorFilter: ColorFilter.mode(
-                      colorScheme.primary,
-                      BlendMode.srcIn,
-                    ),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
               const SizedBox(height: 32),
               Text(
-                'Get started',
-                style: theme.textTheme.displayLarge?.copyWith(
+                'Find your next home',
+                style: theme.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  fontSize: 32,
+                  fontSize: 28,
                   letterSpacing: -0.5,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               Text(
-                'Manage PGs or rent properties',
+                'Join thousands of users managing properties with ease.',
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                  height: 1.5,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.verified_user,
-                    color: theme.colorScheme.primary,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'No spam. No ads.',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ],
-              ),
 
-              const Spacer(flex: 2),
+              const SizedBox(height: 64),
 
               // Action Buttons
               SocialButton(
                 text: 'Continue with Google',
                 isLoading: _isGoogleLoading,
-                iconWidget: const Icon(Icons.g_mobiledata, size: 28),
+                iconWidget: SvgPicture.asset(
+                  'assets/images/google_logo.svg',
+                  width: 24,
+                  height: 24,
+                ),
                 onPressed: _isGoogleLoading || _isAppleLoading
                     ? null
                     : _handleGoogleSignIn,
               ),
-              if (defaultTargetPlatform == TargetPlatform.iOS) ...[
-                const SizedBox(height: 16),
-                SocialButton(
-                  text: 'Continue with Apple',
-                  isLoading: _isAppleLoading,
-                  iconWidget: const Icon(Icons.apple, size: 28),
-                  onPressed: _isAppleLoading || _isGoogleLoading
-                      ? null
-                      : _handleAppleSignIn,
-                ),
-              ],
               const SizedBox(height: 16),
+
               PrimaryButton(
                 text: 'Continue with Phone',
-                icon: Icons.call,
+                icon: Icons.phone_android_rounded,
                 onPressed: () {
                   unawaited(
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute<void>(
-                        builder: (_) => const TenantMainScreen(),
+                        builder: (_) => const PhoneLoginScreen(),
                       ),
                     ),
                   );
                 },
               ),
+              const SizedBox(height: 16),
+
+              if (defaultTargetPlatform == TargetPlatform.iOS) ...[
+                SocialButton(
+                  text: 'Continue with Apple',
+                  isLoading: _isAppleLoading,
+                  iconWidget: const Icon(Icons.apple, size: 24),
+                  onPressed: _isAppleLoading || _isGoogleLoading
+                      ? null
+                      : _handleAppleSignIn,
+                ),
+                const SizedBox(height: 16),
+              ],
 
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
+                padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Row(
                   children: [
                     Expanded(
-                      child: Divider(color: theme.colorScheme.outlineVariant),
+                      child: Divider(
+                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'OR',
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(
-                            alpha: 0.5,
-                          ),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.4),
                           fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
                         ),
                       ),
                     ),
                     Expanded(
-                      child: Divider(color: theme.colorScheme.outlineVariant),
+                      child: Divider(
+                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                      ),
                     ),
                   ],
                 ),
               ),
 
-              PrimaryButton(
-                text: 'Continue with Email',
-                icon: Icons.mail_outline,
-                isSecondary: true,
+              TextButton(
                 onPressed: () {
                   unawaited(
                     Navigator.push(
@@ -256,48 +221,60 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
                 },
+                child: Text(
+                  'Log in with Email',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
+
+              // Sign Up link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'New to ShiftProof?',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      unawaited(Navigator.pushNamed(context, '/signup'));
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.primary,
+                    ),
+                    child: const Text(
+                      'Create account',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
 
               // Footer
-              TextButton(
-                onPressed: () {
-                  unawaited(
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (_) => const TenantMainScreen(),
-                      ),
-                    ),
-                  );
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.onSurface.withValues(
-                    alpha: 0.6,
-                  ),
-                ),
-                child: Text(
-                  'Skip for now',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
               Text(
                 'By continuing, you agree to our Terms of Service and Privacy Policy.',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
     );
   }
+
 }

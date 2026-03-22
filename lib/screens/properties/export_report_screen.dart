@@ -1,22 +1,85 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shiftproof/providers/service_providers.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
-import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
-class ExportReportScreen extends StatefulWidget {
-  const ExportReportScreen({super.key});
+class ExportReportScreen extends ConsumerStatefulWidget {
+  const ExportReportScreen({super.key, this.propertyId = ''});
+
+  final String propertyId;
 
   @override
-  State<ExportReportScreen> createState() => _ExportReportScreenState();
+  ConsumerState<ExportReportScreen> createState() => _ExportReportScreenState();
 }
 
-class _ExportReportScreenState extends State<ExportReportScreen> {
+class _ExportReportScreenState extends ConsumerState<ExportReportScreen> {
   String _selectedFormat = 'pdf';
+  String? _selectedPropertyId;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPropertyId = widget.propertyId.isEmpty ? null : widget.propertyId;
+  }
+
+  Future<void> _handleExport() async {
+    final propertyId = _selectedPropertyId;
+    if (propertyId == null || propertyId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a property.')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      // Fetch the report data from the backend.
+      final report = await ref
+          .read(reportServiceProvider)
+          .getPropertyReport(propertyId);
+
+      if (mounted) {
+        unawaited(showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Report Generated'),
+            content: Text(
+              'Month: ${report.month.isEmpty ? 'Current' : report.month}\n'
+              'Total Collected: ₹${report.totalCollected}\n'
+              'Total Pending: ₹${report.totalPending}\n'
+              'Payments: ${report.paidCount} paid, ${report.pendingCount} pending',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+        ));
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceFirst('Exception: ', '')),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final customPrimary = theme.colorScheme.primary;
     final isDark = theme.brightness == Brightness.dark;
+    final propertiesAsync = ref.watch(propertiesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -115,61 +178,7 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Date Range Field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Date Range',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: theme.textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? customPrimary.withValues(alpha: 0.05)
-                            : theme.colorScheme.surface,
-                        border: Border.all(
-                          color: customPrimary.withValues(alpha: 0.2),
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                'Oct 1, 2023 - Oct 31, 2023',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onSurface,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Icon(
-                              Icons.calendar_today,
-                              color: customPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Select Property Field
+                // Select Property
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -194,40 +203,60 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: 'All Properties',
-                                isExpanded: true,
-                                icon: Icon(
-                                  Icons.expand_more,
-                                  color: customPrimary,
-                                ),
-                                style: TextStyle(
-                                  color: theme.colorScheme.onSurface,
-                                  fontSize: 16,
-                                ),
-                                dropdownColor: theme.colorScheme.surface,
-                                items:
-                                    [
-                                      'All Properties',
-                                      'Grandview Apartments',
-                                      'Sunset Heights',
-                                      'The Marquee Plaza',
-                                      'Riverside Lofts',
-                                    ].map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                onChanged: (value) {},
-                              ),
-                            ),
+                      child: propertiesAsync.when(
+                        loading: () => const Center(
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                        ],
+                        ),
+                        error: (_, __) => const Center(
+                          child: Text('Failed to load properties'),
+                        ),
+                        data: (properties) {
+                          // Set default selection to the first property if not set
+                          if (_selectedPropertyId == null &&
+                              properties.isNotEmpty) {
+                            unawaited(
+                              Future.microtask(() {
+                                if (mounted) {
+                                  setState(() {
+                                    _selectedPropertyId = properties.first.id;
+                                  });
+                                }
+                              }),
+                            );
+                          }
+                          return DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedPropertyId,
+                              hint: const Text('Select a property'),
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.expand_more,
+                                color: customPrimary,
+                              ),
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface,
+                                fontSize: 16,
+                              ),
+                              dropdownColor: theme.colorScheme.surface,
+                              items: properties.map((p) {
+                                return DropdownMenuItem<String>(
+                                  value: p.id,
+                                  child: Text(
+                                    p.title ?? 'Unnamed Property',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() => _selectedPropertyId = value);
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -251,15 +280,38 @@ class _ExportReportScreenState extends State<ExportReportScreen> {
                     SizedBox(
                       height: 56,
                       width: double.infinity,
-                      child: PrimaryButton(
-                        text: 'Export Report',
-                        icon: Icons.file_download,
-                        onPressed: () {},
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: customPrimary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 2,
+                        ),
+                        onPressed: _isLoading ? null : _handleExport,
+                        icon: _isLoading
+                            ? const SizedBox(
+                                height: 18,
+                                width: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.file_download),
+                        label: Text(
+                          _isLoading ? 'Generating...' : 'Export Report',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Report will be generated and saved to your device.',
+                      'Report will be generated from live payment data.',
                       style: TextStyle(
                         fontSize: 12,
                         color: theme.colorScheme.onSurface.withValues(

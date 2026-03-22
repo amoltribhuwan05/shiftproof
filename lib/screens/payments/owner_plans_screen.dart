@@ -1,13 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/providers/service_providers.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/buttons/primary_button.dart';
 
-class OwnerPlansScreen extends StatelessWidget {
+// Hardcoded fallback plans used when the API is unavailable.
+const _fallbackPlans = [
+  _PlanData(
+    id: 'free',
+    name: 'Small PG',
+    price: 0,
+    features: ['Up to 5 tenants', 'Basic reporting'],
+    isPopular: false,
+  ),
+  _PlanData(
+    id: 'medium',
+    name: 'Medium PG',
+    price: 199,
+    features: [
+      'Up to 20 tenants',
+      'Automated rent reminders',
+      'Digital rent receipts',
+    ],
+    isPopular: true,
+  ),
+  _PlanData(
+    id: 'large',
+    name: 'Large PG',
+    price: 499,
+    features: ['Up to 50 tenants', 'Multi-property support'],
+    isPopular: false,
+  ),
+  _PlanData(
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 999,
+    features: ['100+ tenants', 'Dedicated account manager'],
+    isPopular: false,
+  ),
+];
+
+class OwnerPlansScreen extends ConsumerWidget {
   const OwnerPlansScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final plansAsync = ref.watch(plansProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +91,7 @@ class OwnerPlansScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Select a plan that fits your current needs. You can scale your operations as you grow.',
+                  'Select a plan that fits your current needs. You can scale as you grow.',
                   style: TextStyle(
                     fontSize: 14,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -59,50 +99,43 @@ class OwnerPlansScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Small PG
-                _buildPlanCard(
-                  context,
-                  title: 'Small PG',
-                  price: 'Free',
-                  features: ['Up to 5 tenants', 'Basic reporting'],
+                // Plan cards — API data or fallback
+                plansAsync.when(
+                  loading: () => const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 48),
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  error: (_, __) => _buildPlanList(
+                    context,
+                    _fallbackPlans,
+                    currentPlanId: null,
+                  ),
+                  data: (apiPlans) {
+                    if (apiPlans.isEmpty) {
+                      return _buildPlanList(
+                        context,
+                        _fallbackPlans,
+                        currentPlanId: null,
+                      );
+                    }
+                    final planData = apiPlans.map(_PlanData.fromPlan).toList();
+                    final currentPlanId = apiPlans
+                        .firstWhere(
+                          (p) => p.isCurrent ?? false,
+                          orElse: () => const Plan(),
+                        )
+                        .id;
+                    return _buildPlanList(
+                      context,
+                      planData,
+                      currentPlanId: currentPlanId,
+                    );
+                  },
                 ),
-                const SizedBox(height: 16),
 
-                // Medium PG (Recommended)
-                _buildPlanCard(
-                  context,
-                  title: 'Medium PG',
-                  price: '₹199',
-                  duration: '/month',
-                  features: [
-                    'Up to 20 tenants',
-                    'Automated rent reminders',
-                    'Digital rent receipts',
-                  ],
-                  isRecommended: true,
-                ),
-                const SizedBox(height: 16),
-
-                // Large PG
-                _buildPlanCard(
-                  context,
-                  title: 'Large PG',
-                  price: '₹499',
-                  duration: '/month',
-                  features: ['Up to 50 tenants', 'Multi-property support'],
-                ),
-                const SizedBox(height: 16),
-
-                // Enterprise
-                _buildPlanCard(
-                  context,
-                  title: 'Enterprise',
-                  price: '₹999',
-                  duration: '/month',
-                  features: ['100+ tenants', 'Dedicated account manager'],
-                ),
                 const SizedBox(height: 32),
-
                 Center(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -163,17 +196,36 @@ class OwnerPlansScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPlanCard(
-    BuildContext context, {
-    required String title,
-    required String price,
-    required List<String> features,
-    String? duration,
-    bool isRecommended = false,
+  Widget _buildPlanList(
+    BuildContext context,
+    List<_PlanData> plans, {
+    required String? currentPlanId,
   }) {
+    return Column(
+      children: [
+        for (int i = 0; i < plans.length; i++) ...[
+          _PlanCard(
+            plan: plans[i],
+            isCurrentPlan: plans[i].id == currentPlanId,
+          ),
+          if (i < plans.length - 1) const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
+}
+
+class _PlanCard extends StatelessWidget {
+  const _PlanCard({required this.plan, required this.isCurrentPlan});
+  final _PlanData plan;
+  final bool isCurrentPlan;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
+    final isHighlighted = plan.isPopular || isCurrentPlan;
 
     return Stack(
       children: [
@@ -185,12 +237,12 @@ class OwnerPlansScreen extends StatelessWidget {
                 : theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isRecommended
+              color: isHighlighted
                   ? colorScheme.primary
                   : theme.colorScheme.outlineVariant,
-              width: isRecommended ? 2 : 1,
+              width: isHighlighted ? 2 : 1,
             ),
-            boxShadow: isRecommended && !isDark
+            boxShadow: isHighlighted && !isDark
                 ? [
                     BoxShadow(
                       color: colorScheme.primary.withValues(alpha: 0.1),
@@ -204,9 +256,9 @@ class OwnerPlansScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title.toUpperCase(),
+                plan.name.toUpperCase(),
                 style: TextStyle(
-                  color: isRecommended
+                  color: isHighlighted
                       ? colorScheme.primary
                       : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
@@ -220,17 +272,17 @@ class OwnerPlansScreen extends StatelessWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    price,
+                    plan.price == 0 ? 'Free' : '₹${plan.price}',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       color: theme.colorScheme.onSurface,
                     ),
                   ),
-                  if (duration != null) ...[
+                  if (plan.price > 0) ...[
                     const SizedBox(width: 4),
                     Text(
-                      duration,
+                      '/month',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -243,16 +295,13 @@ class OwnerPlansScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              ...features.map(
+              ...plan.features.map(
                 (feature) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: colorScheme.primary,
-                        size: 20,
-                      ),
+                      Icon(Icons.check_circle,
+                          color: colorScheme.primary, size: 20),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -271,10 +320,9 @@ class OwnerPlansScreen extends StatelessWidget {
             ],
           ),
         ),
-        if (isRecommended)
+        if (isHighlighted)
           Positioned(
-            top:
-                0, // Actually we need it to slightly overlap the border or be inset.
+            top: 0,
             right: 24,
             child: FractionalTranslation(
               translation: const Offset(0, -0.5),
@@ -287,9 +335,9 @@ class OwnerPlansScreen extends StatelessWidget {
                   color: colorScheme.primary,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Text(
-                  'RECOMMENDED',
-                  style: TextStyle(
+                child: Text(
+                  isCurrentPlan ? 'CURRENT' : 'RECOMMENDED',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -302,4 +350,31 @@ class OwnerPlansScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Lightweight DTO used internally to unify API [Plan] and fallback data.
+class _PlanData {
+  const _PlanData({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.features,
+    required this.isPopular,
+  });
+
+  factory _PlanData.fromPlan(Plan p) {
+    return _PlanData(
+      id: p.id ?? '',
+      name: p.name ?? '',
+      price: p.price ?? 0,
+      features: p.features ?? [],
+      isPopular: p.isPopular ?? false,
+    );
+  }
+
+  final String id;
+  final String name;
+  final int price;
+  final List<String> features;
+  final bool isPopular;
 }

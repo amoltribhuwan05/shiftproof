@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/core/utils/currency_formatter.dart';
-import 'package:shiftproof/data/services/mock_api_service.dart';
+import 'package:shiftproof/providers/service_providers.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/cards/payout_item.dart';
 
-class PayoutsScreen extends StatelessWidget {
+class PayoutsScreen extends ConsumerWidget {
   const PayoutsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Note: The design uses a specific primary color (orange: #ec5b13) for this owner screen.
-    // We will apply this specific styling here.
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final customPrimary = theme.colorScheme.primary;
-
-    final payouts = MockApiService.getPayouts();
-    final totalSettled = MockApiService.getTotalSettled();
+    final primary = theme.colorScheme.primary;
+    final payoutsAsync = ref.watch(payoutsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -27,9 +24,7 @@ class PayoutsScreen extends StatelessWidget {
         ),
         title: Text(
           'Payouts',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         actions: [
           const NotificationBellButton(),
@@ -39,162 +34,182 @@ class PayoutsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Summary Card
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: customPrimary.withValues(alpha: 0.1),
-                    border: Border.all(
-                      color: customPrimary.withValues(alpha: 0.2),
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'TOTAL SETTLED (30 DAYS)',
-                        style: TextStyle(
-                          color: customPrimary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                        ),
+      body: payoutsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (_, __) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Color(0xFFEF4444)),
+              const SizedBox(height: 16),
+              const Text('Failed to load payouts'),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => ref.invalidate(payoutsProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (payouts) {
+          final totalSettled = payouts
+              .where((p) =>
+                  p.status?.toLowerCase() == 'completed' ||
+                  p.status?.toLowerCase() == 'success')
+              .fold<int>(0, (sum, p) => sum + (p.amount ?? 0));
+
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Summary Card
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: primary.withValues(alpha: 0.1),
+                        border: Border.all(color: primary.withValues(alpha: 0.2)),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            totalSettled,
-                            style: const TextStyle(
-                              fontSize: 32,
+                            'TOTAL SETTLED (30 DAYS)',
+                            style: TextStyle(
+                              color: primary,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          const Row(
+                          const SizedBox(height: 8),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
                             children: [
-                              Icon(
-                                Icons.trending_up,
-                                color: Color(0xFF4CAF50), // semantic green
-                                size: 16,
-                              ),
-                              SizedBox(width: 4),
                               Text(
-                                '12%',
-                                style: TextStyle(
-                                  color: Color(0xFF4CAF50),
+                                CurrencyFormatter.format(totalSettled),
+                                style: const TextStyle(
+                                  fontSize: 32,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 14,
                                 ),
+                              ),
+                              const SizedBox(width: 12),
+                              const Row(
+                                children: [
+                                  Icon(
+                                    Icons.trending_up,
+                                    color: Color(0xFF10B981),
+                                    size: 16,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'Settled',
+                                    style: TextStyle(
+                                      color: Color(0xFF10B981),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
+                    ),
+                    const SizedBox(height: 24),
 
-                // Section Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Recent Payouts',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Recent Payouts',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Showing ${payouts.length} transactions',
+                          style: TextStyle(
+                            color: theme.textTheme.bodyMedium?.color,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Showing last 10 transactions',
-                      style: TextStyle(
-                        color: theme.textTheme.bodyMedium?.color,
-                        fontSize: 12,
-                      ),
-                    ),
+                    const SizedBox(height: 16),
+
+                    if (payouts.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 48),
+                          child: Text('No payouts yet'),
+                        ),
+                      )
+                    else
+                      ...payouts.take(20).map((payout) {
+                        final isSettled =
+                            payout.status?.toLowerCase() == 'completed' ||
+                            payout.status?.toLowerCase() == 'success';
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Opacity(
+                            opacity: isSettled ? 1.0 : 0.8,
+                            child: PayoutItem(
+                              ref: payout.id ?? '',
+                              amount: CurrencyFormatter.format(payout.amount ?? 0),
+                              date: payout.date ?? '',
+                              status: payout.status ?? 'pending',
+                              statusColor: isSettled
+                                  ? const Color(0xFF10B981)
+                                  : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        );
+                      }),
+                    const SizedBox(height: 100),
                   ],
                 ),
-                const SizedBox(height: 16),
+              ),
 
-                ...payouts.take(10).map((payout) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Opacity(
-                      opacity:
-                          payout.status.toLowerCase() == 'completed' ||
-                              payout.status.toLowerCase() == 'success'
-                          ? 1.0
-                          : 0.8,
-                      child: PayoutItem(
-                        ref: payout.id,
-                        amount: CurrencyFormatter.format(payout.amount),
-                        date: payout.date,
-                        status: payout.status,
-                        statusColor:
-                            payout.status.toLowerCase() == 'completed' ||
-                                payout.status.toLowerCase() == 'success'
-                            ? const Color(0xFF4CAF50) // semantic green
-                            : theme.colorScheme.onSurface.withValues(
-                                alpha: 0.5,
-                              ),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 100), // padding for bottom button
-              ],
-            ),
-          ),
-
-          // Bottom CTA
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              color: theme.scaffoldBackgroundColor,
-              child: SafeArea(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: customPrimary,
-                      foregroundColor: theme.colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 4,
-                      shadowColor: customPrimary.withValues(alpha: 0.4),
-                    ),
-                    onPressed: () {},
-                    icon: const Icon(Icons.download),
-                    label: const Text(
-                      'Download Report',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              // Bottom CTA
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: theme.scaffoldBackgroundColor,
+                  child: SafeArea(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 4,
+                          shadowColor: primary.withValues(alpha: 0.4),
+                        ),
+                        onPressed: () {},
+                        icon: const Icon(Icons.download),
+                        label: const Text(
+                          'Download Report',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

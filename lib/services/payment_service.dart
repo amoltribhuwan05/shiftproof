@@ -75,4 +75,22 @@ class PaymentService {
     );
     return PaymentSummary.fromJson(response.data!);
   }
+
+  /// POST /api/v1/payments/{id}/pay — confirm payment after gateway success.
+  /// [paymentMethod]: "upi" | "card" | "netbanking"
+  /// [transactionRef]: gateway-issued reference / UTR number
+  Future<Payment> payPayment(
+    String paymentId, {
+    required String paymentMethod,
+    required String transactionRef,
+  }) async {
+    final response = await _apiClient.dio.post<Map<String, dynamic>>(
+      '/api/v1/payments/$paymentId/pay',
+      data: {
+        'paymentMethod': paymentMethod,
+        'transactionRef': transactionRef,
+      },
+    );
+    return Payment.fromJson(response.data!);
+  }
 }

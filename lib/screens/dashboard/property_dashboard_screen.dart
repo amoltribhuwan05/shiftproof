@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/core/constants/colors.dart';
-import 'package:shiftproof/providers/dashboard_provider.dart';
+import 'package:shiftproof/providers/service_providers.dart';
+import 'package:shiftproof/screens/payments/collections_screen.dart';
+import 'package:shiftproof/screens/properties/export_report_screen.dart';
 import 'package:shiftproof/screens/properties/manage_tenants_screen.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/cards/action_card.dart';
@@ -19,8 +21,8 @@ class PropertyDashboardScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-
-    final stats = ref.watch(dashboardStatsProvider);
+    final statsAsync = ref.watch(dashboardStatsProvider);
+    final propertiesAsync = ref.watch(propertiesProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +60,6 @@ class PropertyDashboardScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // Summary Stats Title
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -80,57 +81,94 @@ class PropertyDashboardScreen extends ConsumerWidget {
               ]),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 250,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.4,
+          // Stats grid — handles loading / error / data
+          statsAsync.when(
+            loading: () => SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 160,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: colorScheme.primary,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                ),
               ),
-              delegate: SliverChildListDelegate([
-                StatCard(
-                  title: 'Total Tenants',
-                  value: '${stats.totalTenants}',
-                  icon: Icons.group_outlined,
-                  trendIcon: Icons.trending_up,
-                  trendValue: '12%',
-                  isTrendPositive: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (_) => const ManageTenantsScreen(),
-                      ),
-                    );
-                  },
+            ),
+            error: (_, __) => SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 80,
+                  child: Center(
+                    child: TextButton.icon(
+                      onPressed: () => ref.invalidate(dashboardStatsProvider),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Retry'),
+                    ),
+                  ),
                 ),
-                StatCard(
-                  title: 'Properties',
-                  value: '${stats.totalProperties}',
-                  icon: Icons.bed_outlined,
-                  trendIcon: Icons.trending_up,
-                  trendValue: '5%',
-                  isTrendPositive: true,
+              ),
+            ),
+            data: (stats) => SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 250,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 1.4,
                 ),
-                StatCard(
-                  title: 'Collected (Mar)',
-                  value: stats.collected,
-                  icon: Icons.payments_outlined,
-                  trendIcon: Icons.trending_up,
-                  trendValue: '8%',
-                  isTrendPositive: true,
-                ),
-                StatCard(
-                  title: 'Pending',
-                  value: stats.pending,
-                  icon: Icons.pending_actions_outlined,
-                  trendIcon: Icons.trending_down,
-                  trendValue: '15%',
-                  isTrendPositive: false,
-                ),
-              ]),
+                delegate: SliverChildListDelegate([
+                  StatCard(
+                    title: 'Total Tenants',
+                    value: '${stats.totalTenants}',
+                    icon: Icons.group_outlined,
+                    trendIcon: Icons.trending_up,
+                    trendValue: '',
+                    isTrendPositive: true,
+                    onTap: () {
+                      final firstId =
+                          (propertiesAsync.valueOrNull?.isNotEmpty ?? false)
+                              ? (propertiesAsync.valueOrNull!.first.id ?? '')
+                              : '';
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) =>
+                              ManageTenantsScreen(propertyId: firstId),
+                        ),
+                      );
+                    },
+                  ),
+                  StatCard(
+                    title: 'Properties',
+                    value: '${stats.totalProperties}',
+                    icon: Icons.bed_outlined,
+                    trendIcon: Icons.trending_up,
+                    trendValue: '',
+                    isTrendPositive: true,
+                  ),
+                  StatCard(
+                    title: 'Collected',
+                    value: stats.collected,
+                    icon: Icons.payments_outlined,
+                    trendIcon: Icons.trending_up,
+                    trendValue: '',
+                    isTrendPositive: true,
+                  ),
+                  StatCard(
+                    title: 'Pending',
+                    value: stats.pending,
+                    icon: Icons.pending_actions_outlined,
+                    trendIcon: Icons.trending_down,
+                    trendValue: '',
+                    isTrendPositive: false,
+                  ),
+                ]),
+              ),
             ),
           ),
           SliverPadding(
@@ -151,26 +189,60 @@ class PropertyDashboardScreen extends ConsumerWidget {
                 crossAxisSpacing: 12,
                 childAspectRatio: 2.2,
               ),
-              delegate: SliverChildListDelegate(const [
+              delegate: SliverChildListDelegate([
                 ActionCard(
                   title: 'Manage Tenants',
                   subtitle: 'Active & waitlist',
                   icon: Icons.person_add_outlined,
                   isPrimary: true,
+                  onTap: () {
+                    final firstId =
+                        (propertiesAsync.valueOrNull?.isNotEmpty ?? false)
+                            ? (propertiesAsync.valueOrNull!.first.id ?? '')
+                            : '';
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            ManageTenantsScreen(propertyId: firstId),
+                      ),
+                    );
+                  },
                 ),
                 ActionCard(
                   title: 'View Payments',
                   subtitle: 'Transaction history',
                   icon: Icons.receipt_long_outlined,
                   isPrimary: false,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CollectionsScreen(),
+                      ),
+                    );
+                  },
                 ),
                 ActionCard(
                   title: 'View Reports',
                   subtitle: 'Financial insights',
                   icon: Icons.analytics_outlined,
                   isPrimary: false,
+                  onTap: () {
+                    final firstId =
+                        (propertiesAsync.valueOrNull?.isNotEmpty ?? false)
+                            ? (propertiesAsync.valueOrNull!.first.id ?? '')
+                            : '';
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            ExportReportScreen(propertyId: firstId),
+                      ),
+                    );
+                  },
                 ),
-                ActionCard(
+                const ActionCard(
                   title: 'Move-in/out',
                   subtitle: 'Create records',
                   icon: Icons.swap_horiz_outlined,
@@ -227,7 +299,7 @@ class PropertyDashboardScreen extends ConsumerWidget {
                   children: [
                     ActivityItem(
                       title: 'Payment Received from Unit 402',
-                      subtitle: r'10 minutes ago • $1,250.00',
+                      subtitle: '10 minutes ago • ₹1,250',
                       icon: Icons.check_circle_outline,
                       iconColor: Color(0xFF4CAF50),
                       iconBgColor: Color(0x1A4CAF50),
@@ -237,8 +309,7 @@ class PropertyDashboardScreen extends ConsumerWidget {
                       title: 'New Move-in: Jane Cooper',
                       subtitle: '2 hours ago • Unit 105',
                       icon: Icons.login_outlined,
-                      iconColor: AppColors
-                          .lightPrimary, // Using color constant where possible
+                      iconColor: AppColors.lightPrimary,
                       iconBgColor: Color(0x1A007AFF),
                     ),
                     CustomDivider(),

@@ -40,10 +40,12 @@ class AuthService {
   }) : _apiClient = apiClient ?? ApiClient.instance,
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
        _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+
+  static final AuthService _sharedInstance = AuthService();
+  static AuthService get instance => _sharedInstance;
+
   static const String _googleServerClientId = String.fromEnvironment(
     'GOOGLE_SERVER_CLIENT_ID',
-    defaultValue:
-        '307341408241-vq8ahom2eqa196hoc435s3o8rbqq9vhh.apps.googleusercontent.com',
   );
 
   final ApiClient _apiClient;
@@ -199,6 +201,53 @@ class AuthService {
     }
   }
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw AuthException.fromFirebase(e);
+    }
+  }
+
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required void Function(PhoneAuthCredential) verificationCompleted,
+    required void Function(FirebaseAuthException) verificationFailed,
+    required void Function(String, int?) codeSent,
+    required void Function(String) codeAutoRetrievalTimeout,
+  }) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        timeout: const Duration(seconds: 60),
+      );
+    } on FirebaseAuthException catch (e) {
+      throw AuthException.fromFirebase(e);
+    }
+  }
+
+  Future<User?> signInWithPhoneNumber(
+    String verificationId,
+    String smsCode,
+  ) async {
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      throw AuthException.fromFirebase(e);
+    }
+  }
+
   Future<User?> signUpWithEmailAndPassword(
     String email,
     String password,
@@ -248,7 +297,14 @@ class AuthService {
     final response = await _apiClient.dio.get<Map<String, dynamic>>(
       '/api/v1/auth/me',
     );
-    return AppUser.fromJson(response.data!);
+    final data = response.data;
+    if (data == null) {
+      throw const AuthException(
+        code: 'empty-response',
+        message: 'Server returned an empty response.',
+      );
+    }
+    return AppUser.fromJson(data);
   }
 
   Future<CurrentStay?> getCurrentStay() async {

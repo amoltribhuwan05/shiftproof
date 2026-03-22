@@ -1,40 +1,104 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:shiftproof/data/models/property_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shiftproof/data/models/models.dart';
+import 'package:shiftproof/providers/service_providers.dart';
+import 'package:shiftproof/screens/properties/manage_tenants_screen.dart';
+import 'package:shiftproof/screens/tenant/join_pg_screen.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/buttons/primary_button.dart';
 import 'package:shiftproof/widgets/cards/facility_item.dart';
 import 'package:shiftproof/widgets/cards/room_card.dart';
 
-class PropertyDetailsScreen extends StatelessWidget {
-  const PropertyDetailsScreen({super.key, this.property});
+class PropertyDetailsScreen extends ConsumerWidget {
+  const PropertyDetailsScreen({
+    super.key,
+    this.property,
+    this.propertyId = '',
+  });
+
+  /// Pre-fetched property. If null, fetches using [propertyId].
   final Property? property;
+
+  /// Used to fetch the property when [property] is not provided.
+  final String propertyId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (property != null) {
+      return _PropertyDetailsView(property: property!);
+    }
+
+    final propertyAsync = ref.watch(propertyByIdProvider(propertyId));
+    return propertyAsync.when(
+      loading: () => Scaffold(
+        appBar: _minimalAppBar(context),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => Scaffold(
+        appBar: _minimalAppBar(context),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline,
+                  size: 48, color: Color(0xFFEF4444)),
+              const SizedBox(height: 16),
+              const Text('Failed to load property'),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () =>
+                    ref.invalidate(propertyByIdProvider(propertyId)),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      data: (fetched) {
+        if (fetched == null) {
+          return Scaffold(
+            appBar: _minimalAppBar(context),
+            body: const Center(child: Text('Property not found')),
+          );
+        }
+        return _PropertyDetailsView(property: fetched);
+      },
+    );
+  }
+
+  AppBar _minimalAppBar(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back,
+            color: Theme.of(context).colorScheme.onSurface),
+        onPressed: () {
+          if (Navigator.canPop(context)) Navigator.pop(context);
+        },
+      ),
+    );
+  }
+}
+
+// ─── Actual detail view (non-nullable property) ───────────────────────────────
+
+class _PropertyDetailsView extends StatelessWidget {
+  const _PropertyDetailsView({required this.property});
+  final Property property;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    // Use passed property or fall back to defaults
     final heroImage =
-        property?.imageUrl ??
+        property.imageUrl ??
         'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop';
-    final propTitle = property?.title ?? 'Sunshine Heights PG';
-    final propLocation =
-        property?.location ?? 'Koramangala 4th Block, Bangalore';
-    final propRating = property?.rating ?? 4.8;
-    final propAmenities =
-        property?.amenities ??
-        [
-          'Fast Wifi',
-          'Food',
-          'Laundry',
-          'Security',
-          'Backup',
-          'Cleaning',
-          'Gym',
-        ];
-    final propTenants = property?.occupiedRooms ?? 18;
+    final propTitle = property.title ?? 'Unnamed Property';
+    final propLocation = property.location ?? '';
+    final propRating = property.rating ?? 0.0;
+    final propAmenities = property.amenities ?? [];
+    final propTenants = property.occupiedRooms ?? 0;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -113,10 +177,12 @@ class PropertyDetailsScreen extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: colorScheme.primary.withValues(alpha: 0.2),
+                            color:
+                                colorScheme.primary.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(
-                              color: colorScheme.primary.withValues(alpha: 0.3),
+                              color: colorScheme.primary
+                                  .withValues(alpha: 0.3),
                             ),
                           ),
                           child: Row(
@@ -162,68 +228,73 @@ class PropertyDetailsScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        color: Colors.grey.shade300,
-                                        size: 14,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Expanded(
-                                        child: Text(
-                                          propLocation,
-                                          style: TextStyle(
-                                            color: Colors.grey.shade300,
-                                            fontSize: 12,
-                                          ),
-                                          maxLines: 1,
+                                  if (propLocation.isNotEmpty) ...[
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          color: Colors.grey.shade300,
+                                          size: 14,
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            propLocation,
+                                            style: TextStyle(
+                                              color: Colors.grey.shade300,
+                                              fontSize: 12,
+                                            ),
+                                            maxLines: 1,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.2),
+                            if (propRating > 0)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color:
+                                      Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.white
+                                        .withValues(alpha: 0.2),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          propRating.toStringAsFixed(1),
+                                          style: const TextStyle(
+                                            color: Colors.amber,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 2),
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber.shade400,
+                                          size: 14,
+                                        ),
+                                      ],
+                                    ),
+                                    const Text(
+                                      '128 reviews',
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        propRating.toStringAsFixed(1),
-                                        style: const TextStyle(
-                                          color: Colors.amber,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.amber.shade400,
-                                        size: 14,
-                                      ),
-                                    ],
-                                  ),
-                                  const Text(
-                                    '128 reviews',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ],
@@ -278,9 +349,8 @@ class PropertyDetailsScreen extends StatelessWidget {
                             title: 'Triple Sharing',
                             icon: Icons.bed,
                             tag: 'Sold Out',
-                            tagColor: theme.colorScheme.onSurface.withValues(
-                              alpha: 0.5,
-                            ),
+                            tagColor: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.5),
                             desc: 'Budget friendly option for groups.',
                             price: '₹6,000',
                           ),
@@ -293,146 +363,153 @@ class PropertyDetailsScreen extends StatelessWidget {
             ),
 
             // Facilities
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Facilities & Amenities',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: MediaQuery.of(context).size.width > 900
-                        ? 8
-                        : (MediaQuery.of(context).size.width > 600 ? 6 : 4),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    children: [
-                      ...propAmenities.take(7).map((amenity) {
-                        return FacilityItem(
-                          title: amenity,
-                          icon: _getIconForAmenity(amenity),
-                        );
-                      }),
-                      if (propAmenities.length > 7)
-                        const FacilityItem(title: 'More', isMore: true),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // Current Tenants Snippet
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
+            if (propAmenities.isNotEmpty)
+              Padding(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? colorScheme.surface.withValues(alpha: 0.5)
-                      : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          height: 32,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                child: CircleAvatar(
-                                  radius: 16,
-                                  backgroundImage:
-                                      const CachedNetworkImageProvider(
-                                        'https://i.pravatar.cc/100?img=1',
-                                      ),
-                                  onBackgroundImageError:
-                                      (exception, stackTrace) {},
-                                ),
-                              ),
-                              Positioned(
-                                left: 14,
-                                child: CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 14,
-                                    backgroundImage:
-                                        const CachedNetworkImageProvider(
-                                          'https://i.pravatar.cc/100?img=2',
-                                        ),
-                                    onBackgroundImageError:
-                                        (exception, stackTrace) {},
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 28,
-                                child: CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 14,
-                                    backgroundImage:
-                                        const CachedNetworkImageProvider(
-                                          'https://i.pravatar.cc/100?img=3',
-                                        ),
-                                    onBackgroundImageError:
-                                        (exception, stackTrace) {},
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Current Tenants',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.black87,
-                              ),
-                            ),
-                            Text(
-                              '$propTenants people currently living here',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Text(
+                      'Facilities & Amenities',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 14,
-                      color: isDark
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
+                    const SizedBox(height: 16),
+                    GridView.count(
+                      crossAxisCount:
+                          MediaQuery.of(context).size.width > 900
+                              ? 8
+                              : (MediaQuery.of(context).size.width > 600
+                                  ? 6
+                                  : 4),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      children: [
+                        ...propAmenities.take(7).map((amenity) {
+                          return FacilityItem(
+                            title: amenity,
+                            icon: _getIconForAmenity(amenity),
+                          );
+                        }),
+                        if (propAmenities.length > 7)
+                          const FacilityItem(title: 'More', isMore: true),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
 
-            // Map
+            // Current Tenants Snippet
+            if (propTenants > 0)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? colorScheme.surface.withValues(alpha: 0.5)
+                        : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 60,
+                            height: 32,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  left: 0,
+                                  child: CircleAvatar(
+                                    radius: 16,
+                                    backgroundImage:
+                                        const CachedNetworkImageProvider(
+                                          'https://i.pravatar.cc/100?img=1',
+                                        ),
+                                    onBackgroundImageError:
+                                        (exception, stackTrace) {},
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 14,
+                                  child: CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      radius: 14,
+                                      backgroundImage:
+                                          const CachedNetworkImageProvider(
+                                            'https://i.pravatar.cc/100?img=2',
+                                          ),
+                                      onBackgroundImageError:
+                                          (exception, stackTrace) {},
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 28,
+                                  child: CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                      radius: 14,
+                                      backgroundImage:
+                                          const CachedNetworkImageProvider(
+                                            'https://i.pravatar.cc/100?img=3',
+                                          ),
+                                      onBackgroundImageError:
+                                          (exception, stackTrace) {},
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Current Tenants',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? Colors.white
+                                      : Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                '$propTenants people currently living here',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 14,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Map placeholder
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -477,7 +554,8 @@ class PropertyDetailsScreen extends StatelessWidget {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: colorScheme.primary.withValues(alpha: 0.9),
+                              color:
+                                  colorScheme.primary.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Row(
@@ -515,7 +593,8 @@ class PropertyDetailsScreen extends StatelessWidget {
           color: theme.scaffoldBackgroundColor,
           border: Border(
             top: BorderSide(
-              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              color:
+                  isDark ? Colors.grey.shade800 : Colors.grey.shade200,
             ),
           ),
         ),
@@ -529,7 +608,14 @@ class PropertyDetailsScreen extends StatelessWidget {
                 child: PrimaryButton(
                   text: 'Join this PG / Flat',
                   icon: Icons.login,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push<void>(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => const JoinPgScreen(),
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 12),
@@ -550,7 +636,16 @@ class PropertyDetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push<void>(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => ManageTenantsScreen(
+                          propertyId: property.id ?? '',
+                        ),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.admin_panel_settings, size: 18),
                   label: const Text(
                     'I manage this property',

@@ -6,6 +6,7 @@ class AppBottomNav extends StatelessWidget {
   const AppBottomNav({
     required this.currentIndex,
     required this.onTap,
+    this.isOwnerContext = false,
     super.key,
     this.userImageUrl,
     this.userInitial,
@@ -14,6 +15,7 @@ class AppBottomNav extends StatelessWidget {
   });
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final bool isOwnerContext;
   final String? userImageUrl;
   final String? userInitial;
   final String? userId;
@@ -23,6 +25,52 @@ class AppBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
+    final tenantItems = [
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.search),
+        activeIcon: Icon(Icons.saved_search),
+        label: 'Explore',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.home_outlined),
+        activeIcon: Icon(Icons.home),
+        label: 'My Stay',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.favorite_outline),
+        activeIcon: Icon(Icons.favorite),
+        label: 'Saved',
+      ),
+      BottomNavigationBarItem(
+        icon: _buildProfileIcon(context, false),
+        activeIcon: _buildProfileIcon(context, true),
+        label: 'Profile',
+      ),
+    ];
+
+    final ownerItems = [
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.dashboard_outlined),
+        activeIcon: Icon(Icons.dashboard),
+        label: 'Dashboard',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.domain_outlined),
+        activeIcon: Icon(Icons.domain),
+        label: 'Properties',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.analytics_outlined),
+        activeIcon: Icon(Icons.analytics),
+        label: 'Reports',
+      ),
+      BottomNavigationBarItem(
+        icon: _buildProfileIcon(context, false),
+        activeIcon: _buildProfileIcon(context, true),
+        label: 'Profile',
+      ),
+    ];
 
     return BottomNavigationBar(
       currentIndex: currentIndex,
@@ -41,28 +89,7 @@ class AppBottomNav extends StatelessWidget {
         fontWeight: FontWeight.w500,
       ),
       elevation: 8,
-      items: [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          activeIcon: Icon(Icons.saved_search),
-          label: 'Explore',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          activeIcon: Icon(Icons.home),
-          label: 'My Stay',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_outline),
-          activeIcon: Icon(Icons.favorite),
-          label: 'Saved',
-        ),
-        BottomNavigationBarItem(
-          icon: _buildProfileIcon(context, false),
-          activeIcon: _buildProfileIcon(context, true),
-          label: 'Profile',
-        ),
-      ],
+      items: isOwnerContext ? ownerItems : tenantItems,
     );
   }
 

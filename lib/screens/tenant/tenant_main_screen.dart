@@ -1,67 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:shiftproof/data/models/models.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shiftproof/providers/user_provider.dart';
+import 'package:shiftproof/screens/dashboard/property_dashboard_screen.dart';
 import 'package:shiftproof/screens/dashboard/tenant_dashboard_screen.dart';
+import 'package:shiftproof/screens/payments/collections_screen.dart';
 import 'package:shiftproof/screens/payments/payment_history_screen.dart';
 import 'package:shiftproof/screens/profile/profile_screen.dart';
+import 'package:shiftproof/screens/properties/my_properties_screen.dart';
 import 'package:shiftproof/screens/tenant/find_pg_screen.dart';
-import 'package:shiftproof/services/user_service.dart';
 import 'package:shiftproof/widgets/nav/app_bottom_nav.dart';
 
-class TenantMainScreen extends StatefulWidget {
+class TenantMainScreen extends ConsumerStatefulWidget {
   const TenantMainScreen({super.key});
 
   @override
-  State<TenantMainScreen> createState() => _TenantMainScreenState();
+  ConsumerState<TenantMainScreen> createState() => _TenantMainScreenState();
 }
 
-class _TenantMainScreenState extends State<TenantMainScreen> {
+class _TenantMainScreenState extends ConsumerState<TenantMainScreen> {
   int _currentIndex = 0;
-  final UserService _userService = UserService();
-  AppUser? _user;
 
-  final List<Widget> _screens = [
+  final List<Widget> _tenantScreens = [
     const FindPgScreen(),
     const TenantDashboardScreen(),
-    const PaymentHistoryScreen(), // Using as placeholder for 'Saved'
+    const PaymentHistoryScreen(),
     const ProfileScreen(),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUser();
-  }
+  final List<Widget> _ownerScreens = [
+    const PropertyDashboardScreen(),
+    const MyPropertiesScreen(),
+    const CollectionsScreen(),
+    const ProfileScreen(),
+  ];
 
-  Future<void> _loadUser() async {
-    try {
-      final user = await _userService.getMe();
-      if (mounted) {
-        setState(() {
-          _user = user;
-        });
-      }
-    } on Exception catch (e) {
-      debugPrint('Error loading user for bottom nav: $e');
-    }
-  }
+  // Track previous context to detect mode switches and reset tab index.
+  bool? _prevIsOwnerContext;
 
   @override
   Widget build(BuildContext context) {
+    // Watch the full provider — notifyListeners() from setContext() triggers rebuild.
+    final userState = ref.watch(userNotifierProvider);
+    final notifier = ref.read(userNotifierProvider.notifier);
+    final isOwnerContext = notifier.isOwnerContext;
+    final userSnapshot = userState.valueOrNull;
+
+    // Reset to tab 0 whenever the mode switches.
+    if (_prevIsOwnerContext != null && _prevIsOwnerContext != isOwnerContext) {
+      _currentIndex = 0;
+    }
+    _prevIsOwnerContext = isOwnerContext;
+
+    final screens = isOwnerContext ? _ownerScreens : _tenantScreens;
+    final safeIndex = _currentIndex.clamp(0, screens.length - 1);
+
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: IndexedStack(
+        index: safeIndex,
+        children: screens,
+      ),
       bottomNavigationBar: AppBottomNav(
-        currentIndex: _currentIndex,
-        userImageUrl: _user?.avatarUrl,
-        userInitial: _user?.name?.isNotEmpty ?? false
-            ? _user!.name![0].toUpperCase()
+        currentIndex: safeIndex,
+        isOwnerContext: isOwnerContext,
+        userImageUrl: userSnapshot?.avatarUrl,
+        userInitial: userSnapshot?.name?.isNotEmpty ?? false
+            ? userSnapshot!.name![0].toUpperCase()
             : null,
-        userId: _user?.id,
-        userGender: _user?.gender,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        userId: userSnapshot?.id,
+        userGender: userSnapshot?.gender,
+        onTap: (index) => setState(() => _currentIndex = index),
       ),
     );
   }
