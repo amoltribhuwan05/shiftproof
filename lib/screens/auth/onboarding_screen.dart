@@ -189,11 +189,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
-            items: ['Male', 'Female', 'Other']
-                .map(
-                  (label) => DropdownMenuItem(value: label, child: Text(label)),
-                )
-                .toList(),
+            items: const [
+                  ('Male', 'MALE'),
+                  ('Female', 'FEMALE'),
+                  ('Other', 'CO_LIVING'),
+                ]
+                    .map(
+                      (e) => DropdownMenuItem(
+                        value: e.$2,
+                        child: Text(e.$1),
+                      ),
+                    )
+                    .toList(),
             onChanged: (value) => setState(() => _selectedGender = value),
             validator: (value) =>
                 value == null ? 'Please select your gender.' : null,

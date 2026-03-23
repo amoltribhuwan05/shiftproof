@@ -624,7 +624,12 @@ class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
   String? _selectedGender;
   bool _isLoading = false;
 
-  static const _genders = ['Male', 'Female', 'Other'];
+  // label → API enum value
+  static const _genders = [
+    ('Male', 'MALE'),
+    ('Female', 'FEMALE'),
+    ('Other', 'CO_LIVING'),
+  ];
 
   @override
   void initState() {
@@ -639,10 +644,9 @@ class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
         TextEditingController(text: widget.user.area ?? '');
     final gender = widget.user.gender;
     if (gender != null) {
-      _selectedGender = _genders.firstWhere(
-        (g) => g.toLowerCase() == gender.toLowerCase(),
-        orElse: () => gender,
-      );
+      _selectedGender = _genders
+          .map((e) => e.$2)
+          .firstWhere((v) => v == gender, orElse: () => gender);
     }
   }
 
@@ -666,7 +670,7 @@ class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
     try {
       await ref.read(profileServiceProvider).updateProfile(
             name: _nameController.text.trim(),
-            gender: _selectedGender?.toLowerCase(),
+            gender: _selectedGender,
             phoneNumber: _phoneController.text.trim().isEmpty
                 ? null
                 : _phoneController.text.trim(),
@@ -735,8 +739,7 @@ class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
               hint: const Text('Select gender'),
               decoration: _inputDecoration(colorScheme),
               items: _genders
-                  .map((g) =>
-                      DropdownMenuItem(value: g, child: Text(g)))
+                  .map((e) => DropdownMenuItem(value: e.$2, child: Text(e.$1)))
                   .toList(),
               onChanged: (v) => setState(() => _selectedGender = v),
             ),
