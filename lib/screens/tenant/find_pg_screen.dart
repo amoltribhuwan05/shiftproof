@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/core/utils/currency_formatter.dart';
@@ -17,6 +19,8 @@ class FindPgScreen extends ConsumerStatefulWidget {
 
 class _FindPgScreenState extends ConsumerState<FindPgScreen> {
   final _scrollController = ScrollController();
+  final _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -27,7 +31,16 @@ class _FindPgScreenState extends ConsumerState<FindPgScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      ref.read(findPgProvider.notifier).search(value.trim());
+    });
   }
 
   void _onScroll() {
@@ -90,6 +103,9 @@ class _FindPgScreenState extends ConsumerState<FindPgScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
+                controller: _searchController,
+                onChanged: _onSearchChanged,
+                textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search area, PG name, or landmark',
                   hintStyle: TextStyle(
@@ -100,10 +116,24 @@ class _FindPgScreenState extends ConsumerState<FindPgScreen> {
                     Icons.search,
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.tune, color: theme.colorScheme.onSurface),
-                    onPressed: () {},
-                  ),
+                  suffixIcon: state.query.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          onPressed: () {
+                            _searchController.clear();
+                            ref.read(findPgProvider.notifier).search('');
+                          },
+                        )
+                      : IconButton(
+                          icon: Icon(
+                            Icons.tune,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                          onPressed: () {},
+                        ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 ),
@@ -117,13 +147,33 @@ class _FindPgScreenState extends ConsumerState<FindPgScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                _buildFilterChip(context, 'PG', Icons.home, isSelected: true),
+                _buildFilterChip(
+                  context,
+                  'PG',
+                  Icons.home,
+                  state: state,
+                ),
                 const SizedBox(width: 8),
-                _buildFilterChip(context, 'Flat', Icons.apartment),
+                _buildFilterChip(
+                  context,
+                  'Flat',
+                  Icons.apartment,
+                  state: state,
+                ),
                 const SizedBox(width: 8),
-                _buildFilterChip(context, 'Shared Room', Icons.group),
+                _buildFilterChip(
+                  context,
+                  'Shared Room',
+                  Icons.group,
+                  state: state,
+                ),
                 const SizedBox(width: 8),
-                _buildFilterChip(context, 'Private Room', Icons.single_bed),
+                _buildFilterChip(
+                  context,
+                  'Private Room',
+                  Icons.single_bed,
+                  state: state,
+                ),
               ],
             ),
           ),
@@ -291,52 +341,56 @@ class _FindPgScreenState extends ConsumerState<FindPgScreen> {
     BuildContext context,
     String label,
     IconData icon, {
-    bool isSelected = false,
+    required FindPgState state,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isSelected = state.selectedType == label;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: isSelected ? colorScheme.primary : theme.colorScheme.surface,
-        border: Border.all(
-          color: isSelected
-              ? Colors.transparent
-              : theme.colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: colorScheme.shadow.withValues(alpha: 0.2),
-                  blurRadius: 4,
-                ),
-              ]
-            : null,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 18,
+    return GestureDetector(
+      onTap: () => ref.read(findPgProvider.notifier).filterByType(label),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? colorScheme.primary : theme.colorScheme.surface,
+          border: Border.all(
             color: isSelected
-                ? theme.colorScheme.onPrimary
-                : theme.colorScheme.onSurface,
+                ? Colors.transparent
+                : theme.colorScheme.outlineVariant,
           ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: colorScheme.shadow.withValues(alpha: 0.2),
+                    blurRadius: 4,
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 18,
               color: isSelected
                   ? theme.colorScheme.onPrimary
                   : theme.colorScheme.onSurface,
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected
+                    ? theme.colorScheme.onPrimary
+                    : theme.colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

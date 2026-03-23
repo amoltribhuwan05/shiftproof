@@ -9,9 +9,15 @@ class PropertyService {
   Future<PaginatedResponse<Property>> listProperties({
     int? page,
     int? limit,
+    String? query,
+    String? type,
   }) async {
-    final queryParameters = <String, dynamic>{'page': page, 'limit': limit}
-      ..removeWhere((_, value) => value == null);
+    final queryParameters = <String, dynamic>{
+      'page': page,
+      'limit': limit,
+      'q': query,
+      'type': type,
+    }..removeWhere((_, value) => value == null);
 
     final response = await _apiClient.dio.get<Map<String, dynamic>>(
       '/api/v1/properties',

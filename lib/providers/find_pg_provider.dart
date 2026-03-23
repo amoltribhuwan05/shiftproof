@@ -9,13 +9,17 @@ class FindPgState {
     this.isLoading = true,
     this.isLoadingMore = false,
     this.hasMore = true,
+    this.query = '',
+    this.selectedType,
     this.error,
   });
 
   final List<Property> properties;
-  final bool isLoading;      // true only during initial page 0 fetch
-  final bool isLoadingMore;  // true when fetching subsequent pages
+  final bool isLoading;
+  final bool isLoadingMore;
   final bool hasMore;
+  final String query;
+  final String? selectedType;
   final String? error;
 
   FindPgState copyWith({
@@ -23,6 +27,8 @@ class FindPgState {
     bool? isLoading,
     bool? isLoadingMore,
     bool? hasMore,
+    String? query,
+    Object? selectedType = _sentinel,
     String? error,
     bool clearError = false,
   }) {
@@ -31,10 +37,16 @@ class FindPgState {
       isLoading: isLoading ?? this.isLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
+      query: query ?? this.query,
+      selectedType:
+          selectedType == _sentinel ? this.selectedType : selectedType as String?,
       error: clearError ? null : error ?? this.error,
     );
   }
 }
+
+// Sentinel so copyWith can distinguish "pass null" from "omit"
+const Object _sentinel = Object();
 
 class FindPgNotifier extends StateNotifier<FindPgState> {
   FindPgNotifier(this._service) : super(const FindPgState()) {
@@ -46,14 +58,21 @@ class FindPgNotifier extends StateNotifier<FindPgState> {
 
   Future<void> _load(int page) async {
     if (page == 0) {
-      state = const FindPgState();
+      state = FindPgState(
+        query: state.query,
+        selectedType: state.selectedType,
+      );
     } else {
       if (state.isLoadingMore) return;
       state = state.copyWith(isLoadingMore: true);
     }
 
     try {
-      final result = await _service.listProperties(page: page);
+      final result = await _service.listProperties(
+        page: page,
+        query: state.query.isEmpty ? null : state.query,
+        type: state.selectedType,
+      );
       final totalPages = result.meta?.totalPages ?? 1;
       _page = page;
       state = state.copyWith(
@@ -75,6 +94,18 @@ class FindPgNotifier extends StateNotifier<FindPgState> {
   Future<void> loadMore() async {
     if (!state.hasMore || state.isLoadingMore || state.isLoading) return;
     await _load(_page + 1);
+  }
+
+  Future<void> search(String query) async {
+    state = state.copyWith(query: query);
+    await _load(0);
+  }
+
+  Future<void> filterByType(String? type) async {
+    // Tapping the already-selected chip clears the filter
+    final next = state.selectedType == type ? null : type;
+    state = state.copyWith(selectedType: next);
+    await _load(0);
   }
 
   Future<void> refresh() => _load(0);
