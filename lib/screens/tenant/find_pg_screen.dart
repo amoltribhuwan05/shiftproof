@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shiftproof/core/utils/currency_formatter.dart';
-import 'package:shiftproof/providers/service_providers.dart';
+import 'package:shiftproof/providers/find_pg_provider.dart';
 import 'package:shiftproof/screens/properties/property_details_screen.dart';
 import 'package:shiftproof/widgets/buttons/notification_bell_button.dart';
 import 'package:shiftproof/widgets/cards/property_card.dart';
+import 'package:shiftproof/widgets/cards/property_card_skeleton.dart';
+import 'package:shimmer/shimmer.dart';
 
-class FindPgScreen extends ConsumerWidget {
+class FindPgScreen extends ConsumerStatefulWidget {
   const FindPgScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FindPgScreen> createState() => _FindPgScreenState();
+}
+
+class _FindPgScreenState extends ConsumerState<FindPgScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final pos = _scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 300) {
+      ref.read(findPgProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final propertiesAsync = ref.watch(propertiesProvider);
+    final state = ref.watch(findPgProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -100,73 +128,161 @@ class FindPgScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 4),
-          // Main Content Feed
-          Expanded(
-            child: propertiesAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline, size: 48, color: Color(0xFFEF4444)),
-                    const SizedBox(height: 16),
-                    const Text('Failed to load listings'),
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: () => ref.invalidate(propertiesProvider),
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              ),
-              data: (properties) => ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  Text(
-                    'Popular Rentals',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 400,
-                      mainAxisExtent: 360,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: properties.length,
-                    itemBuilder: (context, index) {
-                      final p = properties[index];
-                      return PropertyCard(
-                        title: p.title ?? 'Unnamed Property',
-                        location: p.location ?? '',
-                        price: '${CurrencyFormatter.format(p.price ?? 0)}/mo',
-                        imageUrl: p.imageUrl ?? '',
-                        typeTag: p.type ?? 'PG',
-                        statusTag: 'Verified',
-                        statusColor: const Color(0xFF4CAF50),
-                        tenants: p.occupiedRooms ?? 0,
-                        units: p.totalRooms ?? 0,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (_) => PropertyDetailsScreen(property: p),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
+          Expanded(child: _buildBody(context, theme, state)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, ThemeData theme, FindPgState state) {
+    // Initial load — full skeleton grid
+    if (state.isLoading) {
+      return _buildSkeletonGrid(context);
+    }
+
+    // Error with no data
+    if (state.error != null && state.properties.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Color(0xFFEF4444)),
+            const SizedBox(height: 16),
+            const Text('Failed to load listings'),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => ref.read(findPgProvider.notifier).refresh(),
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Empty state
+    if (state.properties.isEmpty) {
+      return const Center(child: Text('No properties found'));
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(findPgProvider.notifier).refresh(),
+      child: ListView(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            'Popular Rentals',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 400,
+              mainAxisExtent: 360,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            itemCount: state.properties.length,
+            itemBuilder: (context, index) {
+              final p = state.properties[index];
+              return PropertyCard(
+                title: p.title ?? 'Unnamed Property',
+                location: p.location ?? '',
+                price: '${CurrencyFormatter.format(p.price ?? 0)}/mo',
+                imageUrl: p.imageUrl ?? '',
+                typeTag: p.type ?? 'PG',
+                statusTag: 'Verified',
+                statusColor: const Color(0xFF4CAF50),
+                tenants: p.occupiedRooms ?? 0,
+                units: p.totalRooms ?? 0,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => PropertyDetailsScreen(property: p),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          if (state.isLoadingMore) ...[
+            const SizedBox(height: 16),
+            _buildLoadMoreSkeletons(context),
+          ],
+          if (!state.hasMore)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  "You've seen all properties",
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonGrid(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Shimmer.fromColors(
+      baseColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+      highlightColor: isDark ? Colors.grey.shade700 : Colors.grey.shade100,
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          // Title placeholder
+          Container(
+            width: 160,
+            height: 22,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 400,
+              mainAxisExtent: 360,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            itemCount: 4,
+            itemBuilder: (_, __) => const PropertyCardSkeleton(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreSkeletons(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Shimmer.fromColors(
+      baseColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+      highlightColor: isDark ? Colors.grey.shade700 : Colors.grey.shade100,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 400,
+          mainAxisExtent: 360,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+        ),
+        itemCount: 2,
+        itemBuilder: (_, __) => const PropertyCardSkeleton(),
       ),
     );
   }

@@ -29,9 +29,19 @@ final reportServiceProvider = Provider<ReportService>((ref) => ReportService());
 // ─── Data providers ───────────────────────────────────────────────────────────
 
 /// Owner's property list — used by MyPropertiesScreen (S09) and FindPgScreen (S22).
+/// Fetches all pages so the full list is returned regardless of backend page size.
 final propertiesProvider = FutureProvider.autoDispose<List<Property>>((ref) async {
-  final result = await ref.read(propertyServiceProvider).listProperties();
-  return result.data;
+  final service = ref.read(propertyServiceProvider);
+  final first = await service.listProperties(page: 0);
+  final totalPages = first.meta?.totalPages ?? 1;
+  if (totalPages <= 1) return first.data;
+
+  final all = List<Property>.from(first.data);
+  for (var page = 1; page < totalPages; page++) {
+    final result = await service.listProperties(page: page);
+    all.addAll(result.data);
+  }
+  return all;
 });
 
 /// Tenant's payment history — used by PaymentHistoryScreen (S25).
