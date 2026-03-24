@@ -1,4 +1,4 @@
-xbasePath: /
+basePath: /
 definitions:
   handler.AddOrgMemberRequest:
     properties:
@@ -33,16 +33,6 @@ definitions:
         type: string
     required:
     - planId
-    type: object
-  handler.payPaymentRequest:
-    properties:
-      paymentMethod:
-        type: string
-      transactionRef:
-        type: string
-    required:
-    - paymentMethod
-    - transactionRef
     type: object
   model.AppUser:
     properties:
@@ -261,6 +251,9 @@ definitions:
       amount:
         description: rupees, int64
         type: integer
+      collectionMode:
+        description: '"manual"|"online"|"autopay"'
+        type: string
       date:
         description: '"YYYY-MM-DD"'
         type: string
@@ -271,7 +264,7 @@ definitions:
       propertyId:
         type: string
       status:
-        description: '"paid"|"pending"|"overdue"'
+        description: '"paid"|"pending"|"overdue"|"checkout_created"|"processing"|"failed"|"cancelled"'
         type: string
       tenantName:
         type: string
@@ -279,6 +272,33 @@ definitions:
         type: string
       type:
         description: '"rent"|"deposit"|"electricity"|"maintenance"'
+        type: string
+    type: object
+  model.PaymentCheckout:
+    properties:
+      amount:
+        description: rupees, int64
+        type: integer
+      amountSubunits:
+        description: provider currency subunits
+        type: integer
+      currency:
+        type: string
+      description:
+        type: string
+      keyId:
+        type: string
+      notes:
+        additionalProperties:
+          type: string
+        type: object
+      orderId:
+        type: string
+      paymentId:
+        type: string
+      provider:
+        type: string
+      receipt:
         type: string
     type: object
   model.PaymentSummary:
@@ -629,6 +649,21 @@ definitions:
         type: string
     required:
     - inviteCode
+    type: object
+  service.PayPaymentRequest:
+    properties:
+      gatewayOrderId:
+        type: string
+      gatewayPaymentId:
+        type: string
+      gatewaySignature:
+        type: string
+      paymentMethod:
+        type: string
+      provider:
+        type: string
+      transactionRef:
+        type: string
     type: object
   service.UpdateRoomRequest:
     properties:
@@ -1123,12 +1158,128 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/api/v1/payments
         path_translation: CONSTANT_ADDRESS
+  /api/v1/payments/{id}:
+    get:
+      description: Returns a single payment. Owners see any payment on their properties;
+        tenants see their own.
+      operationId: getPayment
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Payment'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Get payment by ID
+      tags:
+      - Payments
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/payments/{id}
+        path_translation: CONSTANT_ADDRESS
+  /api/v1/payments/{id}/checkout:
+    post:
+      description: Creates provider checkout metadata for a pending payment.
+      operationId: initPaymentCheckout
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaymentCheckout'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Initialize payment checkout
+      tags:
+      - Payments
+  /api/v1/payments/{id}/confirm:
+    post:
+      description: Owner confirms receipt of a cash, bank-transfer, or external-UPI
+        payment. Transitions payment pending|overdue → paid and creates a payout record.
+        Not for online gateway payments.
+      operationId: confirmPayment
+      parameters:
+      - description: Payment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Payment'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - firebase: []
+      summary: Confirm manual payment receipt
+      tags:
+      - Payments
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/api/v1/payments/{id}/confirm
+        path_translation: CONSTANT_ADDRESS
   /api/v1/payments/{id}/pay:
     post:
       consumes:
       - application/json
-      description: Called by tenant after the payment gateway returns success. Marks
-        payment as paid.
+      description: Called by tenant after the payment gateway returns success. Verifies
+        provider proof before marking payment as paid. Falls back to manual paymentMethod/transactionRef
+        confirmation during migration.
       operationId: payPayment
       parameters:
       - description: Payment ID
@@ -1141,7 +1292,7 @@ paths:
         name: pay
         required: true
         schema:
-          $ref: '#/definitions/handler.payPaymentRequest'
+          $ref: '#/definitions/service.PayPaymentRequest'
       produces:
       - application/json
       responses:
@@ -1159,6 +1310,14 @@ paths:
             $ref: '#/definitions/model.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "503":
+          description: Service Unavailable
           schema:
             $ref: '#/definitions/model.ErrorResponse'
       security:
@@ -1485,33 +1644,6 @@ paths:
       security:
       - firebase: []
       summary: Upload a property image
-      tags:
-      - Properties
-    get:
-      description: Returns all images for a property ordered by position.
-      operationId: listPropertyImages
-      parameters:
-      - description: Property ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/model.PropertyImage'
-            type: array
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.ErrorResponse'
-      security:
-      - firebase: []
-      summary: List property images
       tags:
       - Properties
   /api/v1/properties/{id}/images/{imageId}:
@@ -2197,6 +2329,23 @@ paths:
       x-google-backend:
         address: ${CLOUD_RUN_URL}/api/v1/users/profile/avatar
         path_translation: CONSTANT_ADDRESS
+  /webhooks/razorpay:
+    post:
+      description: Razorpay webhook callback. Signature is verified via HMAC-SHA256
+        using RAZORPAY_WEBHOOK_SECRET. Always returns 200 to prevent Razorpay retries.
+      operationId: razorpayWebhook
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security: []
+      summary: Razorpay payment webhook
+      tags:
+      - Payments
+      x-google-backend:
+        address: ${CLOUD_RUN_URL}/webhooks/razorpay
+        path_translation: CONSTANT_ADDRESS
   /health:
     get:
       description: Get API liveness status
@@ -2215,30 +2364,6 @@ paths:
       - Health
       x-google-backend:
         address: ${CLOUD_RUN_URL}/health
-        path_translation: CONSTANT_ADDRESS
-  /ready:
-    get:
-      description: Returns readiness status with dependency checks for DB, Redis, and
-        Firebase. Returns 503 if any dependency is unhealthy.
-      operationId: readinessCheck
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "503":
-          description: Service Unavailable
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Readiness probe
-      tags:
-      - Health
-      x-google-backend:
-        address: ${CLOUD_RUN_URL}/ready
         path_translation: CONSTANT_ADDRESS
 schemes:
 - http
@@ -2267,13 +2392,13 @@ tags:
   name: Plans
 - description: API health and readiness probes
   name: Health
-- description: Room management within properties
-  name: Rooms
-- description: Tenant lifecycle and lease management
+- description: Tenant management and invitations
   name: Tenants
-- description: Subscription and plan management
+- description: Room and bed management
+  name: Rooms
+- description: Subscription lifecycle management
   name: Subscriptions
-- description: Monthly property reports
-  name: Reports
-- description: Organization management
+- description: Organization and member management
   name: Organizations
+- description: Property financial reports
+  name: Reports

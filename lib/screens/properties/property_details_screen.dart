@@ -130,7 +130,8 @@ class _PropertyDetailsView extends StatelessWidget {
           children: [
             // Hero Image Section
             SizedBox(
-              height: 320,
+              height: (MediaQuery.of(context).size.height * 0.32)
+                  .clamp(220.0, 340.0),
               width: double.infinity,
               child: Stack(
                 fit: StackFit.expand,
@@ -318,7 +319,8 @@ class _PropertyDetailsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
-                    height: 140,
+                    height: (MediaQuery.of(context).size.height * 0.17)
+                        .clamp(120.0, 150.0),
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       primary: false,
@@ -523,7 +525,8 @@ class _PropertyDetailsView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    height: 160,
+                    height: (MediaQuery.of(context).size.height * 0.18)
+                        .clamp(130.0, 180.0),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),

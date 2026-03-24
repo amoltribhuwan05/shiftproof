@@ -222,7 +222,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse-model_Notification"
+                            "$ref": "#/definitions/model.PaginatedNotificationResponse"
                         }
                     },
                     "401": {
@@ -328,6 +328,277 @@
                 }
             }
         },
+        "/api/v1/orgs": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Creates a new org with the caller as billing owner. One org per user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Create an organization",
+                "operationId": "createOrg",
+                "parameters": [
+                    {
+                        "description": "Org name",
+                        "name": "org",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateOrgRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Organization"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orgs/me": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns the org where the caller is the billing owner.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Get caller's organization",
+                "operationId": "getMyOrg",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Organization"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orgs/{id}/logo": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Uploads a base64-encoded logo image (jpeg/png/webp, max 5 MB) to GCS and updates the org's logoUrl. Caller must be the billing owner.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Upload org logo",
+                "operationId": "uploadOrgLogo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Org ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Base64-encoded image with content type",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ImageUploadRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Organization"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orgs/{id}/members": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns all users who are members of the org. Caller must be a member.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "List org members",
+                "operationId": "listOrgMembers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Org ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.OrgMember"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Adds a user to the org. Caller must be the billing owner.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Add a member to an org",
+                "operationId": "addOrgMember",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Org ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Member details",
+                        "name": "member",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.AddOrgMemberRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Member added"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/orgs/{id}/members/{userId}": {
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Removes a user from the org. Caller must be the billing owner.",
+                "tags": [
+                    "Organizations"
+                ],
+                "summary": "Remove a member from an org",
+                "operationId": "removeOrgMember",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Org ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID to remove",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Member removed"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/payments": {
             "get": {
                 "security": [
@@ -380,7 +651,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse-model_Payment"
+                            "$ref": "#/definitions/model.PaginatedPaymentResponse"
                         }
                     },
                     "401": {
@@ -502,7 +773,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse-model_Payment"
+                            "$ref": "#/definitions/model.PaginatedPaymentResponse"
                         }
                     },
                     "401": {
@@ -554,6 +825,256 @@
                 }
             }
         },
+        "/api/v1/payments/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns a single payment. Owners see any payment on their properties; tenants see their own.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get payment by ID",
+                "operationId": "getPayment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Payment"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments/{id}",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payments/{id}/checkout": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Creates provider checkout metadata for a pending payment.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Initialize payment checkout",
+                "operationId": "initPaymentCheckout",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaymentCheckout"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/{id}/confirm": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Owner confirms receipt of a cash, bank-transfer, or external-UPI payment. Transitions payment pending|overdue → paid and creates a payout record. Not for online gateway payments.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Confirm manual payment receipt",
+                "operationId": "confirmPayment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Payment"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/payments/{id}/confirm",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/payments/{id}/pay": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Called by tenant after the payment gateway returns success. Verifies provider proof before marking payment as paid. Falls back to manual paymentMethod/transactionRef confirmation during migration.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Confirm payment after gateway success",
+                "operationId": "payPayment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Gateway confirmation",
+                        "name": "pay",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.PayPaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Payment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/payouts": {
             "get": {
                 "security": [
@@ -588,7 +1109,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse-model_Payout"
+                            "$ref": "#/definitions/model.PaginatedPayoutResponse"
                         }
                     },
                     "401": {
@@ -680,7 +1201,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse-model_Property"
+                            "$ref": "#/definitions/model.PaginatedPropertyResponse"
                         }
                     }
                 },
@@ -890,6 +1411,1145 @@
                 }
             }
         },
+        "/api/v1/properties/{id}/images": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Uploads a base64-encoded image (jpeg/png/webp, max 10 MB) to GCS. The first image uploaded automatically becomes the cover.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Upload a property image",
+                "operationId": "uploadPropertyImage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Base64-encoded image with content type",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ImageUploadRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.PropertyImage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/properties/{id}/images/{imageId}": {
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Removes a property image. If the deleted image was the cover, the next image becomes the cover automatically.",
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Delete a property image",
+                "operationId": "deletePropertyImage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Image ID",
+                        "name": "imageId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/properties/{id}/members": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get all members and their roles for a property.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "List property members",
+                "operationId": "listMembers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.PropertyMember"
+                            }
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}/members",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Assign a role to a user for this property.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Add property member",
+                "operationId": "addMember",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Member Data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}/members",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/properties/{id}/members/{userId}": {
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Remove a user's role assignment from this property.",
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Remove property member",
+                "operationId": "removeMember",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/properties/{id}/members/{userId}",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/properties/{id}/rooms": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get all rooms for a property",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "List rooms for a property",
+                "operationId": "listRooms",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Room"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Add a new room to a property (requires property:update permission)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Create a room in a property",
+                "operationId": "createRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Room details",
+                        "name": "room",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.CreateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Room"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/properties/{id}/tenants": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get all active tenants for a property (owner/manager only)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "List tenants for a property",
+                "operationId": "listTenants",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedTenantResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/properties/{id}/tenants/invite": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Create an invite code for a tenant (requires property:update permission)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Invite a tenant to a property",
+                "operationId": "inviteTenant",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Invite details",
+                        "name": "invite",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.InviteTenantRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.TenantInviteResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reports/properties/{propertyId}": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Returns aggregated payment stats and list of payments for a property in a given month",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Get monthly property report",
+                "operationId": "getPropertyReport",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Property ID",
+                        "name": "propertyId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Month in YYYY-MM format (defaults to current month)",
+                        "name": "month",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PropertyReport"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get details of a single room",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get room by ID",
+                "operationId": "getRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Room"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Remove a room from a property (requires property:delete permission)",
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Delete a room",
+                "operationId": "deleteRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Patch room fields (requires property:update permission on parent property)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Update room details",
+                "operationId": "updateRoom",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Partial room update",
+                        "name": "room",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.UpdateRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Room"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscriptions": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Create or replace the owner's active subscription",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Subscribe to a plan",
+                "operationId": "createSubscription",
+                "parameters": [
+                    {
+                        "description": "Plan ID",
+                        "name": "sub",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateSubscriptionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Subscription"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscriptions/current": {
+            "get": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Get the owner's active subscription plan (returns 204 if none)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Get current subscription",
+                "operationId": "getCurrentSubscription",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Subscription"
+                        }
+                    },
+                    "204": {
+                        "description": "No active subscription"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subscriptions/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Change the plan of an active subscription",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Upgrade or downgrade subscription plan",
+                "operationId": "updateSubscription",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Subscription ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New plan ID",
+                        "name": "sub",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateSubscriptionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Subscription"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tenants/join": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Redeem an invite code to become a tenant at a property",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Join a property using an invite code",
+                "operationId": "joinProperty",
+                "parameters": [
+                    {
+                        "description": "Invite code",
+                        "name": "join",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.JoinPropertyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CurrentStay"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tenants/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Deactivate a tenant's stay (soft delete)",
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Remove a tenant",
+                "operationId": "removeTenant",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stay ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Update rent amount, room, or lease end date for a tenant stay",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tenants"
+                ],
+                "summary": "Update tenant lease details",
+                "operationId": "updateTenant",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Stay ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Tenant update",
+                        "name": "update",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.UpdateTenantRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Tenant"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/link-provider": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Links a new authentication provider (google, phone) to the account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Link auth provider",
+                "operationId": "linkProvider",
+                "parameters": [
+                    {
+                        "description": "Provider Name",
+                        "name": "provider",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/users/link-provider",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/users/onboarding": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Sets the user's profile on first-time onboarding. name and gender are required.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Complete onboarding",
+                "operationId": "onboarding",
+                "parameters": [
+                    {
+                        "description": "Onboarding Data",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OnboardingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/users/onboarding",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/users/profile": {
+            "patch": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Updates the user's profile information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Update profile",
+                "operationId": "updateProfile",
+                "parameters": [
+                    {
+                        "description": "Profile Update",
+                        "name": "profile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateProfileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/users/profile",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/api/v1/users/profile/avatar": {
+            "post": {
+                "security": [
+                    {
+                        "firebase": []
+                    }
+                ],
+                "description": "Uploads a base64-encoded profile image (jpeg/png/webp, max 5 MB) to GCS and updates the user's avatarUrl.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Upload profile avatar",
+                "operationId": "uploadAvatar",
+                "parameters": [
+                    {
+                        "description": "Base64-encoded image with content type",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AvatarUploadRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AppUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Storage not configured",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/api/v1/users/profile/avatar",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
+        "/webhooks/razorpay": {
+            "post": {
+                "security": [],
+                "description": "Razorpay webhook callback. Signature is verified via HMAC-SHA256 using RAZORPAY_WEBHOOK_SECRET. Always returns 200 to prevent Razorpay retries.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Razorpay payment webhook",
+                "operationId": "razorpayWebhook",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "x-google-backend": {
+                    "address": "${CLOUD_RUN_URL}/webhooks/razorpay",
+                    "path_translation": "CONSTANT_ADDRESS"
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Get API liveness status",
@@ -920,33 +2580,122 @@
         }
     },
     "definitions": {
+        "handler.AddOrgMemberRequest": {
+            "type": "object",
+            "required": [
+                "role",
+                "userId"
+            ],
+            "properties": {
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "owner",
+                        "member"
+                    ]
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateOrgRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateSubscriptionRequest": {
+            "type": "object",
+            "required": [
+                "planId"
+            ],
+            "properties": {
+                "planId": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UpdateSubscriptionRequest": {
+            "type": "object",
+            "required": [
+                "planId"
+            ],
+            "properties": {
+                "planId": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AppUser": {
             "type": "object",
             "properties": {
+                "area": {
+                    "type": "string"
+                },
+                "authIdentifier": {
+                    "description": "Firebase UID",
+                    "type": "string"
+                },
                 "avatarUrl": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "\"YYYY-MM-DD\"",
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
+                "gender": {
+                    "description": "MALE, FEMALE, CO_LIVING",
+                    "type": "string"
+                },
                 "id": {
-                    "type": "string"
-                },
-                "joinDate": {
-                    "description": "\"YYYY-MM-DD\" — never \"5 Mar 2026\"",
-                    "type": "string"
-                },
-                "location": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "phone": {
+                "phoneNumber": {
                     "type": "string"
                 },
-                "role": {
-                    "description": "\"owner\" | \"tenant\"",
+                "profileCompleted": {
+                    "type": "boolean"
+                },
+                "providers": {
+                    "description": "[\"google\", \"phone\"] — active providers only",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "roles": {
+                    "description": "\"OWNER\", \"TENANT\"",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.AvatarUploadRequest": {
+            "type": "object",
+            "properties": {
+                "contentType": {
+                    "description": "image/jpeg, image/png, or image/webp",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "base64-encoded image bytes",
                     "type": "string"
                 }
             }
@@ -1008,6 +2757,19 @@
                 }
             }
         },
+        "model.ImageUploadRequest": {
+            "type": "object",
+            "properties": {
+                "contentType": {
+                    "description": "image/jpeg, image/png, or image/webp",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "base64-encoded image bytes",
+                    "type": "string"
+                }
+            }
+        },
         "model.Notification": {
             "type": "object",
             "properties": {
@@ -1034,7 +2796,74 @@
                 }
             }
         },
-        "model.PaginatedResponse-model_Notification": {
+        "model.OnboardingRequest": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.OrgMember": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "joinedAt": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "description": "\"owner\" | \"member\"",
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Organization": {
+            "type": "object",
+            "properties": {
+                "billingOwnerId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "logoUrl": {
+                    "description": "\"\" when no logo uploaded",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaginatedNotificationResponse": {
             "type": "object",
             "properties": {
                 "data": {
@@ -1048,7 +2877,7 @@
                 }
             }
         },
-        "model.PaginatedResponse-model_Payment": {
+        "model.PaginatedPaymentResponse": {
             "type": "object",
             "properties": {
                 "data": {
@@ -1062,7 +2891,7 @@
                 }
             }
         },
-        "model.PaginatedResponse-model_Payout": {
+        "model.PaginatedPayoutResponse": {
             "type": "object",
             "properties": {
                 "data": {
@@ -1076,13 +2905,27 @@
                 }
             }
         },
-        "model.PaginatedResponse-model_Property": {
+        "model.PaginatedPropertyResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.Property"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/model.PaginationMeta"
+                }
+            }
+        },
+        "model.PaginatedTenantResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tenant"
                     }
                 },
                 "meta": {
@@ -1111,6 +2954,10 @@
                     "description": "rupees, int64",
                     "type": "integer"
                 },
+                "collectionMode": {
+                    "description": "\"manual\"|\"online\"|\"autopay\"",
+                    "type": "string"
+                },
                 "date": {
                     "description": "\"YYYY-MM-DD\"",
                     "type": "string"
@@ -1125,7 +2972,7 @@
                     "type": "string"
                 },
                 "status": {
-                    "description": "\"paid\"|\"pending\"|\"overdue\"",
+                    "description": "\"paid\"|\"pending\"|\"overdue\"|\"checkout_created\"|\"processing\"|\"failed\"|\"cancelled\"",
                     "type": "string"
                 },
                 "tenantName": {
@@ -1136,6 +2983,46 @@
                 },
                 "type": {
                     "description": "\"rent\"|\"deposit\"|\"electricity\"|\"maintenance\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PaymentCheckout": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "amountSubunits": {
+                    "description": "provider currency subunits",
+                    "type": "integer"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "keyId": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "paymentId": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "receipt": {
                     "type": "string"
                 }
             }
@@ -1241,7 +3128,15 @@
                     "type": "string"
                 },
                 "imageUrl": {
+                    "description": "cover image URL (denormalized for fast list queries)",
                     "type": "string"
+                },
+                "images": {
+                    "description": "all images; populated only on GetProperty, empty slice on list",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PropertyImage"
+                    }
                 },
                 "location": {
                     "type": "string"
@@ -1273,6 +3168,213 @@
                 },
                 "type": {
                     "description": "\"PG\"|\"Flat\"|\"House\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PropertyImage": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "isCover": {
+                    "type": "boolean"
+                },
+                "position": {
+                    "type": "integer"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PropertyMember": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PropertyReport": {
+            "type": "object",
+            "properties": {
+                "occupancyRate": {
+                    "description": "0.0–1.0",
+                    "type": "number"
+                },
+                "overdueCount": {
+                    "type": "integer"
+                },
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Payment"
+                    }
+                },
+                "totalCollected": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "totalPending": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Room": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "description": "total beds",
+                    "type": "integer"
+                },
+                "deposit": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isAvailable": {
+                    "description": "capacity \u003e occupiedBeds",
+                    "type": "boolean"
+                },
+                "occupiedBeds": {
+                    "description": "derived",
+                    "type": "integer"
+                },
+                "propertyId": {
+                    "type": "string"
+                },
+                "rentAmount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "roomNumber": {
+                    "type": "string"
+                },
+                "type": {
+                    "description": "\"single\"|\"double\"|\"triple\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Subscription": {
+            "type": "object",
+            "properties": {
+                "endDate": {
+                    "description": "\"YYYY-MM-DD\" or \"\"",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "planId": {
+                    "type": "string"
+                },
+                "planName": {
+                    "type": "string"
+                },
+                "price": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "startDate": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"active\"|\"cancelled\"|\"expired\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Tenant": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "dueDate": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isPaid": {
+                    "type": "boolean"
+                },
+                "joinDate": {
+                    "description": "\"YYYY-MM-DD\"",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "propertyId": {
+                    "type": "string"
+                },
+                "rentAmount": {
+                    "description": "rupees, int64",
+                    "type": "integer"
+                },
+                "room": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "\"active\"|\"pending\"|\"overdue\"",
+                    "type": "string"
+                }
+            }
+        },
+        "model.TenantInviteResponse": {
+            "type": "object",
+            "properties": {
+                "expiresAt": {
+                    "description": "ISO 8601",
+                    "type": "string"
+                },
+                "inviteCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateProfileRequest": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
                     "type": "string"
                 }
             }
@@ -1357,6 +3459,135 @@
                     ]
                 }
             }
+        },
+        "service.CreateRoomRequest": {
+            "type": "object",
+            "required": [
+                "capacity",
+                "rentAmount",
+                "roomNumber",
+                "type"
+            ],
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "deposit": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "rentAmount": {
+                    "type": "integer"
+                },
+                "roomNumber": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "single",
+                        "double",
+                        "triple"
+                    ]
+                }
+            }
+        },
+        "service.InviteTenantRequest": {
+            "type": "object",
+            "required": [
+                "leaseEnd",
+                "leaseStart",
+                "rentAmount",
+                "roomId"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "leaseEnd": {
+                    "type": "string"
+                },
+                "leaseStart": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "rentAmount": {
+                    "type": "integer"
+                },
+                "roomId": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.JoinPropertyRequest": {
+            "type": "object",
+            "required": [
+                "inviteCode"
+            ],
+            "properties": {
+                "inviteCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.PayPaymentRequest": {
+            "type": "object",
+            "properties": {
+                "gatewayOrderId": {
+                    "type": "string"
+                },
+                "gatewayPaymentId": {
+                    "type": "string"
+                },
+                "gatewaySignature": {
+                    "type": "string"
+                },
+                "paymentMethod": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "transactionRef": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.UpdateRoomRequest": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "deposit": {
+                    "type": "integer"
+                },
+                "rentAmount": {
+                    "type": "integer"
+                },
+                "roomNumber": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.UpdateTenantRequest": {
+            "type": "object",
+            "properties": {
+                "leaseEnd": {
+                    "type": "string"
+                },
+                "rentAmount": {
+                    "type": "integer"
+                },
+                "roomId": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -1365,7 +3596,7 @@
             "flow": "implicit",
             "authorizationUrl": "https://securetoken.google.com/${FIREBASE_PROJECT_ID}",
             "scopes": {
-                "openid": " access to identity"
+                "openid": "access to identity"
             },
             "x-google-audiences": "${FIREBASE_PROJECT_ID}",
             "x-google-issuer": "https://securetoken.google.com/${FIREBASE_PROJECT_ID}",
@@ -1396,6 +3627,26 @@
         {
             "description": "API health and readiness probes",
             "name": "Health"
+        },
+        {
+            "description": "Tenant management and invitations",
+            "name": "Tenants"
+        },
+        {
+            "description": "Room and bed management",
+            "name": "Rooms"
+        },
+        {
+            "description": "Subscription lifecycle management",
+            "name": "Subscriptions"
+        },
+        {
+            "description": "Organization and member management",
+            "name": "Organizations"
+        },
+        {
+            "description": "Property financial reports",
+            "name": "Reports"
         }
     ]
 }

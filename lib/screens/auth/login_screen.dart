@@ -93,9 +93,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with AuthRedirectMixi
             children: [
               const SizedBox(height: 40),
               // Hero / Branding Section
-              Container(
-                width: 100,
-                height: 100,
+              Builder(
+                builder: (context) {
+                  final logoSize =
+                      (MediaQuery.of(context).size.width * 0.25)
+                          .clamp(72.0, 100.0);
+                  return Container(
+                width: logoSize,
+                height: logoSize,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   gradient: LinearGradient(
@@ -110,11 +115,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with AuthRedirectMixi
                 child: Center(
                   child: Image.asset(
                     'assets/images/logo.png',
-                    width: 70,
-                    height: 70,
+                    width: logoSize * 0.7,
+                    height: logoSize * 0.7,
                     fit: BoxFit.contain,
                   ),
                 ),
+              );
+                },
               ),
               const SizedBox(height: 32),
               Text(

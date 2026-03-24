@@ -131,12 +131,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           const SizedBox(height: 24),
 
           // Heading
-          const Text(
+          Text(
             'Reset Password',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: MediaQuery.of(context).size.width < 360 ? 22.0 : 28.0,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF0F172A),
+              color: const Color(0xFF0F172A),
               letterSpacing: -0.5,
             ),
             textAlign: TextAlign.center,

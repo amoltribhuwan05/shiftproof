@@ -103,15 +103,8 @@ class _PayBillScreenState extends ConsumerState<PayBillScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
-              bottom: 120,
-            ),
+      body: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -329,95 +322,86 @@ class _PayBillScreenState extends ConsumerState<PayBillScreen> {
                 ),
               ],
             ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          border: Border(
+            top: BorderSide(color: theme.colorScheme.outlineVariant),
           ),
-
-          // Fixed Bottom Footer
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                border: Border(
-                  top: BorderSide(color: theme.colorScheme.outlineVariant),
-                ),
-              ),
-              child: SafeArea(
-                child: Row(
+        ),
+        child: SafeArea(
+          top: false,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Grand Total',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: theme.colorScheme.onSurface
-                                  .withValues(alpha: 0.6),
-                            ),
-                          ),
-                          Text(
-                            CurrencyFormatter.format(amount),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'Grand Total',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurface
+                            .withValues(alpha: 0.6),
                       ),
                     ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 56,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 4,
-                            shadowColor:
-                                colorScheme.primary.withValues(alpha: 0.4),
-                          ),
-                          onPressed: _isLoading ? null : _handlePayNow,
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Pay Now',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(Icons.arrow_forward),
-                                  ],
-                                ),
-                        ),
+                    Text(
+                      CurrencyFormatter.format(amount),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+              Expanded(
+                child: SizedBox(
+                  height: 56,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 4,
+                      shadowColor:
+                          colorScheme.primary.withValues(alpha: 0.4),
+                    ),
+                    onPressed: _isLoading ? null : _handlePayNow,
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Pay Now',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Icon(Icons.arrow_forward),
+                            ],
+                          ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

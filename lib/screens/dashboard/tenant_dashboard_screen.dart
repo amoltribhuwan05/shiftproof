@@ -139,7 +139,8 @@ class TenantDashboardScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Container(
-              height: 250,
+              height: (MediaQuery.of(context).size.height * 0.28)
+                  .clamp(200.0, 260.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: colorScheme.surfaceContainerHighest,

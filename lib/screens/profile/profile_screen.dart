@@ -250,14 +250,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
+    final avatarSize =
+        (MediaQuery.of(context).size.width * 0.24).clamp(72.0, 96.0);
+
     return Column(
       children: [
         Stack(
           alignment: Alignment.center,
           children: [
             Container(
-              width: 96,
-              height: 96,
+              width: avatarSize,
+              height: avatarSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -270,7 +273,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ? CachedNetworkImage(
                         imageUrl: user.avatarUrl!,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => _buildShimmerCircle(96),
+                        placeholder: (context, url) =>
+                            _buildShimmerCircle(avatarSize),
                         errorWidget: (context, url, error) =>
                             _buildDefaultAvatar(user, isDark, theme),
                       )

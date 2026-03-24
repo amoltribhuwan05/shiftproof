@@ -50,7 +50,7 @@ class PropertyCard extends StatelessWidget {
           children: [
             // Image Stack
             SizedBox(
-              height: 160,
+              height: 130,
               width: double.infinity,
               child: Stack(
                 fit: StackFit.expand,
@@ -129,7 +129,7 @@ class PropertyCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 children: [
                   // Title and Price Row
@@ -144,7 +144,7 @@ class PropertyCard extends StatelessWidget {
                             Text(
                               title,
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                               maxLines: 1,
@@ -185,7 +185,7 @@ class PropertyCard extends StatelessWidget {
                           Text(
                             price,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: theme.colorScheme.primary,
                             ),
@@ -193,7 +193,7 @@ class PropertyCard extends StatelessWidget {
                           Text(
                             'PER MONTH',
                             style: TextStyle(
-                              fontSize: 10,
+                              fontSize: 9,
                               fontWeight: FontWeight.bold,
                               color: isDark
                                   ? Colors.grey.shade500
@@ -205,14 +205,14 @@ class PropertyCard extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   Divider(
                     height: 1,
                     color: isDark
                         ? theme.colorScheme.surface
                         : Colors.grey.shade200,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
 
                   // Footer Actions
                   Row(

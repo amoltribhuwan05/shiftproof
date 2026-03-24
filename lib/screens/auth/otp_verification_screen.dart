@@ -185,12 +185,13 @@ class _OtpVerificationScreenState
               const SizedBox(height: 24),
 
               // Heading
-              const Text(
+              Text(
                 'Verify your number',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize:
+                      MediaQuery.of(context).size.width < 360 ? 22.0 : 28.0,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: const Color(0xFF0F172A),
                   letterSpacing: -0.5,
                 ),
                 textAlign: TextAlign.center,
@@ -221,17 +222,27 @@ class _OtpVerificationScreenState
 
               const SizedBox(height: 40),
 
-              // 6 PIN boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(_otpLength, (index) {
-                  return _OtpBox(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    onChanged: (value) => _onDigitEntered(index, value),
-                    onKeyEvent: (event) => _onKeyEvent(index, event),
+              // 6 PIN boxes — responsive size
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // 5 gaps of 8px = 40px, divide rest equally across 6 boxes
+                  final boxW =
+                      ((constraints.maxWidth - 40) / 6).clamp(36.0, 52.0);
+                  final boxH = boxW * (56.0 / 48.0);
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(_otpLength, (index) {
+                      return _OtpBox(
+                        width: boxW,
+                        height: boxH,
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        onChanged: (value) => _onDigitEntered(index, value),
+                        onKeyEvent: (event) => _onKeyEvent(index, event),
+                      );
+                    }),
                   );
-                }),
+                },
               ),
 
               const SizedBox(height: 32),
@@ -308,18 +319,22 @@ class _OtpBox extends StatelessWidget {
     required this.focusNode,
     required this.onChanged,
     required this.onKeyEvent,
+    required this.width,
+    required this.height,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
   final ValueChanged<KeyEvent> onKeyEvent;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 48,
-      height: 56,
+      width: width,
+      height: height,
       child: KeyboardListener(
         focusNode: FocusNode(),
         onKeyEvent: onKeyEvent,

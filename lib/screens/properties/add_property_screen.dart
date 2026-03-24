@@ -254,7 +254,8 @@ class _AddPropertyScreenState extends ConsumerState<AddPropertyScreen> {
 
             // Map Preview
             Container(
-              height: 160,
+              height: (MediaQuery.of(context).size.height * 0.18)
+                  .clamp(130.0, 180.0),
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),

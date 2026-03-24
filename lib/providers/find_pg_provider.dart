@@ -3,6 +3,58 @@ import 'package:shiftproof/data/models/models.dart';
 import 'package:shiftproof/providers/service_providers.dart';
 import 'package:shiftproof/services/property_service.dart';
 
+// ---------------------------------------------------------------------------
+// Filters model
+// ---------------------------------------------------------------------------
+
+class PropertyFilters {
+  const PropertyFilters({
+    this.type,
+    this.location,
+    this.minPrice,
+    this.maxPrice,
+    this.sortBy,
+  });
+
+  final String? type;      // 'PG' | 'Flat' | 'Shared Room' | 'Private Room'
+  final String? location;  // free-form area/city string
+  final int? minPrice;     // rupees
+  final int? maxPrice;     // rupees
+  final String? sortBy;    // 'price_asc' | 'price_desc' | 'rating'
+
+  bool get isActive =>
+      type != null ||
+      location != null ||
+      minPrice != null ||
+      maxPrice != null ||
+      sortBy != null;
+
+  int get activeCount =>
+      [type, location, minPrice, maxPrice, sortBy]
+          .where((e) => e != null)
+          .length;
+
+  PropertyFilters copyWith({
+    Object? type = _s,
+    Object? location = _s,
+    Object? minPrice = _s,
+    Object? maxPrice = _s,
+    Object? sortBy = _s,
+  }) {
+    return PropertyFilters(
+      type: type == _s ? this.type : type as String?,
+      location: location == _s ? this.location : location as String?,
+      minPrice: minPrice == _s ? this.minPrice : minPrice as int?,
+      maxPrice: maxPrice == _s ? this.maxPrice : maxPrice as int?,
+      sortBy: sortBy == _s ? this.sortBy : sortBy as String?,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+
 class FindPgState {
   const FindPgState({
     this.properties = const [],
@@ -10,7 +62,7 @@ class FindPgState {
     this.isLoadingMore = false,
     this.hasMore = true,
     this.query = '',
-    this.selectedType,
+    this.filters = const PropertyFilters(),
     this.error,
   });
 
@@ -19,7 +71,7 @@ class FindPgState {
   final bool isLoadingMore;
   final bool hasMore;
   final String query;
-  final String? selectedType;
+  final PropertyFilters filters;
   final String? error;
 
   FindPgState copyWith({
@@ -28,7 +80,7 @@ class FindPgState {
     bool? isLoadingMore,
     bool? hasMore,
     String? query,
-    Object? selectedType = _sentinel,
+    PropertyFilters? filters,
     String? error,
     bool clearError = false,
   }) {
@@ -38,15 +90,18 @@ class FindPgState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
       query: query ?? this.query,
-      selectedType:
-          selectedType == _sentinel ? this.selectedType : selectedType as String?,
+      filters: filters ?? this.filters,
       error: clearError ? null : error ?? this.error,
     );
   }
 }
 
-// Sentinel so copyWith can distinguish "pass null" from "omit"
-const Object _sentinel = Object();
+// Sentinel for nullable copyWith params
+const Object _s = Object();
+
+// ---------------------------------------------------------------------------
+// Notifier
+// ---------------------------------------------------------------------------
 
 class FindPgNotifier extends StateNotifier<FindPgState> {
   FindPgNotifier(this._service) : super(const FindPgState()) {
@@ -58,10 +113,7 @@ class FindPgNotifier extends StateNotifier<FindPgState> {
 
   Future<void> _load(int page) async {
     if (page == 0) {
-      state = FindPgState(
-        query: state.query,
-        selectedType: state.selectedType,
-      );
+      state = FindPgState(query: state.query, filters: state.filters);
     } else {
       if (state.isLoadingMore) return;
       state = state.copyWith(isLoadingMore: true);
@@ -71,7 +123,11 @@ class FindPgNotifier extends StateNotifier<FindPgState> {
       final result = await _service.listProperties(
         page: page,
         query: state.query.isEmpty ? null : state.query,
-        type: state.selectedType,
+        type: state.filters.type,
+        location: state.filters.location,
+        minPrice: state.filters.minPrice,
+        maxPrice: state.filters.maxPrice,
+        sortBy: state.filters.sortBy,
       );
       final totalPages = result.meta?.totalPages ?? 1;
       _page = page;
@@ -101,15 +157,22 @@ class FindPgNotifier extends StateNotifier<FindPgState> {
     await _load(0);
   }
 
-  Future<void> filterByType(String? type) async {
-    // Tapping the already-selected chip clears the filter
-    final next = state.selectedType == type ? null : type;
-    state = state.copyWith(selectedType: next);
+  Future<void> applyFilters(PropertyFilters filters) async {
+    state = state.copyWith(filters: filters);
+    await _load(0);
+  }
+
+  Future<void> clearAll() async {
+    state = const FindPgState();
     await _load(0);
   }
 
   Future<void> refresh() => _load(0);
 }
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
 
 final findPgProvider =
     StateNotifierProvider.autoDispose<FindPgNotifier, FindPgState>((ref) {

@@ -203,7 +203,8 @@ Owner Home (bottom nav)
 │   ├── Payment List Screen (with filters)
 │   ├── Payment Summary Card (top)
 │   ├── Create Payment Screen
-│   └── Payment Detail Screen → Mark Paid Screen
+│   └── Payment Detail Screen
+│       └── Confirm Receipt Button  ← manual payments only (collectionMode: "manual")
 │
 ├── Notifications Tab
 │   └── Notification List Screen
@@ -229,7 +230,9 @@ Tenant Home (bottom nav)
 │       └── Join Property Screen  ← if no active stay
 │
 ├── Payments Tab
-│   └── Payment History Screen
+│   ├── Payment History Screen
+│   └── Payment Detail Screen
+│       └── Pay Online Button  ← online flow: Checkout → Razorpay SDK → Poll
 │
 ├── Notifications Tab
 │   └── Notification List Screen
@@ -382,13 +385,20 @@ class Tenant {
 class Payment {
   final String id;
   final String title;
-  final int amount;         // rupees — ALWAYS int
-  final String date;        // "YYYY-MM-DD"
-  final String status;      // "paid" | "pending" | "overdue"
-  final String type;        // "rent" | "deposit" | "electricity" | "maintenance"
+  final int amount;           // rupees — ALWAYS int
+  final String date;          // "YYYY-MM-DD"
+  final String status;        // "pending"|"overdue"|"checkout_created"|"processing"|"paid"|"failed"|"cancelled"
+  final String type;          // "rent" | "deposit" | "electricity" | "maintenance"
+  final String collectionMode; // "manual" | "online" | "autopay"
   final String tenantName;
   final String propertyId;
   final String description;
+
+  /// True when the payment is in a terminal state (no more transitions possible)
+  bool get isTerminal => status == 'paid' || status == 'failed' || status == 'cancelled';
+
+  /// True when polling is needed (gateway payment in flight)
+  bool get isPending => status == 'processing' || status == 'checkout_created';
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
     id: json['id'] ?? '',
@@ -397,9 +407,39 @@ class Payment {
     date: json['date'] ?? '',
     status: json['status'] ?? '',
     type: json['type'] ?? '',
+    collectionMode: json['collectionMode'] ?? 'manual',
     tenantName: json['tenantName'] ?? '',
     propertyId: json['propertyId'] ?? '',
     description: json['description'] ?? '',
+  );
+}
+```
+
+```dart
+// core/models/payment_checkout.dart
+class PaymentCheckout {
+  final String paymentId;
+  final String provider;      // "razorpay"
+  final String keyId;         // Razorpay key_id — pass to Razorpay SDK
+  final String orderId;       // Razorpay order_id — pass to Razorpay SDK
+  final int amount;           // rupees
+  final int amountSubunits;   // paise (amount × 100) — pass to Razorpay SDK
+  final String currency;      // "INR"
+  final String receipt;
+  final String description;
+  final Map<String, String> notes;
+
+  factory PaymentCheckout.fromJson(Map<String, dynamic> json) => PaymentCheckout(
+    paymentId: json['paymentId'] ?? '',
+    provider: json['provider'] ?? '',
+    keyId: json['keyId'] ?? '',
+    orderId: json['orderId'] ?? '',
+    amount: json['amount'] ?? 0,
+    amountSubunits: json['amountSubunits'] ?? 0,
+    currency: json['currency'] ?? 'INR',
+    receipt: json['receipt'] ?? '',
+    description: json['description'] ?? '',
+    notes: Map<String, String>.from(json['notes'] ?? {}),
   );
 }
 ```
@@ -571,7 +611,10 @@ class ApiEndpoints {
   static const payments = '/payments';
   static const paymentSummary = '/payments/summary';
   static const paymentCollections = '/payments/collections';
+  static String payment(String id) => '/payments/$id';
+  static String paymentCheckout(String id) => '/payments/$id/checkout';
   static String payPayment(String id) => '/payments/$id/pay';
+  static String confirmPayment(String id) => '/payments/$id/confirm';
 
   // Notifications
   static const notifications = '/notifications';
@@ -896,9 +939,16 @@ GET /payments/summary
 GET /payments?page=1&limit=20&propertyId=...&status=pending&type=rent
 // Query params all optional — use for filters
 // Returns PaginatedResponse<Payment>
+// payment.collectionMode: "manual" | "online" — show badge on card
 ```
 
-**Create Payment Screen**
+**Payment Detail Screen**
+```dart
+GET /payments/:id
+// Returns Payment — use for status polling and detail view
+```
+
+**Create Payment Screen** (owner creates payment for tenant)
 ```dart
 // Generate idempotency key before submitting (prevents double-submit on retry)
 import 'package:uuid/uuid.dart';
@@ -913,16 +963,103 @@ Body: {
   "type": "rent",           // "rent"|"deposit"|"electricity"|"maintenance"
   "description": "..."      // optional
 }
+// Created with collectionMode: "manual" by default
 ```
 
-**Mark Payment as Paid Screen**
+**Confirm Manual Payment** (owner marks cash/UPI/bank transfer as received)
 ```dart
-POST /payments/:id/pay
-Body: {
-  "paymentMethod": "UPI",        // free text: "UPI" | "Cash" | "Bank Transfer"
-  "transactionRef": "UTR123456"  // reference number
-}
+// Only for collectionMode: "manual" payments in status "pending" or "overdue"
+// Do NOT show this button for online/gateway payments
+POST /payments/:id/confirm
+// No body required
 // Returns updated Payment with status: "paid"
+// ⚠️ Only owner can call this — tenant gets 403
+```
+
+---
+
+### Tenant: Online Payment Flow (Razorpay)
+
+> ⚠️ **Critical**: Do NOT show a "Payment Successful" screen until `status == "paid"`.
+> The `/pay` endpoint returns `status: "processing"` — final confirmation comes from
+> the webhook. Poll `GET /payments/:id` until terminal state.
+
+**Step 1 — Initiate checkout**
+```dart
+POST /payments/:id/checkout
+// No body required
+// Returns PaymentCheckout — idempotent: retry returns same session
+// ⚠️ 503 if PAYMENT_GATEWAY_PROVIDER=disabled (show "Online payment not available")
+```
+
+**Step 2 — Open Razorpay SDK**
+```dart
+// Add razorpay_flutter to pubspec.yaml
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+
+final razorpay = Razorpay();
+
+razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (PaymentSuccessResponse res) {
+  // Call /pay with gateway proof
+  _onPaymentSuccess(res, checkout);
+});
+razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, (PaymentFailureResponse res) {
+  // Payment failed or cancelled by user
+  // Do NOT navigate away — payment is still in checkout_created state
+  // Tenant can retry — just call /checkout again (idempotent)
+  showErrorSnackbar(res.message ?? 'Payment failed');
+});
+
+void openRazorpay(PaymentCheckout checkout) {
+  final options = {
+    'key': checkout.keyId,
+    'order_id': checkout.orderId,
+    'amount': checkout.amountSubunits,   // paise
+    'currency': checkout.currency,
+    'name': 'ShiftProof',
+    'description': checkout.description,
+    'prefill': {
+      'contact': currentUser.phoneNumber,
+      'email': currentUser.email,
+    },
+  };
+  razorpay.open(options);
+}
+```
+
+**Step 3 — Submit gateway proof**
+```dart
+void _onPaymentSuccess(PaymentSuccessResponse res, PaymentCheckout checkout) async {
+  POST /payments/:id/pay
+  Body: {
+    "provider": "razorpay",
+    "gatewayOrderId": checkout.orderId,       // from /checkout response
+    "gatewayPaymentId": res.paymentId,        // from Razorpay SDK callback
+    "gatewaySignature": res.signature         // from Razorpay SDK callback
+  }
+  // Returns Payment with status: "processing"
+  // ⚠️ NOT "paid" yet — webhook must confirm
+}
+```
+
+**Step 4 — Poll for final status**
+```dart
+// Start polling GET /payments/:id every 3 seconds
+// Stop when status is "paid", "failed", or "cancelled"
+
+Future<Payment> pollPaymentStatus(String paymentId) async {
+  while (true) {
+    await Future.delayed(const Duration(seconds: 3));
+    final payment = await getPayment(paymentId);
+    if (payment.isTerminal) return payment;
+    // Optional: timeout after 2 minutes → show "Check back later" UI
+  }
+}
+
+// Show this UI while polling:
+// ⏳ "Processing your payment..." (spinner)
+// ✅ status == "paid"     → "Payment Successful" screen
+// ❌ status == "failed"   → "Payment Failed — please try again"
 ```
 
 ---

@@ -11,12 +11,20 @@ class PropertyService {
     int? limit,
     String? query,
     String? type,
+    String? location,
+    int? minPrice,
+    int? maxPrice,
+    String? sortBy,
   }) async {
     final queryParameters = <String, dynamic>{
       'page': page,
       'limit': limit,
       'q': query,
       'type': type,
+      'location': location,
+      'minPrice': minPrice,
+      'maxPrice': maxPrice,
+      'sortBy': sortBy,
     }..removeWhere((_, value) => value == null);
 
     final response = await _apiClient.dio.get<Map<String, dynamic>>(

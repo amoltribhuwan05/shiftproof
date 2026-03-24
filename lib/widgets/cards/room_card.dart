@@ -24,8 +24,11 @@ class RoomCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    final cardWidth =
+        (MediaQuery.of(context).size.width * 0.62).clamp(180.0, 260.0);
+
     return Container(
-      width: 250,
+      width: cardWidth,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark

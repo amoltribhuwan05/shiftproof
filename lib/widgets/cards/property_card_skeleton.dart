@@ -17,7 +17,7 @@ class PropertyCardSkeleton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image placeholder
-          Container(height: 160, width: double.infinity, color: Colors.white),
+          Container(height: 130, width: double.infinity, color: Colors.white),
           // Content
           Padding(
             padding: const EdgeInsets.all(16),

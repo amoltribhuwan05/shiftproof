@@ -156,7 +156,7 @@ class MyPropertiesScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 400,
-        mainAxisExtent: 360,
+        mainAxisExtent: 255,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
